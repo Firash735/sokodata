@@ -1,0 +1,21 @@
+# Secrets — NEVER commit these
+.env
+.env.local
+.env.*.local
+
+# Supabase
+.supabase/
+
+# Vercel
+.vercel/
+
+# Node
+node_modules/
+npm-debug.log*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# VS Code
+.vscode/settings.json

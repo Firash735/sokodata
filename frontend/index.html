@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/x-icon" href="favicon.ico" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SokoData — East Africa Market Intelligence</title>
+  <link rel="stylesheet" href="css/styles.css" />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav class="nav">
+    <div class="nav-logo"><div class="dot"></div>SOKODATA</div>
+    <div class="nav-tabs">
+      <button class="nav-tab active" data-page="dashboard">Dashboard</button>
+      <button class="nav-tab" data-page="forex">Forex</button>
+      <button class="nav-tab" data-page="commodities">Commodities</button>
+      <button class="nav-tab" data-page="livestock">Livestock</button>
+      <button class="nav-tab" data-page="arbitrage">Arbitrage</button>
+      <button class="nav-tab" data-page="sms">SMS Alerts</button>
+      <button class="nav-tab" data-page="plans">Plans</button>
+    </div>
+    <div class="nav-right">
+      <span class="nav-time" id="navTime">--:--:-- EAT</span>
+      <span class="nav-plan" id="navPlan">FREE</span>
+      <button class="btn btn-upgrade" id="btnUpgrade">Upgrade →</button>
+      <button class="btn btn-login" id="btnLogin">Login</button>
+    </div>
+  </nav>
+
+  <!-- TICKER -->
+  <div class="ticker-wrap">
+    <div class="ticker-label">⬤ LIVE</div>
+    <div class="ticker-scroll"><div class="ticker-track" id="tickerTrack">Loading live prices…</div></div>
+  </div>
+
+  <!-- ALERT BANNER -->
+  <div class="alert-banner" id="alertBanner" style="display:none">
+    <span class="alert-icon">⚠ ALERT</span>
+    <span class="alert-text" id="alertBannerText"></span>
+    <span class="alert-dismiss" id="alertDismiss">×</span>
+  </div>
+
+  <!-- PAGES -->
+  <main id="appMain">
+    <!-- injected by JS -->
+  </main>
+
+  <!-- AUTH MODAL -->
+  <div class="modal-overlay" id="authModal" style="display:none">
+    <div class="modal">
+      <button class="modal-close" id="modalClose">×</button>
+      <div class="modal-tabs">
+        <button class="modal-tab active" id="tabLogin">Login</button>
+        <button class="modal-tab" id="tabSignup">Sign Up</button>
+      </div>
+      <div id="authForm"></div>
+    </div>
+  </div>
+
+  <!-- SCRIPTS — order matters -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="js/config.js"></script>
+  <script src="js/supabase.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/prices.js"></script>
+  <script src="js/dashboard.js"></script>
+  <script src="js/forex.js"></script>
+  <script src="js/sms.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
