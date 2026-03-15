@@ -616,6 +616,16 @@ function ago(iso){if(!iso)return'-';const m=Math.floor((Date.now()-new Date(iso)
 function toast(msg,isErr=false){const t=document.getElementById('toastEl');t.textContent=msg;t.className='toast '+(isErr?'fail':'ok');t.style.display='block';clearTimeout(t._t);t._t=setTimeout(()=>t.style.display='none',3500)}
 
 checkSess()
+
+let _timer = setTimeout(adminLogout, 30 * 60 * 1000)
+document.addEventListener('click', () => {
+  clearTimeout(_timer)
+  _timer = setTimeout(adminLogout, 30 * 60 * 1000)
+})
+document.addEventListener('keydown', () => {
+  clearTimeout(_timer)
+  _timer = setTimeout(adminLogout, 30 * 60 * 1000)
+})
 </script>
 </body>
 </html>
