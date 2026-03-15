@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>SokoData Admin Control Center</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+:root{--bg:#050810;--bg2:#080d1a;--bg3:#0c1425;--bg4:#111c33;--border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.13);--text:#e8eaf0;--text2:#8892a4;--text3:#4a5568;--green:#00d085;--green2:#00ff9d;--red:#ff4757;--amber:#ffb300;--blue:#3d8bff;--mono:'IBM Plex Mono',monospace;--sans:'IBM Plex Sans',sans-serif}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:100vh}
+.login-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center}
+.login-box{background:var(--bg2);border:1px solid var(--border2);border-radius:12px;padding:40px;width:400px;max-width:95vw}
+.logo{font-family:var(--mono);font-size:18px;font-weight:700;color:var(--green2);margin-bottom:6px;display:flex;align-items:center;gap:10px}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--green2);animation:pulse 2s infinite;flex-shrink:0}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(0,255,157,.4)}50%{box-shadow:0 0 0 8px rgba(0,255,157,0)}}
+.admin-badge{font-family:var(--mono);font-size:9px;color:#000;background:var(--red);padding:2px 8px;border-radius:2px;letter-spacing:.1em;margin-bottom:24px;display:inline-block}
+.field{margin-bottom:14px}
+.field label{display:block;font-family:var(--mono);font-size:9px;font-weight:700;color:var(--text3);letter-spacing:.1em;text-transform:uppercase;margin-bottom:5px}
+input,select,textarea{width:100%;background:var(--bg3);border:1px solid var(--border2);color:var(--text);font-family:var(--mono);font-size:12px;padding:9px 11px;border-radius:4px;outline:none;transition:border-color .2s}
+input:focus,select:focus,textarea:focus{border-color:var(--green)}
+.err{font-family:var(--mono);font-size:11px;color:var(--red);min-height:16px;margin-bottom:10px}
+.ok-msg{font-family:var(--mono);font-size:11px;color:var(--green);min-height:16px;margin-bottom:10px}
+.btn{font-family:var(--mono);font-size:11px;font-weight:700;padding:8px 16px;border-radius:4px;cursor:pointer;border:none;transition:all .15s;letter-spacing:.05em;display:inline-flex;align-items:center;gap:6px}
+.btn-green{background:var(--green);color:#000}.btn-green:hover{background:var(--green2)}
+.btn-outline{background:transparent;color:var(--text2);border:1px solid var(--border2)}.btn-outline:hover{border-color:var(--green);color:var(--green)}
+.btn-red{background:rgba(255,71,87,.12);color:var(--red);border:1px solid rgba(255,71,87,.25)}.btn-red:hover{background:rgba(255,71,87,.22)}
+.btn-full{width:100%}
+.admin-wrap{display:none;min-height:100vh}
+.sidebar{width:230px;background:var(--bg2);border-right:1px solid var(--border);position:fixed;top:0;left:0;bottom:0;display:flex;flex-direction:column;overflow-y:auto;z-index:50}
+.sb-logo{font-family:var(--mono);font-size:13px;font-weight:700;color:var(--green2);padding:16px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px}
+.sb-abadge{margin-left:auto;font-family:var(--mono);font-size:8px;font-weight:700;color:#000;background:var(--red);padding:2px 6px;border-radius:2px;letter-spacing:.1em}
+.nav-grp{padding:8px 0}
+.nav-glabel{font-family:var(--mono);font-size:8px;font-weight:700;color:var(--text3);letter-spacing:.15em;text-transform:uppercase;padding:6px 18px 2px}
+.nav-item{font-family:var(--mono);font-size:11px;font-weight:500;color:var(--text2);padding:9px 18px;cursor:pointer;border-left:3px solid transparent;transition:all .15s;display:flex;align-items:center;gap:9px}
+.nav-item:hover{color:var(--text);background:rgba(255,255,255,.03)}
+.nav-item.active{color:var(--green2);border-left-color:var(--green2);background:rgba(0,208,133,.06)}
+.nav-count{margin-left:auto;font-size:9px;font-weight:700;background:var(--red);color:#fff;padding:1px 6px;border-radius:8px}
+.sb-foot{margin-top:auto;padding:14px 18px;border-top:1px solid var(--border)}
+.sb-email{font-family:var(--mono);font-size:10px;color:var(--text3);margin-bottom:8px;word-break:break-all}
+.sb-time{font-family:var(--mono);font-size:9px;color:var(--text3);margin-bottom:8px}
+.content{margin-left:230px;padding:1.5rem 2rem;min-height:100vh}
+.sec{display:none}.sec.active{display:block}
+.sec-head{margin-bottom:1.5rem;display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.sec-title{font-family:var(--mono);font-size:18px;font-weight:700;color:var(--text)}
+.sec-sub{font-family:var(--mono);font-size:10px;color:var(--text3);margin-top:4px}
+.panel{background:var(--bg2);border:1px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:1.25rem}
+.ph{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;border-bottom:1px solid var(--border);background:var(--bg3);gap:10px;flex-wrap:wrap}
+.pt{font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.1em;color:var(--text2);text-transform:uppercase}
+.pb{padding:16px}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:1.25rem}
+.stat{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:14px 16px}
+.slbl{font-family:var(--mono);font-size:8px;font-weight:700;color:var(--text3);letter-spacing:.12em;text-transform:uppercase;margin-bottom:8px}
+.sval{font-family:var(--mono);font-size:22px;font-weight:700;line-height:1}
+.ssub{font-size:11px;color:var(--text2);margin-top:5px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1.25rem}
+.tbl-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse}
+th{font-family:var(--mono);font-size:8px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.1em;padding:8px 12px;text-align:left;border-bottom:1px solid var(--border);white-space:nowrap}
+td{font-family:var(--mono);font-size:11px;padding:9px 12px;border-bottom:1px solid rgba(255,255,255,.03);vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:rgba(255,255,255,.02)}
+.bx{font-family:var(--mono);font-size:8px;font-weight:700;padding:2px 6px;border-radius:2px;letter-spacing:.05em;display:inline-block}
+.bx-free{background:rgba(255,255,255,.08);color:var(--text2)}
+.bx-pro{background:rgba(61,139,255,.2);color:var(--blue)}
+.bx-enterprise{background:rgba(0,208,133,.15);color:var(--green)}
+.bx-active{background:rgba(0,208,133,.15);color:var(--green)}
+.bx-expired{background:rgba(255,71,87,.15);color:var(--red)}
+.bx-green{background:rgba(0,208,133,.15);color:var(--green)}
+.bx-red{background:rgba(255,71,87,.15);color:var(--red)}
+.bx-amber{background:rgba(255,179,0,.15);color:var(--amber)}
+.action-card{border-left:3px solid var(--amber);background:var(--bg3);border-radius:0 6px 6px 0;padding:12px 14px;margin-bottom:8px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.action-card.crit{border-left-color:var(--red)}
+.action-card.info{border-left-color:var(--blue)}
+.aicon{font-size:20px;flex-shrink:0}
+.atxt{flex:1}
+.atitle{font-family:var(--mono);font-size:12px;font-weight:600;color:var(--text);margin-bottom:3px}
+.adesc{font-size:11px;color:var(--text2);line-height:1.5}
+.atime{font-family:var(--mono);font-size:10px;color:var(--text3);white-space:nowrap}
+.price-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;padding:16px}
+.pc{background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:12px}
+.pcn{font-family:var(--mono);font-size:10px;font-weight:700;color:var(--text2);margin-bottom:2px}
+.pcl{font-size:10px;color:var(--text3);margin-bottom:8px}
+.pir{display:flex;align-items:center;gap:6px}
+.pir span{font-family:var(--mono);font-size:11px;color:var(--text3);flex-shrink:0}
+.pir input{flex:1;padding:6px 8px;font-size:13px;font-weight:700}
+.psave{margin-top:7px;width:100%;padding:5px;font-family:var(--mono);font-size:9px;font-weight:700;background:rgba(0,208,133,.12);color:var(--green);border:1px solid rgba(0,208,133,.2);border-radius:3px;cursor:pointer}
+.psave:hover{background:rgba(0,208,133,.22)}
+.cfg-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:16px}
+.cfg-item{background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:12px}
+.cfg-key{font-family:var(--mono);font-size:9px;font-weight:700;color:var(--text3);letter-spacing:.1em;margin-bottom:4px;text-transform:uppercase}
+.cfg-desc{font-size:11px;color:var(--text2);margin-bottom:8px;line-height:1.4}
+.cfg-save{margin-top:6px;width:100%;padding:4px 10px;font-family:var(--mono);font-size:9px;font-weight:700;background:rgba(0,208,133,.12);color:var(--green);border:1px solid rgba(0,208,133,.2);border-radius:3px;cursor:pointer}
+.cfg-save:hover{background:rgba(0,208,133,.22)}
+.tpl-btn{font-family:var(--mono);font-size:10px;font-weight:600;padding:7px 12px;border-radius:3px;cursor:pointer;background:var(--bg3);border:1px solid var(--border2);color:var(--text2);text-align:left;width:100%;transition:all .15s;margin-bottom:6px;display:flex;align-items:center;gap:8px}
+.tpl-btn:hover{border-color:var(--green);color:var(--green)}
+.sms-area{font-family:var(--mono);font-size:11px;background:var(--bg);border:1px solid var(--border);border-radius:5px;padding:12px;line-height:1.8;color:var(--green);white-space:pre-wrap;min-height:100px;resize:vertical}
+.search-inp{background:var(--bg);border:1px solid var(--border2);color:var(--text);font-family:var(--mono);font-size:11px;padding:6px 10px;border-radius:4px;outline:none;width:220px}
+.search-inp:focus{border-color:var(--green)}
+.row-flex{display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap}
+.row-flex .field{flex:1;margin-bottom:0;min-width:120px}
+.toast{position:fixed;bottom:24px;right:24px;border-radius:6px;padding:12px 20px;font-family:var(--mono);font-size:12px;display:none;z-index:9999;max-width:320px}
+.toast.ok{background:var(--bg3);border:1px solid var(--green);color:var(--green)}
+.toast.fail{background:var(--bg3);border:1px solid var(--red);color:var(--red)}
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--bg4);border-radius:3px}
+@media(max-width:900px){.sidebar{width:190px}.content{margin-left:190px}.stats{grid-template-columns:repeat(2,1fr)}.price-grid,.cfg-grid,.g2,.g3{grid-template-columns:1fr}}
+@media(max-width:600px){.sidebar{display:none}.content{margin-left:0}}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div class="login-wrap" id="loginScreen">
+  <div class="login-box">
+    <div class="logo"><div class="dot"></div>SOKODATA</div>
+    <div class="admin-badge">ADMIN CONTROL CENTER</div>
+    <div class="field"><label>Admin Email</label><input type="email" id="aEmail" placeholder="admin@sokodata.co.ke"/></div>
+    <div class="field"><label>Password</label><input type="password" id="aPass" placeholder="Your Supabase password"/></div>
+    <div class="err" id="loginErr"></div>
+    <button class="btn btn-green btn-full" id="loginBtn">Login to Admin &rarr;</button>
+  </div>
+</div>
+
+<!-- ADMIN -->
+<div class="admin-wrap" id="adminWrap">
+  <div class="sidebar">
+    <div class="sb-logo"><div class="dot"></div>SOKODATA<span class="sb-abadge">ADMIN</span></div>
+    <div class="nav-grp">
+      <div class="nav-glabel">Overview</div>
+      <div class="nav-item active" onclick="go('overview',this)">&#128202; Dashboard</div>
+      <div class="nav-item" onclick="go('actions',this)">&#128276; Pending Actions <span class="nav-count" id="actCount" style="display:none">0</span></div>
+    </div>
+    <div class="nav-grp">
+      <div class="nav-glabel">Clients</div>
+      <div class="nav-item" onclick="go('users',this)">&#128101; Subscribers</div>
+      <div class="nav-item" onclick="go('payments',this)">&#128179; Payments</div>
+      <div class="nav-item" onclick="go('activate',this)">&#9989; Activate Plan</div>
+    </div>
+    <div class="nav-grp">
+      <div class="nav-glabel">Market Data</div>
+      <div class="nav-item" onclick="go('prices',this)">&#128200; Price Editor</div>
+      <div class="nav-item" onclick="go('alerts',this)">&#9888;&#65039; Price Alerts</div>
+    </div>
+    <div class="nav-grp">
+      <div class="nav-glabel">Communicate</div>
+      <div class="nav-item" onclick="go('sms',this)">&#128241; SMS Broadcast</div>
+    </div>
+    <div class="nav-grp">
+      <div class="nav-glabel">Configuration</div>
+      <div class="nav-item" onclick="go('config',this)">&#9881;&#65039; Site Config</div>
+      <div class="nav-item" onclick="go('plans',this)">&#128176; Plan Pricing</div>
+      <div class="nav-item" onclick="go('sources',this)">&#128268; Data Sources</div>
+    </div>
+    <div class="sb-foot">
+      <div class="sb-email" id="sbEmail">-</div>
+      <div class="sb-time" id="sbTime">-</div>
+      <button class="btn btn-outline btn-full" onclick="adminLogout()">Logout</button>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- OVERVIEW -->
+    <div class="sec active" id="s-overview">
+      <div class="sec-head"><div><div class="sec-title">Dashboard</div><div class="sec-sub" id="dashDate">-</div></div><button class="btn btn-outline" onclick="loadAll()">&#8635; Refresh</button></div>
+      <div class="stats">
+        <div class="stat"><div class="slbl">Total Users</div><div class="sval" style="color:var(--green)" id="stTotal">-</div><div class="ssub">All plans</div></div>
+        <div class="stat"><div class="slbl">Pro Subscribers</div><div class="sval" style="color:var(--blue)" id="stPro">-</div><div class="ssub">Paying clients</div></div>
+        <div class="stat"><div class="slbl">Revenue This Month</div><div class="sval" style="color:var(--green)" id="stRev">-</div><div class="ssub">KES</div></div>
+        <div class="stat"><div class="slbl">Exploitation Alerts</div><div class="sval" style="color:var(--red)" id="stAlerts">-</div><div class="ssub">Last 24h</div></div>
+      </div>
+      <div class="g2">
+        <div class="panel"><div class="ph"><span class="pt">Recent Signups</span></div><div class="tbl-wrap"><table><thead><tr><th>Name</th><th>Email</th><th>Plan</th><th>Joined</th></tr></thead><tbody id="recSignups"></tbody></table></div></div>
+        <div class="panel"><div class="ph"><span class="pt">Recent Payments</span></div><div class="tbl-wrap"><table><thead><tr><th>Email</th><th>Plan</th><th>KES</th><th>Date</th></tr></thead><tbody id="recPays"></tbody></table></div></div>
+      </div>
+    </div>
+
+    <!-- ACTIONS -->
+    <div class="sec" id="s-actions">
+      <div class="sec-head"><div><div class="sec-title">Pending Actions</div><div class="sec-sub">Items that need your attention right now</div></div><button class="btn btn-outline" onclick="loadActions()">&#8635; Refresh</button></div>
+      <div id="actionsList"><div style="color:var(--text3);font-family:var(--mono);font-size:12px;padding:20px">Loading...</div></div>
+    </div>
+
+    <!-- USERS -->
+    <div class="sec" id="s-users">
+      <div class="sec-head"><div><div class="sec-title">Subscribers</div><div class="sec-sub" id="userCount">-</div></div><input class="search-inp" placeholder="Search name or email..." oninput="filterUsers(this.value)"/></div>
+      <div class="panel"><div class="tbl-wrap"><table><thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Plan</th><th>Expires</th><th>Joined</th><th>Actions</th></tr></thead><tbody id="usersBody"></tbody></table></div></div>
+    </div>
+
+    <!-- PAYMENTS -->
+    <div class="sec" id="s-payments">
+      <div class="sec-head"><div><div class="sec-title">Payments</div><div class="sec-sub" id="payStats">-</div></div></div>
+      <div class="panel"><div class="tbl-wrap"><table><thead><tr><th>Email</th><th>Plan</th><th>Amount</th><th>M-Pesa Code</th><th>Status</th><th>Paid</th><th>Expires</th></tr></thead><tbody id="payBody"></tbody></table></div></div>
+    </div>
+
+    <!-- ACTIVATE -->
+    <div class="sec" id="s-activate">
+      <div class="sec-head"><div><div class="sec-title">Activate Plan</div><div class="sec-sub">Client pays M-Pesa &rarr; you activate here &rarr; they get access instantly</div></div></div>
+      <div class="g2">
+        <div class="panel"><div class="ph"><span class="pt">Manual Activation</span></div>
+          <div class="pb">
+            <div class="field"><label>Client Email *</label><input type="email" id="actEmail" placeholder="client@email.com"/></div>
+            <div class="row-flex" style="margin-bottom:14px">
+              <div class="field"><label>Plan *</label><select id="actPlan"><option value="pro">Pro - KES 1,499/mo</option><option value="enterprise">Enterprise</option><option value="free">Downgrade to Free</option></select></div>
+              <div class="field"><label>Duration *</label><select id="actDur"><option value="30">1 month</option><option value="90">3 months</option><option value="180">6 months</option><option value="365">1 year</option></select></div>
+            </div>
+            <div class="field"><label>M-Pesa Code</label><input type="text" id="actMpesa" placeholder="QHX4K9ABCD" style="text-transform:uppercase"/></div>
+            <div class="field"><label>Amount Paid (KES)</label><input type="number" id="actAmt" placeholder="1499"/></div>
+            <div class="field"><label>Notes</label><input type="text" id="actNotes" placeholder="Optional notes"/></div>
+            <div class="err" id="actErr"></div>
+            <div class="ok-msg" id="actOk"></div>
+            <button class="btn btn-green" onclick="activatePlan()">&#9989; Activate Plan &rarr;</button>
+          </div>
+        </div>
+        <div class="panel"><div class="ph"><span class="pt">M-Pesa Instructions</span></div>
+          <div class="pb" style="font-size:12px;color:var(--text2);line-height:2">
+            <div style="font-family:var(--mono);font-size:9px;color:var(--text3);margin-bottom:10px;letter-spacing:.1em">STEP BY STEP</div>
+            <div>1. Client goes to sokodata.co.ke/plans</div>
+            <div>2. Clicks "Get Pro"</div>
+            <div>3. Sees your M-Pesa payment details</div>
+            <div>4. Pays and sends you the M-Pesa code</div>
+            <div>5. You enter their email + code here</div>
+            <div>6. Click Activate - they get Pro instantly</div>
+            <br>
+            <div style="font-family:var(--mono);font-size:9px;color:var(--amber);letter-spacing:.1em">YOUR MPESA DETAILS:</div>
+            <div style="font-family:var(--mono);font-size:12px;color:var(--green);margin-top:6px;line-height:1.8" id="mpesaInfo">Set up in Site Config</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PRICES -->
+    <div class="sec" id="s-prices">
+      <div class="sec-head"><div><div class="sec-title">Price Editor</div><div class="sec-sub">Override any price manually. Auto-fetch still runs every 6 hours.</div></div>
+        <div style="display:flex;gap:8px"><button class="btn btn-outline" onclick="loadPrices()">&#8635; Refresh</button><button class="btn btn-green" onclick="showAddPrice()">+ Add Price</button></div>
+      </div>
+      <div class="panel">
+        <div class="ph"><span class="pt">All Prices</span><span style="font-family:var(--mono);font-size:10px;color:var(--text3)" id="priceAge">-</span></div>
+        <div class="price-grid" id="priceGrid"><div style="grid-column:1/-1;text-align:center;padding:24px;color:var(--text3);font-family:var(--mono);font-size:11px">Loading...</div></div>
+      </div>
+      <div class="panel" id="addPricePanel" style="display:none">
+        <div class="ph"><span class="pt">Add New Price</span><button class="btn btn-outline" style="padding:4px 10px;font-size:10px" onclick="document.getElementById('addPricePanel').style.display='none'">Cancel</button></div>
+        <div class="pb">
+          <div class="row-flex">
+            <div class="field"><label>Commodity</label><input type="text" id="npCom" placeholder="Maize (white)"/></div>
+            <div class="field"><label>Location</label><input type="text" id="npLoc" placeholder="Nairobi"/></div>
+            <div class="field"><label>Market Type</label><input type="text" id="npType" placeholder="wholesale"/></div>
+            <div class="field"><label>Price KES/kg</label><input type="number" id="npPrice" placeholder="66"/></div>
+            <div class="field"><label>Source</label><input type="text" id="npSrc" placeholder="KAMIS"/></div>
+          </div>
+          <button class="btn btn-green" onclick="saveNewPrice()">Save Price</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ALERTS -->
+    <div class="sec" id="s-alerts">
+      <div class="sec-head"><div><div class="sec-title">Price Alerts</div><div class="sec-sub">When local price dropped below 80% of benchmark - exploitation detected</div></div></div>
+      <div class="panel"><div class="tbl-wrap"><table><thead><tr><th>Commodity</th><th>Location</th><th>Local Price</th><th>Benchmark</th><th>Gap %</th><th>SMS Sent</th><th>Detected</th></tr></thead><tbody id="alertsBody"></tbody></table></div></div>
+    </div>
+
+    <!-- SMS -->
+    <div class="sec" id="s-sms">
+      <div class="sec-head"><div><div class="sec-title">SMS Broadcast</div><div class="sec-sub">Send price updates directly to farmers and traders</div></div></div>
+      <div class="g2">
+        <div class="panel"><div class="ph"><span class="pt">Compose</span></div>
+          <div class="pb" style="display:flex;flex-direction:column;gap:12px">
+            <div class="field"><label>Send To</label><select id="smsTo"><option value="all">All subscribers</option><option value="pro">Pro only</option><option value="free">Free plan only</option></select></div>
+            <div class="field"><label>Message</label><textarea id="smsMsg" class="sms-area" rows="6" oninput="updateSmsCount()" placeholder="Type your message here..."></textarea></div>
+            <div style="font-family:var(--mono);font-size:10px;color:var(--text3)" id="smsCount">0 chars</div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap">
+              <button class="btn btn-green" onclick="sendSMS()">Send SMS &rarr;</button>
+              <button class="btn btn-outline" onclick="clearSMS()">Clear</button>
+            </div>
+          </div>
+        </div>
+        <div class="panel"><div class="ph"><span class="pt">Quick Templates</span></div>
+          <div class="pb">
+            <button class="tpl-btn" onclick="loadTpl('prices')">&#128202; Daily price update</button>
+            <button class="tpl-btn" onclick="loadTpl('alert')">&#9888;&#65039; Exploitation alert</button>
+            <button class="tpl-btn" onclick="loadTpl('promo')">&#127919; Pro plan promotion</button>
+            <button class="tpl-btn" onclick="loadTpl('forex')">&#128178; Forex update</button>
+            <button class="tpl-btn" onclick="loadTpl('arb')">&#128230; Arbitrage opportunity</button>
+            <button class="tpl-btn" onclick="loadTpl('livestock')">&#128004; Livestock prices</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CONFIG -->
+    <div class="sec" id="s-config">
+      <div class="sec-head"><div><div class="sec-title">Site Configuration</div><div class="sec-sub">Edit website settings. Changes apply instantly to your live site.</div></div><button class="btn btn-green" onclick="saveAllCfg()">&#128190; Save All</button></div>
+      <div class="panel"><div class="ph"><span class="pt">Business Settings</span></div><div class="cfg-grid" id="cfgGrid"><div style="grid-column:1/-1;text-align:center;padding:20px;color:var(--text3);font-family:var(--mono);font-size:11px">Loading...</div></div></div>
+    </div>
+
+    <!-- PLANS -->
+    <div class="sec" id="s-plans">
+      <div class="sec-head"><div><div class="sec-title">Plan Pricing</div><div class="sec-sub">Update subscription prices shown to clients on the website</div></div></div>
+      <div class="g3">
+        <div class="panel"><div class="ph"><span class="pt">Free Plan</span></div><div class="pb">
+          <div class="field"><label>Features (one per line)</label><textarea id="ffree" rows="6">Nairobi daily prices
+Maize, beans, tea
+7-day price trend
+1 SMS alert/week</textarea></div>
+          <button class="btn btn-outline" onclick="toast('Free plan saved')">Save</button>
+        </div></div>
+        <div class="panel"><div class="ph"><span class="pt">Pro Plan</span></div><div class="pb">
+          <div class="field"><label>Monthly Price (KES)</label><input type="number" id="pricePro" value="1499"/></div>
+          <div class="field"><label>Annual Price (KES)</label><input type="number" id="priceProY" value="14990"/></div>
+          <div class="field"><label>Features (one per line)</label><textarea id="fpro" rows="5">All Free features
+Live forex - 8 currencies
+Full commodity matrix
+Somalia data
+Arbitrage alerts
+Unlimited SMS</textarea></div>
+          <button class="btn btn-green" onclick="toast('Pro plan saved')">Save Pro</button>
+        </div></div>
+        <div class="panel"><div class="ph"><span class="pt">Enterprise Plan</span></div><div class="pb">
+          <div class="field"><label>Contact Email</label><input type="email" id="entEmail" value="sales@sokodata.co.ke"/></div>
+          <div class="field"><label>Features (one per line)</label><textarea id="fent" rows="5">Everything in Pro
+Full REST API
+White-label SMS
+Custom alerts
+Dedicated analyst</textarea></div>
+          <button class="btn btn-outline" onclick="toast('Enterprise plan saved')">Save</button>
+        </div></div>
+      </div>
+    </div>
+
+    <!-- SOURCES -->
+    <div class="sec" id="s-sources">
+      <div class="sec-head"><div><div class="sec-title">Data Sources</div><div class="sec-sub">Status of all live data connections</div></div></div>
+      <div class="panel"><div class="tbl-wrap"><table><thead><tr><th>Source</th><th>Data Type</th><th>Status</th><th>Last Fetch</th><th>Frequency</th><th>Cost</th></tr></thead><tbody id="srcBody"></tbody></table></div></div>
+      <div class="panel"><div class="ph"><span class="pt">API Keys (stored securely in Supabase)</span></div>
+        <div class="pb">
+          <div class="row-flex">
+            <div class="field"><label>Commodities API Key</label><input type="password" id="commKey" placeholder="Enter to update..."/></div>
+            <div class="field"><label>Africa's Talking API Key</label><input type="password" id="atKey" placeholder="Enter to update..."/></div>
+          </div>
+          <div style="font-family:var(--mono);font-size:10px;color:var(--amber);margin-bottom:10px">Keys are stored in Supabase secrets via CLI - never exposed to clients</div>
+          <button class="btn btn-outline" onclick="toast('To update API keys, use: supabase secrets set KEY=value in your terminal')">How to Update Keys</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="toast" id="toastEl"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script>
+// ╔═══════════════════════════════════════════╗
+// ║  CHANGE THESE 3 LINES BEFORE USING       ║
+// ╚═══════════════════════════════════════════╝
+const SB_URL    = 'https://mbwvwiqktikzflkfqiph.supabase.co'
+const SB_ANON   = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1id3Z3aXFrdGlremZsa2ZxaXBoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM0Nzk1NTQsImV4cCI6MjA4OTA1NTU1NH0.dJQqJUCwheblZyqh_83aALJSWIq6WiY5QpBEYT6HUeo'
+const ADM_EMAIL = 'sharifabdi735@gmail.com'
+
+const sb = supabase.createClient(SB_URL, SB_ANON)
+
+// clock
+setInterval(()=>{
+  const eat = new Date(Date.now()+3*3600000)
+  document.getElementById('sbTime').textContent = eat.toISOString().slice(11,19)+' EAT'
+},1000)
+
+// auth
+async function checkSess(){
+  const {data}=await sb.auth.getSession()
+  if(data.session&&data.session.user.email===ADM_EMAIL){showAdmin(data.session.user.email);loadAll()}
+}
+document.getElementById('loginBtn').addEventListener('click',async()=>{
+  const btn=document.getElementById('loginBtn')
+  const email=document.getElementById('aEmail').value.trim()
+  const pass=document.getElementById('aPass').value
+  const err=document.getElementById('loginErr')
+  if(email!==ADM_EMAIL){err.textContent='Access denied - not admin account';return}
+  btn.disabled=true;btn.textContent='Logging in...'
+  const {error}=await sb.auth.signInWithPassword({email,password:pass})
+  if(error){err.textContent=error.message;btn.disabled=false;btn.textContent='Login to Admin →'}
+  else{showAdmin(email);loadAll()}
+})
+document.getElementById('aPass').addEventListener('keydown',e=>{if(e.key==='Enter')document.getElementById('loginBtn').click()})
+function showAdmin(email){
+  document.getElementById('loginScreen').style.display='none'
+  document.getElementById('adminWrap').style.display='block'
+  document.getElementById('sbEmail').textContent=email
+  document.getElementById('dashDate').textContent=new Date().toLocaleDateString('en-KE',{weekday:'long',year:'numeric',month:'long',day:'numeric'})
+}
+async function adminLogout(){await sb.auth.signOut();location.reload()}
+
+// nav
+function go(id,el){
+  document.querySelectorAll('.sec').forEach(s=>s.classList.remove('active'))
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'))
+  document.getElementById('s-'+id)?.classList.add('active')
+  el?.classList.add('active')
+  const loaders={users:loadUsers,payments:loadPayments,prices:loadPrices,alerts:loadAlerts,actions:loadActions,config:loadConfig,sources:loadSources,activate:loadActivate}
+  loaders[id]?.()
+}
+
+async function loadAll(){loadOverview();loadActions()}
+
+async function loadOverview(){
+  const[{count:total},{count:pro},alertsR,paysR,recentR,recentPayR]=await Promise.all([
+    sb.from('users').select('*',{count:'exact',head:true}),
+    sb.from('users').select('*',{count:'exact',head:true}).eq('plan','pro'),
+    sb.from('alerts_log').select('*',{count:'exact',head:true}).gte('created_at',new Date(Date.now()-86400000).toISOString()),
+    sb.from('subscriptions').select('amount_kes').eq('status','active').gte('paid_at',new Date(new Date().setDate(1)).toISOString()),
+    sb.from('users').select('full_name,email,plan,created_at').order('created_at',{ascending:false}).limit(6),
+    sb.from('subscriptions').select('amount_kes,plan,paid_at,users(email)').order('paid_at',{ascending:false}).limit(6),
+  ])
+  document.getElementById('stTotal').textContent=total??0
+  document.getElementById('stPro').textContent=pro??0
+  document.getElementById('stAlerts').textContent=alertsR.count??0
+  const rev=(paysR.data||[]).reduce((s,p)=>s+(p.amount_kes||0),0)
+  document.getElementById('stRev').textContent='KES '+rev.toLocaleString()
+  document.getElementById('recSignups').innerHTML=(recentR.data||[]).length
+    ?(recentR.data).map(u=>`<tr><td>${u.full_name||'-'}</td><td>${u.email}</td><td><span class="bx bx-${u.plan||'free'}">${(u.plan||'FREE').toUpperCase()}</span></td><td>${new Date(u.created_at).toLocaleDateString('en-KE')}</td></tr>`).join('')
+    :'<tr><td colspan="4" style="text-align:center;color:var(--text3);padding:16px">No signups yet</td></tr>'
+  document.getElementById('recPays').innerHTML=(recentPayR.data||[]).length
+    ?(recentPayR.data).map(p=>`<tr><td>${p.users?.email||'-'}</td><td><span class="bx bx-${p.plan}">${(p.plan||'').toUpperCase()}</span></td><td style="color:var(--green)">KES ${(p.amount_kes||0).toLocaleString()}</td><td>${new Date(p.paid_at).toLocaleDateString('en-KE')}</td></tr>`).join('')
+    :'<tr><td colspan="4" style="text-align:center;color:var(--text3);padding:16px">No payments yet</td></tr>'
+}
+
+async function loadActions(){
+  const acts=[]
+  const[{data:expUsers},{data:unsent},{data:fxRow},{count:priceCount}]=await Promise.all([
+    sb.from('users').select('email,plan_expires_at').eq('plan','pro').lt('plan_expires_at',new Date().toISOString()),
+    sb.from('alerts_log').select('*').eq('sms_sent',false).order('created_at',{ascending:false}).limit(5),
+    sb.from('forex_cache').select('fetched_at').eq('id','latest').single(),
+    sb.from('prices').select('*',{count:'exact',head:true}),
+  ])
+  if(expUsers?.length)expUsers.forEach(u=>acts.push({type:'warn',icon:'&#9200;',title:`Expired plan: ${u.email}`,desc:`Plan expired ${new Date(u.plan_expires_at).toLocaleDateString('en-KE')}. Contact client to renew.`,time:new Date(u.plan_expires_at).toLocaleDateString('en-KE'),action:`<button class="btn btn-outline" style="padding:4px 10px;font-size:10px" onclick="quickAct('${u.email}')">Renew &rarr;</button>`}))
+  if(unsent?.length)acts.push({type:'crit',icon:'&#9888;&#65039;',title:`${unsent.length} exploitation alert${unsent.length>1?'s':''} - SMS not sent`,desc:unsent.map(a=>`${a.commodity} @ ${a.location}: ${a.gap_percent?.toFixed(1)}% below benchmark`).join(' | '),time:'Now',action:`<button class="btn btn-red" style="padding:4px 10px;font-size:10px" onclick="go('sms',null)">Send Alert &rarr;</button>`})
+  if(fxRow){const h=(Date.now()-new Date(fxRow.fetched_at))/3600000;if(h>8)acts.push({type:'info',icon:'&#128178;',title:'Forex rates are stale',desc:`Last updated ${h.toFixed(0)} hours ago. Edge Function may not be running.`,time:`${h.toFixed(0)}h ago`,action:`<button class="btn btn-outline" style="padding:4px 10px;font-size:10px" onclick="go('sources',null)">Check &rarr;</button>`})}
+  if(!priceCount)acts.push({type:'crit',icon:'&#128200;',title:'No live prices in database',desc:'Deploy the fetch-prices Edge Function in Supabase to start auto-fetching.',time:'Setup needed',action:`<button class="btn btn-outline" style="padding:4px 10px;font-size:10px" onclick="go('sources',null)">View Sources &rarr;</button>`})
+  const el=document.getElementById('actionsList')
+  const cnt=acts.length
+  const cEl=document.getElementById('actCount')
+  cEl.textContent=cnt;cEl.style.display=cnt?'inline-block':'none'
+  el.innerHTML=cnt?acts.map(a=>`<div class="action-card ${a.type}"><div class="aicon">${a.icon}</div><div class="atxt"><div class="atitle">${a.title}</div><div class="adesc">${a.desc}</div></div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px"><div class="atime">${a.time}</div>${a.action||''}</div></div>`).join('')
+    :'<div class="action-card info"><div class="aicon">&#9989;</div><div class="atxt"><div class="atitle">All clear</div><div class="adesc">No pending actions.</div></div></div>'
+}
+function quickAct(email){go('activate',null);document.getElementById('actEmail').value=email}
+
+let _users=[]
+async function loadUsers(){
+  const{data}=await sb.from('users').select('*').order('created_at',{ascending:false})
+  _users=data||[]
+  document.getElementById('userCount').textContent=`${_users.length} total users`
+  renderUsers(_users)
+}
+function renderUsers(list){
+  const tb=document.getElementById('usersBody')
+  if(!list.length){tb.innerHTML='<tr><td colspan="7" style="text-align:center;color:var(--text3);padding:20px">No users found</td></tr>';return}
+  tb.innerHTML=list.map(u=>{const exp=u.plan_expires_at&&new Date(u.plan_expires_at)<new Date();return`<tr><td>${u.full_name||'-'}</td><td>${u.email}</td><td>${u.phone||'-'}</td><td><span class="bx bx-${u.plan||'free'}">${(u.plan||'FREE').toUpperCase()}</span></td><td style="color:${exp?'var(--red)':'var(--text2)'}">${u.plan_expires_at?new Date(u.plan_expires_at).toLocaleDateString('en-KE'):'-'}</td><td>${new Date(u.created_at).toLocaleDateString('en-KE')}</td><td style="display:flex;gap:5px"><button onclick="quickAct('${u.email}')" style="font-family:var(--mono);font-size:9px;padding:3px 7px;background:rgba(0,208,133,.12);color:var(--green);border:1px solid rgba(0,208,133,.2);border-radius:2px;cursor:pointer">Activate</button></td></tr>`}).join('')
+}
+function filterUsers(q){renderUsers(_users.filter(u=>(u.email+' '+(u.full_name||'')).toLowerCase().includes(q.toLowerCase())))}
+
+async function loadPayments(){
+  const{data}=await sb.from('subscriptions').select('*,users(email)').order('paid_at',{ascending:false}).limit(100)
+  const tot=(data||[]).reduce((s,p)=>s+(p.amount_kes||0),0)
+  document.getElementById('payStats').textContent=`Total collected: KES ${tot.toLocaleString()}`
+  const tb=document.getElementById('payBody')
+  if(!data?.length){tb.innerHTML='<tr><td colspan="7" style="text-align:center;color:var(--text3);padding:20px">No payments yet</td></tr>';return}
+  tb.innerHTML=data.map(p=>`<tr><td>${p.users?.email||'-'}</td><td><span class="bx bx-${p.plan}">${(p.plan||'').toUpperCase()}</span></td><td style="color:var(--green);font-weight:700">KES ${(p.amount_kes||0).toLocaleString()}</td><td style="color:var(--amber)">${p.mpesa_code||'-'}</td><td><span class="bx bx-${p.status==='active'?'active':'expired'}">${(p.status||'').toUpperCase()}</span></td><td>${p.paid_at?new Date(p.paid_at).toLocaleDateString('en-KE'):'-'}</td><td>${p.expires_at?new Date(p.expires_at).toLocaleDateString('en-KE'):'-'}</td></tr>`).join('')
+}
+
+function loadActivate(){
+  sb.from('site_config').select('key,value').in('key',['mpesa_paybill','mpesa_name','whatsapp_number']).then(({data})=>{
+    if(!data)return
+    const m={};data.forEach(r=>m[r.key]=r.value)
+    document.getElementById('mpesaInfo').innerHTML=`Paybill/Till: <b>${m.mpesa_paybill||'Not set'}</b><br>Name: <b>${m.mpesa_name||'Not set'}</b><br>WhatsApp: <b>${m.whatsapp_number||'Not set'}</b>`
+  })
+}
+
+async function activatePlan(){
+  const email=document.getElementById('actEmail').value.trim()
+  const plan=document.getElementById('actPlan').value
+  const days=parseInt(document.getElementById('actDur').value)
+  const mpesa=document.getElementById('actMpesa').value.trim().toUpperCase()
+  const amt=parseInt(document.getElementById('actAmt').value)||0
+  const err=document.getElementById('actErr')
+  const ok=document.getElementById('actOk')
+  err.textContent='';ok.textContent=''
+  if(!email){err.textContent='Enter client email';return}
+  const{data:user}=await sb.from('users').select('id').eq('email',email).single()
+  if(!user){err.textContent='User not found - they must sign up on the website first';return}
+  const exp=new Date(Date.now()+days*86400000).toISOString()
+  const{error}=await sb.from('users').update({plan,plan_expires_at:exp}).eq('id',user.id)
+  if(error){err.textContent=error.message;return}
+  if(amt>0)await sb.from('subscriptions').insert({user_id:user.id,plan,amount_kes:amt,mpesa_code:mpesa||null,status:'active',paid_at:new Date().toISOString(),expires_at:exp})
+  ok.textContent=`Plan activated for ${email} - ${plan.toUpperCase()} for ${days} days`
+  document.getElementById('actEmail').value=''
+  document.getElementById('actMpesa').value=''
+  document.getElementById('actAmt').value=''
+  toast(`Plan activated for ${email}`)
+  loadOverview();loadActions()
+}
+
+async function loadPrices(){
+  const{data}=await sb.from('prices').select('*').order('fetched_at',{ascending:false}).limit(40)
+  const grid=document.getElementById('priceGrid')
+  if(!data?.length){grid.innerHTML='<div style="grid-column:1/-1;text-align:center;padding:24px;color:var(--text3);font-family:var(--mono);font-size:11px">No prices yet. Add manually or deploy the Edge Function.</div>';return}
+  const seen=new Set()
+  const latest=data.filter(r=>{const k=r.commodity+':'+r.location;if(seen.has(k))return false;seen.add(k);return true})
+  if(latest[0])document.getElementById('priceAge').textContent='Updated '+ago(latest[0].fetched_at)
+  grid.innerHTML=latest.map(p=>`<div class="pc"><div class="pcn">${p.commodity}</div><div class="pcl">${p.location} - ${p.market_type||'-'}</div><div class="pir"><span>KES</span><input type="number" id="pi-${p.id}" value="${p.price_kes}" step="0.01"/></div><div style="font-family:var(--mono);font-size:9px;color:var(--text3);margin-top:4px">${p.source||'-'}</div><button class="psave" onclick="saveP('${p.id}','${p.commodity}','${p.location}')">Save</button></div>`).join('')
+}
+async function saveP(id,com,loc){
+  const v=parseFloat(document.getElementById('pi-'+id).value)
+  if(isNaN(v))return
+  const{error}=await sb.from('prices').update({price_kes:v,source:'Admin manual',fetched_at:new Date().toISOString()}).eq('id',id)
+  error?toast('Error: '+error.message,true):toast(`${com} (${loc}) updated to KES ${v}`)
+}
+function showAddPrice(){document.getElementById('addPricePanel').style.display='block'}
+async function saveNewPrice(){
+  const com=document.getElementById('npCom').value.trim()
+  const loc=document.getElementById('npLoc').value.trim()
+  const pr=parseFloat(document.getElementById('npPrice').value)
+  if(!com||!loc||isNaN(pr)){toast('Fill in commodity, location and price',true);return}
+  const{error}=await sb.from('prices').insert({commodity:com,location:loc,market_type:document.getElementById('npType').value.trim(),price_kes:pr,source:document.getElementById('npSrc').value.trim(),fetched_at:new Date().toISOString()})
+  if(error){toast('Error: '+error.message,true);return}
+  toast(`Added ${com} @ ${loc} KES ${pr}`)
+  document.getElementById('addPricePanel').style.display='none'
+  loadPrices()
+}
+
+async function loadAlerts(){
+  const{data}=await sb.from('alerts_log').select('*').order('created_at',{ascending:false}).limit(50)
+  const tb=document.getElementById('alertsBody')
+  if(!data?.length){tb.innerHTML='<tr><td colspan="7" style="text-align:center;color:var(--text3);padding:20px">No alerts recorded</td></tr>';return}
+  tb.innerHTML=data.map(a=>`<tr><td style="font-weight:600">${a.commodity}</td><td>${a.location}</td><td style="color:var(--red)">KES ${a.local_price}</td><td>KES ${a.benchmark_price}</td><td style="color:var(--red);font-weight:700">-${a.gap_percent?.toFixed(1)}%</td><td><span class="bx ${a.sms_sent?'bx-green':'bx-red'}">${a.sms_sent?'SENT':'UNSENT'}</span></td><td>${new Date(a.created_at).toLocaleDateString('en-KE')}</td></tr>`).join('')
+}
+
+const tpls={prices:`SOKODATA DAILY PRICES ${new Date().toLocaleDateString('en-KE')}
+Maize Nairobi: KES 66/kg
+Beans Nairobi: KES 115/kg
+Coffee AA: KES 637/kg
+Tea leaf: KES 24/kg
+More: sokodata.co.ke`,alert:`SOKODATA ALERT
+Exploitation risk detected in your area.
+Local prices are below fair market price.
+Do not sell below benchmark price.
+Details: sokodata.co.ke`,promo:`SOKODATA PRO PLAN
+Get live prices, forex & alerts.
+KES 1,499/month only.
+Sign up: sokodata.co.ke`,forex:`SOKODATA FOREX ${new Date().toLocaleDateString('en-KE')}
+USD/KES: 129.40
+EUR/KES: 140.22
+USD/UGX: 3,710
+Rates: sokodata.co.ke`,arb:`SOKODATA OPPORTUNITY
+Maize arbitrage active:
+Buy Kakamega KES 36/kg
+Sell Mandera KES 94/kg
+Net: KES 34/kg
+Details: sokodata.co.ke`,livestock:`SOKODATA LIVESTOCK
+Nairobi cattle: KES 320-336/kg
+Garissa goat: KES 380-420
+Wajir: prices LOW, hold
+sokodata.co.ke`}
+function loadTpl(k){document.getElementById('smsMsg').value=tpls[k]||'';updateSmsCount()}
+function updateSmsCount(){const l=document.getElementById('smsMsg').value.length;document.getElementById('smsCount').textContent=`${l} chars - ${Math.ceil(l/160)} SMS unit${l>160?'s':''}`}
+function clearSMS(){document.getElementById('smsMsg').value='';updateSmsCount()}
+function sendSMS(){const m=document.getElementById('smsMsg').value;if(!m){toast('Write a message first',true);return}toast('Connect Africas Talking API to send. Message ready: '+m.length+' chars')}
+
+const CFG_DEFS=[
+  {key:'site_name',label:'Site Name',desc:'Shown in browser tab and header',val:'SokoData'},
+  {key:'site_url',label:'Website URL',desc:'Your live domain',val:'https://sokodata.co.ke'},
+  {key:'support_email',label:'Support Email',desc:'Shown on plans page',val:'support@sokodata.co.ke'},
+  {key:'whatsapp_number',label:'WhatsApp Number',desc:'For payment confirmations',val:'+254700000000'},
+  {key:'mpesa_paybill',label:'M-Pesa Paybill/Till',desc:'Clients send money here',val:'Enter your number'},
+  {key:'mpesa_name',label:'M-Pesa Account Name',desc:'Name on M-Pesa receipt',val:'SOKODATA'},
+  {key:'sms_sender_id',label:'SMS Sender ID',desc:'Name shown on SMS',val:'SOKODATA'},
+  {key:'exploit_thresh',label:'Exploitation Threshold %',desc:'Alert when price below this % of benchmark',val:'80'},
+  {key:'fetch_interval',label:'Price Fetch Interval (hours)',desc:'How often prices auto-update',val:'6'},
+  {key:'free_sms_limit',label:'Free Plan SMS Limit/week',desc:'Max SMS for free users per week',val:'1'},
+]
+async function loadConfig(){
+  const{data}=await sb.from('site_config').select('*')
+  const m={};(data||[]).forEach(r=>m[r.key]=r.value)
+  document.getElementById('cfgGrid').innerHTML=CFG_DEFS.map(c=>`<div class="cfg-item"><div class="cfg-key">${c.key}</div><div class="cfg-desc">${c.desc}</div><input class="cfg-val" id="cfg-${c.key}" type="text" value="${m[c.key]||c.val}"/><button class="cfg-save" onclick="saveCfg('${c.key}')">Save</button></div>`).join('')
+}
+async function saveCfg(key){
+  const val=document.getElementById('cfg-'+key)?.value
+  const{error}=await sb.from('site_config').upsert({key,value:val})
+  error?toast('Error: '+error.message,true):toast(key+' saved')
+}
+async function saveAllCfg(){
+  for(const c of CFG_DEFS){const v=document.getElementById('cfg-'+c.key)?.value;if(v!==undefined)await sb.from('site_config').upsert({key:c.key,value:v})}
+  toast('All configuration saved')
+}
+
+async function loadSources(){
+  const[{data:fx},{data:pr}]=await Promise.all([
+    sb.from('forex_cache').select('fetched_at,source').eq('id','latest').single(),
+    sb.from('prices').select('fetched_at,source').order('fetched_at',{ascending:false}).limit(1).single(),
+  ])
+  const srcs=[
+    {name:'ExchangeRate-API',type:'Forex rates',ok:!!fx,age:fx?.fetched_at,freq:'Every 6h',cost:'Free'},
+    {name:'Commodities-API',type:'CORN, COFFEE, TEA',ok:!!pr,age:pr?.fetched_at,freq:'Every 6h',cost:'$9/mo'},
+    {name:'KAMIS (Kenya MoA)',type:'Local market prices',ok:false,age:null,freq:'Daily',cost:'Free'},
+    {name:'FEWS NET',type:'Food security data',ok:false,age:null,freq:'Monthly',cost:'Free'},
+    {name:"Africa's Talking",type:'SMS delivery',ok:false,age:null,freq:'On demand',cost:'KES 0.80/SMS'},
+    {name:'World Bank',type:'Global benchmarks',ok:true,age:null,freq:'Monthly',cost:'Free'},
+  ]
+  document.getElementById('srcBody').innerHTML=srcs.map(s=>`<tr><td style="font-weight:600">${s.name}</td><td style="color:var(--text2)">${s.type}</td><td><span class="bx ${s.ok?'bx-green':'bx-red'}">${s.ok?'CONNECTED':'NOT CONNECTED'}</span></td><td style="color:var(--text2)">${s.age?ago(s.age):'-'}</td><td style="color:var(--text3)">${s.freq}</td><td style="color:var(--text3)">${s.cost}</td></tr>`).join('')
+}
+
+function ago(iso){if(!iso)return'-';const m=Math.floor((Date.now()-new Date(iso))/60000);if(m<60)return m+'m ago';if(m<1440)return Math.floor(m/60)+'h ago';return Math.floor(m/1440)+'d ago'}
+function toast(msg,isErr=false){const t=document.getElementById('toastEl');t.textContent=msg;t.className='toast '+(isErr?'fail':'ok');t.style.display='block';clearTimeout(t._t);t._t=setTimeout(()=>t.style.display='none',3500)}
+
+checkSess()
+</script>
+</body>
+</html>
