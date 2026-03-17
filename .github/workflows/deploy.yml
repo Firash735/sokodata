@@ -1,73 +1,24 @@
-# .github/workflows/deploy.yml
-# Simple, reliable CI/CD — no external package dependencies
-
-name: SokoData CI/CD
+name: Deploy to GitHub Pages
 
 on:
   push:
-    branches: ['**']
-  pull_request:
-    branches: [main, staging]
+    branches: [main]
 
 jobs:
-  validate:
-    name: Validate — no broken code reaches clients
+  deploy:
     runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '24'
-
-      - name: Check JS syntax
-        run: |
-          echo "Checking JavaScript files..."
-          ALL_OK=true
-          for f in frontend/js/*.js; do
-            if node --check "$f" 2>&1; then
-              echo "✓ $f"
-            else
-              echo "✗ ERROR in $f"
-              ALL_OK=false
-            fi
-          done
-          if [ "$ALL_OK" = false ]; then exit 1; fi
-          echo "All JS files OK"
-
-      - name: Check required files exist
-        run: |
-          echo "Checking required files..."
-          for f in "frontend/index.html" "frontend/css/styles.css" "frontend/js/config.js" "frontend/js/app.js" "supabase/migrations/001_initial_schema.sql"; do
-            if [ -f "$f" ]; then echo "✓ $f"; else echo "✗ MISSING: $f"; exit 1; fi
-          done
-
-      - name: Check no hardcoded secrets
-        run: |
-          if grep -rn "sk_live_\|AIzaSy\|sbp_\|ghp_" frontend/js/ 2>/dev/null; then
-            echo "Secret key found in code — move to environment variables"; exit 1
-          fi
-          echo "✓ No hardcoded secrets"
-
-      - name: All checks passed
-        run: echo "✅ Safe to deploy"
-
-  deploy-production:
-    name: Deploy → sokodata.co.ke
-    runs-on: ubuntu-latest
-    needs: validate
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
-      - name: Deploy to Vercel
-        uses: amondnet/vercel-action@v25
+      - uses: actions/configure-pages@v4
+      - uses: actions/upload-pages-artifact@v3
         with:
-          vercel-token:      ${{ secrets.VERCEL_TOKEN }}
-          vercel-org-id:     ${{ secrets.VERCEL_ORG_ID }}
-          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
-          vercel-args:       '--prod'
-          working-directory: ./frontend
-        continue-on-error: true
-      - run: echo "🚀 Deployed at $(date)"
+          path: frontend
+      - uses: actions/deploy-pages@v4
+        id: deployment
