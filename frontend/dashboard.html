@@ -1,76 +1,900 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <link rel="icon" type="image/x-icon" href="favicon.ico" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SokoData — East Africa Market Intelligence</title>
-  <link rel="stylesheet" href="css/styles.css" />
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>SokoData — Live Market Dashboard</title>
+<link rel="icon" type="image/x-icon" href="favicon.ico"/>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,400&family=Plus+Jakarta+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --tiber:#042820;--tiber-mid:#0a3d30;--tiber-light:#0d4d3c;--tiber-border:#0f5a46;
+  --husk:#b7a25e;--husk-l:#cdbf85;--husk-d:#9a8445;
+  --sanjuan:#35556e;--sanjuan-l:#4a6d8a;
+  --cherry:#74070e;--cherry-l:#c0101b;
+  --curious:#2092e9;
+  --mulled:#614d70;
+  --cream:#f5f0e8;--text2:#a8c4b8;--text3:#5a8070;--text4:#3d5e58;
+  --border:rgba(183,162,94,0.1);--border2:rgba(183,162,94,0.18);
+  --sans:"Plus Jakarta Sans",sans-serif;
+  --serif:"Fraunces",serif;
+  --mono:"DM Mono",monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--sans);background:var(--tiber);color:var(--cream);min-height:100vh;overflow-x:hidden;cursor:none}
+
+/* CURSOR */
+.cursor{position:fixed;width:7px;height:7px;background:var(--husk);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:transform .1s}
+.cursor-ring{position:fixed;width:26px;height:26px;border:1px solid rgba(183,162,94,0.4);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:all .15s ease}
+
+/* NAV */
+.nav{position:sticky;top:0;z-index:100;height:56px;padding:0 1.5rem;display:flex;align-items:center;justify-content:space-between;background:rgba(4,40,32,0.96);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);gap:12px}
+.nav-logo{display:flex;align-items:center;gap:10px;font-family:var(--mono);font-size:14px;font-weight:500;color:var(--husk);letter-spacing:0.08em;text-decoration:none;flex-shrink:0}
+.nav-tabs{display:flex;gap:0;flex:1;overflow-x:auto}
+.nav-tab{font-family:var(--mono);font-size:10px;font-weight:500;color:var(--text3);padding:0 14px;height:56px;display:flex;align-items:center;cursor:none;border:none;background:none;border-bottom:2px solid transparent;transition:all .15s;letter-spacing:0.06em;text-transform:uppercase;white-space:nowrap}
+.nav-tab:hover{color:var(--text2)}
+.nav-tab.active{color:var(--husk);border-bottom-color:var(--husk)}
+.nav-right{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.nav-time{font-family:var(--mono);font-size:11px;color:var(--text4)}
+.nav-plan{font-family:var(--mono);font-size:9px;font-weight:500;padding:3px 8px;border-radius:3px;letter-spacing:0.08em}
+.plan-free{background:rgba(255,255,255,.06);color:var(--text3)}
+.plan-pro{background:rgba(183,162,94,.15);color:var(--husk);border:1px solid rgba(183,162,94,.25)}
+.btn{font-family:var(--mono);font-size:10px;font-weight:600;padding:6px 14px;border-radius:4px;cursor:none;border:none;transition:all .15s;letter-spacing:0.05em}
+.btn-primary{background:var(--husk);color:var(--tiber)}
+.btn-primary:hover{background:var(--husk-l)}
+.btn-ghost{background:transparent;color:var(--text2);border:1px solid var(--border2)}
+.btn-ghost:hover{border-color:var(--husk);color:var(--husk)}
+
+/* TICKER */
+.ticker-wrap{height:34px;overflow:hidden;background:var(--tiber-mid);border-bottom:1px solid var(--border);display:flex;align-items:center}
+.ticker-badge{font-family:var(--mono);font-size:9px;font-weight:500;color:var(--tiber);background:var(--husk);padding:0 14px;height:100%;display:flex;align-items:center;letter-spacing:0.12em;flex-shrink:0;border-right:1px solid var(--border)}
+.ticker-scroll{overflow:hidden;flex:1}
+.ticker-track{display:flex;white-space:nowrap;animation:ticker 50s linear infinite}
+.ticker-track:hover{animation-play-state:paused}
+.t-item{font-family:var(--mono);font-size:11px;color:var(--text3);padding:0 20px;display:flex;align-items:center;gap:7px}
+.t-sym{color:var(--text4);font-size:10px}
+.t-val{color:var(--cream);font-weight:500}
+.t-up{color:var(--husk);font-size:10px}
+.t-dn{color:var(--cherry-l);font-size:10px}
+@keyframes ticker{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+
+/* MAIN LAYOUT */
+#appMain{padding:0}
+.page{display:none}.page.active{display:block}
+
+/* ZONE 1 — THE ANSWER */
+.zone1{background:var(--tiber-mid);border-bottom:1px solid var(--border);padding:1.25rem 1.5rem}
+.zone1-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem}
+.zone1-title{font-family:var(--mono);font-size:9px;font-weight:500;color:var(--text4);letter-spacing:0.14em;text-transform:uppercase;display:flex;align-items:center;gap:8px}
+.zone1-title::before{content:"";width:16px;height:1px;background:var(--husk)}
+.zone1-sub{font-family:var(--mono);font-size:10px;color:var(--text4)}
+.answer-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.answer-card{background:var(--tiber);border:1px solid var(--border);border-radius:10px;padding:14px 16px;position:relative;overflow:hidden;transition:border-color .2s,transform .2s;cursor:none}
+.answer-card:hover{border-color:var(--border2);transform:translateY(-2px)}
+.answer-card.sell{border-left:3px solid var(--husk)}
+.answer-card.hold{border-left:3px solid var(--sanjuan)}
+.answer-card.alert{border-left:3px solid var(--cherry-l)}
+.ac-commodity{font-family:var(--mono);font-size:9px;font-weight:500;color:var(--text3);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:6px}
+.ac-location{font-size:11px;color:var(--text4);margin-bottom:8px}
+.ac-price{font-family:var(--mono);font-size:22px;font-weight:500;color:var(--cream);line-height:1;margin-bottom:6px}
+.ac-signal{display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);font-size:10px;font-weight:600;padding:4px 10px;border-radius:3px;letter-spacing:0.08em}
+.sig-sell{background:rgba(183,162,94,.15);color:var(--husk)}
+.sig-hold{background:rgba(53,85,110,.2);color:var(--sanjuan-l)}
+.sig-alert{background:rgba(192,16,27,.15);color:var(--cherry-l)}
+.ac-trend{font-family:var(--mono);font-size:10px;margin-top:6px}
+.trend-up{color:var(--husk)}.trend-dn{color:var(--cherry-l)}.trend-flat{color:var(--text4)}
+
+/* ZONE 2 — LIVE DATA */
+.zone2{padding:1.25rem 1.5rem}
+.zone2-tabs{display:flex;gap:0;border-bottom:1px solid var(--border);margin-bottom:1.25rem}
+.z2-tab{font-family:var(--mono);font-size:10px;font-weight:500;color:var(--text4);padding:8px 16px;background:none;border:none;cursor:none;border-bottom:2px solid transparent;letter-spacing:0.06em;text-transform:uppercase;transition:all .15s}
+.z2-tab:hover{color:var(--text2)}
+.z2-tab.active{color:var(--husk);border-bottom-color:var(--husk)}
+.z2-panel{display:none}.z2-panel.active{display:block}
+
+/* GRID */
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1.25rem}
+
+/* PANEL */
+.panel{background:var(--tiber-mid);border:1px solid var(--border);border-radius:10px;overflow:hidden}
+.panel-head{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-bottom:1px solid var(--border);background:var(--tiber-light)}
+.panel-title{font-family:var(--mono);font-size:9px;font-weight:500;letter-spacing:0.12em;color:var(--text3);text-transform:uppercase}
+
+/* TABLE */
+.tbl-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse}
+th{font-family:var(--mono);font-size:8px;font-weight:500;color:var(--text4);text-transform:uppercase;letter-spacing:0.1em;padding:7px 12px;text-align:left;border-bottom:1px solid var(--border)}
+td{font-family:var(--mono);font-size:11px;padding:9px 12px;border-bottom:1px solid rgba(183,162,94,.04);vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:rgba(183,162,94,.03)}
+td:first-child{color:var(--cream);font-weight:500}
+.pill{font-size:8px;font-weight:600;padding:2px 7px;border-radius:2px;letter-spacing:0.06em;display:inline-block}
+.p-sell{background:rgba(183,162,94,.14);color:var(--husk)}
+.p-hold{background:rgba(53,85,110,.2);color:var(--sanjuan-l)}
+.p-alert{background:rgba(192,16,27,.15);color:var(--cherry-l)}
+.p-live{background:rgba(32,146,233,.15);color:var(--curious)}
+
+/* FOREX */
+.fx-row{display:flex;justify-content:space-between;align-items:center;padding:9px 14px;border-bottom:1px solid rgba(183,162,94,.04)}
+.fx-row:last-child{border-bottom:none}
+.fx-row:hover{background:rgba(183,162,94,.03)}
+.fx-sym{font-family:var(--mono);font-size:12px;font-weight:500;color:var(--cream)}
+.fx-rate{font-family:var(--mono);font-size:13px;font-weight:500;color:var(--cream)}
+.fx-chg{font-family:var(--mono);font-size:10px}
+
+/* ARB */
+.arb-row{display:flex;align-items:center;gap:12px;padding:11px 14px;border-bottom:1px solid rgba(183,162,94,.04)}
+.arb-row:last-child{border-bottom:none}
+.arb-row:hover{background:rgba(183,162,94,.03)}
+.arb-name{font-family:var(--mono);font-size:11px;font-weight:500;color:var(--cream);flex:1}
+.arb-route{font-family:var(--mono);font-size:10px;color:var(--text4);margin-top:2px}
+.arb-spread{font-family:var(--mono);font-size:12px;font-weight:500;color:var(--husk)}
+.arb-hot{font-size:8px;font-weight:700;padding:2px 7px;border-radius:2px;background:rgba(183,162,94,.14);color:var(--husk);letter-spacing:.06em}
+.arb-warm{font-size:8px;font-weight:700;padding:2px 7px;border-radius:2px;background:rgba(53,85,110,.2);color:var(--sanjuan-l);letter-spacing:.06em}
+
+/* ZONE 3 — ALERTS */
+.zone3{padding:0 1.5rem 1.5rem}
+.alert-item{padding:11px 14px;border-bottom:1px solid rgba(183,162,94,.04);border-left:3px solid transparent}
+.alert-item.crit{border-left-color:var(--cherry-l)}
+.alert-item.warn{border-left-color:var(--husk-d)}
+.alert-item:last-child{border-bottom:none}
+.alert-name{font-family:var(--mono);font-size:11px;font-weight:500;color:var(--cream);margin-bottom:3px}
+.alert-desc{font-size:11px;color:var(--text2);line-height:1.5}
+.alert-tag{font-family:var(--mono);font-size:8px;font-weight:600;padding:2px 6px;border-radius:2px;margin-right:6px;letter-spacing:.06em}
+.tag-crit{background:rgba(192,16,27,.15);color:var(--cherry-l)}
+.tag-warn{background:rgba(183,162,94,.14);color:var(--husk-d)}
+
+/* HEATMAP */
+.heatmap{display:grid;grid-template-columns:repeat(6,1fr);gap:3px;padding:12px}
+.hm-cell{aspect-ratio:1;border-radius:3px;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:8px;font-weight:500;cursor:none;transition:transform .1s}
+.hm-cell:hover{transform:scale(1.12)}
+
+/* FX CALC */
+.fx-calc{padding:16px;display:flex;flex-direction:column;gap:12px}
+.fc-label{font-family:var(--mono);font-size:9px;font-weight:500;color:var(--text4);letter-spacing:.1em;text-transform:uppercase;margin-bottom:5px;display:block}
+.fc-input{width:100%;background:var(--tiber);border:1px solid var(--border2);color:var(--cream);font-family:var(--mono);font-size:13px;padding:9px 11px;border-radius:4px;outline:none;transition:border-color .2s;cursor:auto}
+.fc-input:focus{border-color:var(--husk)}
+.fc-result{background:var(--tiber);border:1px solid var(--border);border-radius:7px;padding:18px;text-align:center}
+.fc-res-lbl{font-family:var(--mono);font-size:9px;color:var(--text4);letter-spacing:.1em;margin-bottom:7px}
+.fc-res-val{font-family:var(--mono);font-size:26px;font-weight:500;color:var(--husk)}
+.fc-res-rate{font-family:var(--mono);font-size:10px;color:var(--text4);margin-top:5px}
+
+/* LOCK */
+.lock-wrap{padding:28px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;text-align:center}
+.lock-icon{font-size:20px;color:var(--text4)}
+.lock-text{font-family:var(--mono);font-size:10px;color:var(--text4);letter-spacing:.08em}
+.lock-btn{font-family:var(--mono);font-size:10px;font-weight:600;padding:7px 16px;background:var(--husk);color:var(--tiber);border:none;border-radius:4px;cursor:none}
+
+/* BADGE */
+.badge{font-family:var(--mono);font-size:8px;font-weight:600;padding:2px 7px;border-radius:2px;letter-spacing:.06em}
+.b-live{background:rgba(183,162,94,.14);color:var(--husk);border:1px solid rgba(183,162,94,.2)}
+.b-alert{background:rgba(192,16,27,.14);color:var(--cherry-l);border:1px solid rgba(192,16,27,.2)}
+.b-pro{background:rgba(97,77,112,.2);color:#9b7db8;border:1px solid rgba(97,77,112,.3)}
+.b-info{background:rgba(32,146,233,.14);color:var(--curious);border:1px solid rgba(32,146,233,.2)}
+
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(4,40,32,.88);backdrop-filter:blur(10px);z-index:200;display:none;align-items:center;justify-content:center}
+.modal-overlay.open{display:flex}
+.modal{background:var(--tiber-mid);border:1px solid var(--border2);border-radius:12px;padding:2.5rem;width:400px;max-width:95vw;position:relative}
+.modal-close{position:absolute;top:14px;right:14px;background:none;border:none;color:var(--text4);font-size:18px;cursor:none;line-height:1}
+.modal-title{font-family:var(--serif);font-size:20px;font-weight:600;color:var(--cream);margin-bottom:5px}
+.modal-sub{font-size:13px;color:var(--text2);margin-bottom:22px;line-height:1.6}
+.modal-tabs{display:flex;border-bottom:1px solid var(--border);margin-bottom:18px}
+.modal-tab{font-family:var(--mono);font-size:11px;font-weight:500;color:var(--text4);padding:7px 18px;background:none;border:none;border-bottom:2px solid transparent;cursor:none;transition:all .15s}
+.modal-tab.active{color:var(--husk);border-bottom-color:var(--husk)}
+.field{margin-bottom:13px}
+.field label{display:block;font-family:var(--mono);font-size:9px;font-weight:500;color:var(--text4);letter-spacing:.1em;text-transform:uppercase;margin-bottom:4px}
+.field input{width:100%;background:var(--tiber);border:1px solid var(--border2);color:var(--cream);font-family:var(--mono);font-size:12px;padding:9px 11px;border-radius:4px;outline:none;transition:border-color .2s;cursor:auto}
+.field input:focus{border-color:var(--husk)}
+.auth-err{font-family:var(--mono);font-size:10px;color:var(--cherry-l);min-height:14px;margin-bottom:8px}
+.auth-btn{width:100%;padding:11px;background:var(--husk);color:var(--tiber);font-family:var(--mono);font-size:11px;font-weight:600;border:none;border-radius:4px;cursor:none;transition:all .15s}
+.auth-btn:hover{background:var(--husk-l)}
+.auth-btn:disabled{opacity:.5}
+
+/* PLANS PAGE */
+.plans-wrap{max-width:960px;margin:0 auto;padding:2rem 1.5rem}
+.plans-hero{text-align:center;padding:2rem 0 1.5rem}
+.plans-hero h1{font-family:var(--serif);font-size:clamp(24px,4vw,42px);font-weight:600;color:var(--cream);margin-bottom:10px;letter-spacing:-0.02em}
+.plans-hero p{font-size:14px;color:var(--text2);font-weight:300;line-height:1.7}
+.plans-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);border:1px solid var(--border);border-radius:10px;overflow:hidden;margin:1.5rem 0}
+.plan-card{background:var(--tiber-mid);padding:1.75rem 1.5rem;position:relative}
+.plan-card.featured{background:var(--tiber-light)}
+.plan-badge{position:absolute;top:0;left:50%;transform:translateX(-50%);font-family:var(--mono);font-size:8px;font-weight:600;color:var(--tiber);background:var(--husk);padding:2px 12px;border-radius:0 0 5px 5px;letter-spacing:.1em}
+.plan-name{font-family:var(--mono);font-size:9px;font-weight:500;color:var(--text4);letter-spacing:.14em;text-transform:uppercase;margin-bottom:10px}
+.plan-price{font-family:var(--mono);font-size:30px;font-weight:500;color:var(--cream);margin-bottom:3px;line-height:1}
+.plan-price span{font-size:13px;color:var(--text4);font-weight:400}
+.plan-period{font-size:11px;color:var(--text4);margin-bottom:1.25rem}
+.plan-features{list-style:none;margin-bottom:1.25rem;display:flex;flex-direction:column;gap:8px}
+.plan-features li{font-size:11px;color:var(--text2);display:flex;align-items:flex-start;gap:7px;line-height:1.5}
+.plan-features li::before{content:"";width:4px;height:4px;border-radius:50%;background:var(--husk);flex-shrink:0;margin-top:5px}
+.plan-features li.locked{color:var(--text4)}.plan-features li.locked::before{background:var(--text4)}
+.plan-btn{width:100%;padding:10px;font-family:var(--mono);font-size:11px;font-weight:600;border-radius:4px;cursor:none;border:none;transition:all .15s;letter-spacing:.04em}
+.plan-btn-outline{background:transparent;color:var(--text3);border:1px solid var(--border2)}.plan-btn-outline:hover{border-color:var(--husk);color:var(--husk)}
+.plan-btn-primary{background:var(--husk);color:var(--tiber)}.plan-btn-primary:hover{background:var(--husk-l)}
+.plan-btn-ent{background:transparent;color:var(--sanjuan-l);border:1px solid rgba(53,85,110,.3)}
+.plans-footer{text-align:center;font-family:var(--mono);font-size:10px;color:var(--text4);padding-bottom:1.5rem}
+
+/* EMPTY */
+.empty{padding:24px;text-align:center;font-family:var(--mono);font-size:11px;color:var(--text4)}
+.loading{padding:40px;text-align:center;font-family:var(--mono);font-size:11px;color:var(--text4)}
+
+/* SCROLLBAR */
+::-webkit-scrollbar{width:4px;height:4px}
+::-webkit-scrollbar-track{background:var(--tiber)}
+::-webkit-scrollbar-thumb{background:var(--tiber-border);border-radius:2px}
+
+/* RESPONSIVE */
+@media(max-width:1000px){.answer-grid{grid-template-columns:repeat(2,1fr)}.grid2,.grid3{grid-template-columns:1fr}}
+@media(max-width:600px){.nav-tabs{display:none}.answer-grid{grid-template-columns:1fr}}
+</style>
 </head>
 <body>
 
-  <!-- NAV -->
-  <nav class="nav">
-    <div class="nav-logo"><div class="dot"></div>SOKODATA</div>
-    <div class="nav-tabs">
-      <button class="nav-tab active" data-page="dashboard">Dashboard</button>
-      <button class="nav-tab" data-page="forex">Forex</button>
-      <button class="nav-tab" data-page="commodities">Commodities</button>
-      <button class="nav-tab" data-page="livestock">Livestock</button>
-      <button class="nav-tab" data-page="arbitrage">Arbitrage</button>
-      <button class="nav-tab" data-page="sms">SMS Alerts</button>
-      <button class="nav-tab" data-page="plans">Plans</button>
-    </div>
-    <div class="nav-right">
-      <span class="nav-time" id="navTime">--:--:-- EAT</span>
-      <span class="nav-plan" id="navPlan">FREE</span>
-      <button class="btn btn-upgrade" id="btnUpgrade">Upgrade →</button>
-      <button class="btn btn-login" id="btnLogin">Login</button>
-    </div>
-  </nav>
+<div class="cursor" id="cur"></div>
+<div class="cursor-ring" id="curR"></div>
 
-  <!-- TICKER -->
-  <div class="ticker-wrap">
-    <div class="ticker-label">⬤ LIVE</div>
-    <div class="ticker-scroll"><div class="ticker-track" id="tickerTrack">Loading live prices…</div></div>
+<!-- NAV -->
+<nav class="nav">
+  <a href="index.html" class="nav-logo">
+    <svg width="28" height="28" viewBox="0 0 40 40" fill="none">
+      <circle cx="20" cy="5" r="2.2" fill="#b7a25e" opacity=".9"/>
+      <circle cx="30.6" cy="8.4" r="2.2" fill="#b7a25e" opacity=".9"/>
+      <circle cx="36.6" cy="18" r="2.2" fill="#b7a25e" opacity=".9"/>
+      <circle cx="34.6" cy="29" r="2.2" fill="#b7a25e" opacity=".9"/>
+      <circle cx="27" cy="36.6" r="2.2" fill="#b7a25e" opacity=".9"/>
+      <circle cx="16.5" cy="37.8" r="2.2" fill="#b7a25e" opacity=".9"/>
+      <circle cx="7.4" cy="32" r="2.2" fill="#b7a25e" opacity=".9"/>
+      <circle cx="3" cy="21.5" r="2.2" fill="#b7a25e" opacity=".9"/>
+      <circle cx="5" cy="10.5" r="2.2" fill="#b7a25e" opacity=".9"/>
+      <circle cx="13" cy="3.8" r="2.2" fill="#b7a25e" opacity=".9"/>
+      <line x1="20" y1="5" x2="20" y2="20" stroke="#b7a25e" stroke-width=".7" opacity=".3"/>
+      <line x1="30.6" y1="8.4" x2="20" y2="20" stroke="#b7a25e" stroke-width=".7" opacity=".3"/>
+      <line x1="36.6" y1="18" x2="20" y2="20" stroke="#b7a25e" stroke-width=".7" opacity=".3"/>
+      <line x1="34.6" y1="29" x2="20" y2="20" stroke="#b7a25e" stroke-width=".7" opacity=".3"/>
+      <line x1="27" y1="36.6" x2="20" y2="20" stroke="#b7a25e" stroke-width=".7" opacity=".3"/>
+      <line x1="16.5" y1="37.8" x2="20" y2="20" stroke="#b7a25e" stroke-width=".7" opacity=".3"/>
+      <line x1="7.4" y1="32" x2="20" y2="20" stroke="#b7a25e" stroke-width=".7" opacity=".3"/>
+      <line x1="3" y1="21.5" x2="20" y2="20" stroke="#b7a25e" stroke-width=".7" opacity=".3"/>
+      <line x1="5" y1="10.5" x2="20" y2="20" stroke="#b7a25e" stroke-width=".7" opacity=".3"/>
+      <line x1="13" y1="3.8" x2="20" y2="20" stroke="#b7a25e" stroke-width=".7" opacity=".3"/>
+      <circle cx="20" cy="20" r="4" fill="#b7a25e"/>
+      <circle cx="20" cy="20" r="6.5" stroke="#b7a25e" stroke-width=".8" fill="none" opacity=".25"/>
+    </svg>
+    SOKODATA
+  </a>
+  <div class="nav-tabs" id="navTabs">
+    <button class="nav-tab active" data-page="dashboard">Dashboard</button>
+    <button class="nav-tab" data-page="forex">Forex</button>
+    <button class="nav-tab" data-page="commodities">Commodities</button>
+    <button class="nav-tab" data-page="livestock">Livestock</button>
+    <button class="nav-tab" data-page="arbitrage">Arbitrage</button>
+    <button class="nav-tab" data-page="sms">SMS Alerts</button>
+    <button class="nav-tab" data-page="plans">Plans</button>
+  </div>
+  <div class="nav-right">
+    <span class="nav-time" id="navTime">--:--:-- EAT</span>
+    <span class="nav-plan" id="navPlan">FREE</span>
+    <button class="btn btn-primary" id="btnUpgrade" onclick="showPage('plans')">Upgrade</button>
+    <button class="btn btn-ghost" id="btnLogin">Login</button>
+  </div>
+</nav>
+
+<!-- TICKER -->
+<div class="ticker-wrap">
+  <div class="ticker-badge">&#9679; LIVE</div>
+  <div class="ticker-scroll"><div class="ticker-track" id="tickerTrack">Loading...</div></div>
+</div>
+
+<!-- MAIN -->
+<main id="appMain"><div class="loading">Loading market data...</div></main>
+
+<!-- AUTH MODAL -->
+<div class="modal-overlay" id="authModal">
+  <div class="modal">
+    <button class="modal-close" id="modalClose">&#215;</button>
+    <div class="modal-title">SokoData</div>
+    <div class="modal-sub">Real prices for East African farmers and traders.</div>
+    <div class="modal-tabs">
+      <button class="modal-tab active" id="tabLogin">Login</button>
+      <button class="modal-tab" id="tabSignup">Sign Up Free</button>
+    </div>
+    <div id="authForm"></div>
+  </div>
+</div>
+
+<script src="js/env.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script>
+// CONFIG
+const CONFIG={
+  SUPABASE_URL:window.__SOKO__?.url||"",
+  SUPABASE_ANON:window.__SOKO__?.anon||"",
+  FX_URL:"https://open.er-api.com/v6/latest/USD",
+  EXPLOIT_THRESH:0.80,
+  PLAN_PRO_MONTHLY:1499,
+  PLAN_PRO_ANNUAL:14990,
+}
+Object.freeze(CONFIG)
+
+// SUPABASE
+let _sb=null
+function getSB(){
+  if(!_sb&&CONFIG.SUPABASE_URL)_sb=supabase.createClient(CONFIG.SUPABASE_URL,CONFIG.SUPABASE_ANON)
+  return _sb
+}
+
+// CACHE
+const _cache={forex:null,commodities:null,livestock:null}
+
+// STATIC FALLBACK DATA
+const STATIC_COMMODITIES=[
+  {commodity:"Maize (white)",location:"Nairobi",price_kes:66,trend:"up",action:"hold",source:"FEWS NET"},
+  {commodity:"Maize (white)",location:"Garissa",price_kes:85,trend:"up",action:"sell",source:"KAMIS"},
+  {commodity:"Maize (white)",location:"Mandera",price_kes:94,trend:"up",action:"sell",source:"KAMIS"},
+  {commodity:"Maize (white)",location:"Mogadishu",price_kes:93,trend:"flat",action:"hold",source:"FEWS NET"},
+  {commodity:"Beans (Nyayo)",location:"Nairobi",price_kes:115,trend:"up",action:"sell",source:"KAMIS"},
+  {commodity:"Beans (Nyayo)",location:"Garissa",price_kes:124,trend:"up",action:"sell",source:"KAMIS"},
+  {commodity:"Coffee AA",location:"NCE Nairobi",price_kes:637,trend:"up",action:"sell",source:"NCE"},
+  {commodity:"Tea leaf",location:"Nyamira",price_kes:24,trend:"flat",action:"hold",source:"KTDA"},
+  {commodity:"Tea (made)",location:"Mombasa",price_kes:280,trend:"dn",action:"hold",source:"TBEA"},
+]
+const STATIC_LIVESTOCK=[
+  {animal:"Cattle Grade 1",location:"Nairobi",price_kes_kg:"320-336",trend:"up",action:"sell",source:"FEWS NET"},
+  {animal:"Cattle Grade 2",location:"Garissa",price_kes_kg:"295-315",trend:"up",action:"sell",source:"FEWS NET"},
+  {animal:"Cattle",location:"Wajir",price_kes_kg:"210-250",trend:"dn",action:"hold",source:"FEWS NET"},
+  {animal:"Goat (mature)",location:"Garissa",price_kes_kg:"380-420",trend:"up",action:"sell",source:"FEWS NET"},
+  {animal:"Camel",location:"Burao SOM",price_kes_kg:"$480-520/head",trend:"up",action:"sell",source:"FEWS NET"},
+]
+const STATIC_FOREX={USD_KES:129.40,EUR_KES:140.22,GBP_KES:165.80,USD_UGX:3710,USD_TZS:2615,USD_ETB:57.85,USD_SOS:571,KES_SOS:4.41,source:"Static fallback"}
+
+// FETCH PRICES
+async function fetchAll(){
+  try{
+    const fx=await fetch(CONFIG.FX_URL).then(r=>r.json())
+    if(fx.result==="success"){
+      _cache.forex={USD_KES:fx.rates.KES,EUR_KES:fx.rates.KES/fx.rates.EUR,GBP_KES:fx.rates.KES/fx.rates.GBP,USD_UGX:fx.rates.UGX,USD_TZS:fx.rates.TZS,USD_ETB:fx.rates.ETB,USD_SOS:fx.rates.SOS,KES_SOS:fx.rates.SOS/fx.rates.KES,source:"ExchangeRate-API (live)"}
+    }
+  }catch(e){_cache.forex=STATIC_FOREX}
+  if(!_cache.forex)_cache.forex=STATIC_FOREX
+
+  const sb=getSB()
+  if(sb){
+    const{data}=await sb.from("prices").select("*").order("fetched_at",{ascending:false}).limit(40)
+    if(data&&data.length){
+      const seen=new Set()
+      _cache.commodities=data.filter(r=>{const k=r.commodity+":"+r.location;if(seen.has(k))return false;seen.add(k);return true})
+    }
+    const{data:ls}=await sb.from("livestock_prices").select("*").order("fetched_at",{ascending:false}).limit(20)
+    if(ls&&ls.length)_cache.livestock=ls
+  }
+  if(!_cache.commodities)_cache.commodities=STATIC_COMMODITIES
+  if(!_cache.livestock)_cache.livestock=STATIC_LIVESTOCK
+}
+
+// ARBITRAGE
+function calcArb(comms){
+  const byName={}
+  comms.forEach(c=>{if(!byName[c.commodity])byName[c.commodity]=[];byName[c.commodity].push(c)})
+  const arb=[]
+  Object.entries(byName).forEach(([name,markets])=>{
+    if(markets.length<2)return
+    markets.sort((a,b)=>a.price_kes-b.price_kes)
+    const lo=markets[0],hi=markets[markets.length-1]
+    const spread=hi.price_kes-lo.price_kes
+    if(spread>5)arb.push({commodity:name,buy_loc:lo.location,sell_loc:hi.location,buy_price:lo.price_kes,sell_price:hi.price_kes,gross:spread,net:(spread*.65).toFixed(0),rating:spread>40?"hot":"warm"})
+  })
+  return arb.sort((a,b)=>b.gross-a.gross)
+}
+
+// PAGES
+function renderDashboard(){
+  const fx=_cache.forex,comms=_cache.commodities,arb=calcArb(comms)
+  const topComms=comms.slice(0,4)
+  const alerts=comms.filter(c=>c.action==="alert"||c.price_kes<(c.benchmark_kes||9999)*CONFIG.EXPLOIT_THRESH)
+
+  return `
+  <!-- ZONE 1: YOUR ANSWER -->
+  <div class="zone1">
+    <div class="zone1-header">
+      <div class="zone1-title">Today's market signals</div>
+      <div class="zone1-sub" id="z1Time">Updated just now</div>
+    </div>
+    <div class="answer-grid">
+      ${topComms.map(c=>`
+      <div class="answer-card ${c.action}">
+        <div class="ac-commodity">${c.commodity}</div>
+        <div class="ac-location">${c.location}</div>
+        <div class="ac-price">KES ${c.price_kes}</div>
+        <div><span class="ac-signal sig-${c.action}">${c.action==="sell"?"&#9650; SELL NOW":c.action==="hold"?"&#9472; HOLD":"&#9888; ALERT"}</span></div>
+        <div class="ac-trend trend-${c.trend}">${c.trend==="up"?"&#9650; Above average":c.trend==="dn"?"&#9660; Below average":"&#9472; Near average"}</div>
+      </div>`).join("")}
+    </div>
   </div>
 
-  <!-- ALERT BANNER -->
-  <div class="alert-banner" id="alertBanner" style="display:none">
-    <span class="alert-icon">⚠ ALERT</span>
-    <span class="alert-text" id="alertBannerText"></span>
-    <span class="alert-dismiss" id="alertDismiss">×</span>
-  </div>
+  <!-- ZONE 2: LIVE DATA -->
+  <div class="zone2">
+    <div class="zone2-tabs">
+      <button class="z2-tab active" onclick="switchZ2('prices',this)">All Prices</button>
+      <button class="z2-tab" onclick="switchZ2('forex',this)">Forex</button>
+      <button class="z2-tab" onclick="switchZ2('arb',this)">Arbitrage</button>
+    </div>
 
-  <!-- PAGES -->
-  <main id="appMain">
-    <!-- injected by JS -->
-  </main>
-
-  <!-- AUTH MODAL -->
-  <div class="modal-overlay" id="authModal" style="display:none">
-    <div class="modal">
-      <button class="modal-close" id="modalClose">×</button>
-      <div class="modal-tabs">
-        <button class="modal-tab active" id="tabLogin">Login</button>
-        <button class="modal-tab" id="tabSignup">Sign Up</button>
+    <!-- PRICES PANEL -->
+    <div class="z2-panel active" id="z2-prices">
+      <div class="panel">
+        <div class="panel-head"><span class="panel-title">All commodity prices</span><span class="badge b-live">LIVE</span></div>
+        <div class="tbl-wrap"><table>
+          <thead><tr><th>Commodity</th><th>Location</th><th>KES/kg</th><th>USD/kg</th><th>Trend</th><th>Action</th><th>Source</th></tr></thead>
+          <tbody>${comms.map(c=>`<tr>
+            <td>${c.commodity}</td>
+            <td style="color:var(--text3)">${c.location}</td>
+            <td style="color:var(--cream);font-weight:500">KES ${c.price_kes}</td>
+            <td style="color:var(--text3)">$${((c.price_usd)||(c.price_kes/129.4)).toFixed(3)}</td>
+            <td class="${c.trend==="up"?"trend-up":c.trend==="dn"?"trend-dn":"trend-flat"}">${c.trend==="up"?"&#9650;":c.trend==="dn"?"&#9660;":"&#9472;"}</td>
+            <td><span class="pill p-${c.action||"hold"}">${(c.action||"hold").toUpperCase()}</span></td>
+            <td style="color:var(--text4);font-size:10px">${c.source||"&#8212;"}</td>
+          </tr>`).join("")}</tbody>
+        </table></div>
       </div>
-      <div id="authForm"></div>
+    </div>
+
+    <!-- FOREX PANEL -->
+    <div class="z2-panel" id="z2-forex">
+      <div class="grid2">
+        <div class="panel">
+          <div class="panel-head"><span class="panel-title">EA Currency Rates</span><span class="badge b-live">LIVE</span></div>
+          ${[["USD/KES",fx.USD_KES],["EUR/KES",fx.EUR_KES],["GBP/KES",fx.GBP_KES],["USD/UGX",fx.USD_UGX],["USD/TZS",fx.USD_TZS],["USD/ETB",fx.USD_ETB],["USD/SOS",fx.USD_SOS],["KES/SOS",fx.KES_SOS]].map(([s,v])=>`
+          <div class="fx-row">
+            <span class="fx-sym">${s}</span>
+            <span class="fx-rate">${v?Number(v).toLocaleString(undefined,{maximumFractionDigits:2}):"&#8212;"}</span>
+          </div>`).join("")}
+          <div style="padding:8px 14px;font-family:var(--mono);font-size:9px;color:var(--text4)">${fx.source}</div>
+        </div>
+        <div class="panel">
+          <div class="panel-head"><span class="panel-title">Currency Calculator</span></div>
+          <div class="fx-calc">
+            <div><label class="fc-label">Amount</label><input class="fc-input" type="number" id="fcAmt" value="1000" oninput="calcFX()"/></div>
+            <div><label class="fc-label">From</label>
+              <select class="fc-input" id="fcFrom" onchange="calcFX()">
+                <option value="KES" selected>KES — Kenyan Shilling</option>
+                <option value="USD">USD — US Dollar</option>
+                <option value="SOS">SOS — Somali Shilling</option>
+                <option value="UGX">UGX — Ugandan Shilling</option>
+                <option value="TZS">TZS — Tanzanian Shilling</option>
+                <option value="ETB">ETB — Ethiopian Birr</option>
+                <option value="EUR">EUR — Euro</option>
+                <option value="GBP">GBP — Sterling</option>
+              </select>
+            </div>
+            <div><label class="fc-label">To</label>
+              <select class="fc-input" id="fcTo" onchange="calcFX()">
+                <option value="USD" selected>USD — US Dollar</option>
+                <option value="KES">KES — Kenyan Shilling</option>
+                <option value="SOS">SOS — Somali Shilling</option>
+                <option value="UGX">UGX — Ugandan Shilling</option>
+                <option value="TZS">TZS — Tanzanian Shilling</option>
+                <option value="ETB">ETB — Ethiopian Birr</option>
+                <option value="EUR">EUR — Euro</option>
+                <option value="GBP">GBP — Sterling</option>
+              </select>
+            </div>
+            <div class="fc-result">
+              <div class="fc-res-lbl">CONVERTED</div>
+              <div class="fc-res-val" id="fcResult">&#8212;</div>
+              <div class="fc-res-rate" id="fcRate">&#8212;</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ARB PANEL -->
+    <div class="z2-panel" id="z2-arb">
+      <div class="panel">
+        <div class="panel-head"><span class="panel-title">Arbitrage Corridors</span><span class="badge b-alert">${arb.filter(a=>a.rating==="hot").length} HOT</span></div>
+        ${arb.length?arb.map(a=>`
+        <div class="arb-row">
+          <div style="flex:1">
+            <div class="arb-name">${a.commodity}</div>
+            <div class="arb-route">Buy ${a.buy_loc} @ KES ${a.buy_price} &rarr; Sell ${a.sell_loc} @ KES ${a.sell_price}</div>
+            <div class="arb-route" style="color:var(--husk)">Est. net: KES ${a.net}/kg after transport</div>
+          </div>
+          <div style="text-align:right;margin-right:10px">
+            <div class="arb-spread">KES ${a.gross}/kg</div>
+          </div>
+          <span class="${a.rating==="hot"?"arb-hot":"arb-warm"}">${a.rating.toUpperCase()}</span>
+        </div>`).join(""):"<div class='empty'>No significant arbitrage spreads detected</div>"}
+      </div>
     </div>
   </div>
 
-  <!-- SCRIPTS — order matters -->
-  <script src="js/env.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
-  <script src="js/config.js"></script>
-  <script src="js/supabase.js"></script>
-  <script src="js/auth.js"></script>
-  <script src="js/prices.js"></script>
-  <script src="js/dashboard.js"></script>
-  <script src="js/forex.js"></script>
-  <script src="js/sms.js"></script>
-  <script src="js/app.js"></script>
+  <!-- ZONE 3: CONTEXT -->
+  <div class="zone3">
+    <div class="grid2">
+      <div class="panel">
+        <div class="panel-head"><span class="panel-title">Price Alerts</span><span class="badge b-alert">ACTIVE</span></div>
+        <div class="alert-item crit">
+          <div><span class="alert-tag tag-crit">EXPLOIT</span><span class="alert-name">Coffee cherry — Kirinyaga</span></div>
+          <div class="alert-desc">Farm gate KES 122/kg vs NCE avg KES 637/kg. Fair gate &ge; KES 106. Report if offered below KES 85.</div>
+        </div>
+        <div class="alert-item warn">
+          <div><span class="alert-tag tag-warn">WATCH</span><span class="alert-name">Tea green leaf — KTDA frozen</span></div>
+          <div class="alert-desc">KTDA Nyamira Zone 10 frozen at KES 24/kg. Mombasa auction subdued. Monitor for bonus payment updates.</div>
+        </div>
+        <div class="alert-item crit">
+          <div><span class="alert-tag tag-crit">ALERT</span><span class="alert-name">Wajir/Mandera livestock distress</span></div>
+          <div class="alert-desc">Prices 20-35% below average. Poor body conditions. Advise holding minimum herd if possible.</div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-head"><span class="panel-title">Regional Heatmap</span><span style="font-family:var(--mono);font-size:9px;color:var(--text4)">price vs avg</span></div>
+        <div class="heatmap" id="heatmap"></div>
+        <div style="padding:6px 12px 10px;display:flex;gap:10px;font-family:var(--mono);font-size:9px;color:var(--text4);align-items:center">
+          <span style="width:9px;height:9px;border-radius:2px;background:#1a4d1a;display:inline-block"></span>Low
+          <span style="width:9px;height:9px;border-radius:2px;background:#8b7300;display:inline-block;margin-left:6px"></span>Avg
+          <span style="width:9px;height:9px;border-radius:2px;background:var(--cherry-l);display:inline-block;margin-left:6px"></span>High
+        </div>
+      </div>
+    </div>
+  </div>`
+}
+
+function renderForex(){
+  const fx=_cache.forex
+  return `<div style="padding:1.25rem 1.5rem">
+    <div class="grid2">
+      <div class="panel">
+        <div class="panel-head"><span class="panel-title">Live EA Rates</span><span class="badge b-live">LIVE</span></div>
+        ${[["USD/KES",fx.USD_KES],["EUR/KES",fx.EUR_KES],["GBP/KES",fx.GBP_KES],["USD/UGX",fx.USD_UGX],["USD/TZS",fx.USD_TZS],["USD/ETB",fx.USD_ETB],["USD/SOS",fx.USD_SOS],["KES/SOS",fx.KES_SOS]].map(([s,v])=>`
+        <div class="fx-row"><span class="fx-sym" style="font-size:14px">${s}</span><span class="fx-rate" style="font-size:16px">${v?Number(v).toLocaleString(undefined,{maximumFractionDigits:2}):"&#8212;"}</span></div>`).join("")}
+      </div>
+      <div class="panel">
+        <div class="panel-head"><span class="panel-title">Currency Calculator</span></div>
+        <div class="fx-calc">
+          <div><label class="fc-label">Amount</label><input class="fc-input" type="number" id="fcAmt" value="1000" oninput="calcFX()"/></div>
+          <div><label class="fc-label">From</label>
+            <select class="fc-input" id="fcFrom" onchange="calcFX()">
+              <option value="KES" selected>KES</option><option value="USD">USD</option><option value="SOS">SOS</option><option value="UGX">UGX</option><option value="TZS">TZS</option><option value="ETB">ETB</option><option value="EUR">EUR</option><option value="GBP">GBP</option>
+            </select>
+          </div>
+          <div><label class="fc-label">To</label>
+            <select class="fc-input" id="fcTo" onchange="calcFX()">
+              <option value="USD" selected>USD</option><option value="KES">KES</option><option value="SOS">SOS</option><option value="UGX">UGX</option><option value="TZS">TZS</option><option value="ETB">ETB</option><option value="EUR">EUR</option><option value="GBP">GBP</option>
+            </select>
+          </div>
+          <div class="fc-result">
+            <div class="fc-res-lbl">CONVERTED</div>
+            <div class="fc-res-val" id="fcResult">&#8212;</div>
+            <div class="fc-res-rate" id="fcRate">&#8212;</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>`
+}
+
+function renderCommodities(){
+  const comms=_cache.commodities
+  return `<div style="padding:1.25rem 1.5rem">
+    <div class="panel">
+      <div class="panel-head"><span class="panel-title">Full Commodity Matrix</span><span class="badge b-live">${new Date().toLocaleDateString("en-KE")}</span></div>
+      <div class="tbl-wrap"><table>
+        <thead><tr><th>Commodity</th><th>Location</th><th>KES/kg</th><th>USD/kg</th><th>Trend</th><th>Action</th><th>Source</th></tr></thead>
+        <tbody>${comms.map(c=>`<tr>
+          <td>${c.commodity}</td><td style="color:var(--text3)">${c.location}</td>
+          <td style="color:var(--cream);font-weight:500">KES ${c.price_kes}</td>
+          <td style="color:var(--text3)">$${((c.price_usd)||(c.price_kes/129.4)).toFixed(3)}</td>
+          <td class="${c.trend==="up"?"trend-up":c.trend==="dn"?"trend-dn":"trend-flat"}">${c.trend==="up"?"&#9650;":c.trend==="dn"?"&#9660;":"&#9472;"}</td>
+          <td><span class="pill p-${c.action||"hold"}">${(c.action||"hold").toUpperCase()}</span></td>
+          <td style="color:var(--text4);font-size:10px">${c.source||"&#8212;"}</td>
+        </tr>`).join("")}</tbody>
+      </table></div>
+    </div>
+  </div>`
+}
+
+function renderLivestock(){
+  const ls=_cache.livestock
+  return `<div style="padding:1.25rem 1.5rem">
+    <div class="panel">
+      <div class="panel-head"><span class="panel-title">Livestock Prices — Kenya &amp; Somalia</span><span class="badge b-live">FEWS NET</span></div>
+      <div class="tbl-wrap"><table>
+        <thead><tr><th>Animal</th><th>Location</th><th>Price</th><th>Trend</th><th>Signal</th><th>Source</th></tr></thead>
+        <tbody>${ls.map(a=>`<tr>
+          <td>${a.animal}</td><td style="color:var(--text3)">${a.location}</td>
+          <td style="color:var(--cream);font-weight:500">${a.price_kes_kg}</td>
+          <td class="${a.trend==="up"?"trend-up":a.trend==="dn"?"trend-dn":"trend-flat"}">${a.trend==="up"?"&#9650; Good":a.trend==="dn"?"&#9660; Weak":"&#9472; Stable"}</td>
+          <td><span class="pill p-${a.action||"hold"}">${(a.action||"hold").toUpperCase()}</span></td>
+          <td style="color:var(--text4);font-size:10px">${a.source||"&#8212;"}</td>
+        </tr>`).join("")}</tbody>
+      </table></div>
+    </div>
+  </div>`
+}
+
+function renderArbitrage(){
+  const arb=calcArb(_cache.commodities)
+  return `<div style="padding:1.25rem 1.5rem">
+    <div class="panel">
+      <div class="panel-head"><span class="panel-title">All Arbitrage Corridors</span><span class="badge b-alert">${arb.filter(a=>a.rating==="hot").length} HOT &middot; ${arb.length} TOTAL</span></div>
+      ${arb.length?arb.map(a=>`
+      <div class="arb-row">
+        <div style="flex:1">
+          <div class="arb-name">${a.commodity}</div>
+          <div class="arb-route">Buy: ${a.buy_loc} @ KES ${a.buy_price}/kg</div>
+          <div class="arb-route">Sell: ${a.sell_loc} @ KES ${a.sell_price}/kg</div>
+          <div class="arb-route" style="color:var(--husk)">Net after transport: KES ${a.net}/kg</div>
+        </div>
+        <div style="text-align:right;margin-right:12px">
+          <div class="arb-spread">KES ${a.gross}/kg</div>
+          <div style="font-family:var(--mono);font-size:9px;color:var(--text4)">+${((a.gross/a.buy_price)*100).toFixed(0)}% gross</div>
+        </div>
+        <span class="${a.rating==="hot"?"arb-hot":"arb-warm"}">${a.rating.toUpperCase()}</span>
+      </div>`).join(""):"<div class='empty'>No significant spreads detected</div>"}
+      <div style="padding:10px 14px;font-family:var(--mono);font-size:9px;color:var(--text4);border-top:1px solid var(--border)">Gross spreads only. Deduct ~35% for transport, levies, broker fees before trading.</div>
+    </div>
+  </div>`
+}
+
+const SMS_TEMPLATES={
+  maize:{en:()=>`SOKODATA ${new Date().toLocaleDateString("en-KE")} | MAIZE\nNairobi: KES ${_cache.commodities?.find(c=>c.commodity==="Maize (white)"&&c.location==="Nairobi")?.price_kes||66}/kg\nGarissa: KES ${_cache.commodities?.find(c=>c.location==="Garissa"&&c.commodity==="Maize (white)")?.price_kes||85}/kg\nMandera: KES ${_cache.commodities?.find(c=>c.location==="Mandera")?.price_kes||94}/kg\nACTION: Sell surplus to Garissa/Mandera\nInfo: sokodata.co.ke`,
+    sw:()=>`SOKODATA ${new Date().toLocaleDateString("en-KE")} | MAHINDI\nNairobi: KES 66/kg\nGarissa: KES 85/kg\nMandera: KES 94/kg\nHATUA: Uza ziada Garissa/Mandera\nsokodata.co.ke`},
+  coffee:{en:()=>`SOKODATA ${new Date().toLocaleDateString("en-KE")} | COFFEE\nNCE avg: KES ${_cache.commodities?.find(c=>c.commodity==="Coffee AA")?.price_kes||637}/kg\nSEASON HIGH - sell now\n\u26a0 Cherry below KES 85/kg = exploitation\nsokodata.co.ke`,
+    sw:()=>`SOKODATA ${new Date().toLocaleDateString("en-KE")} | KAHAWA\nNCE: KES 637/kg\nKILELE - uza sasa\n\u26a0 Chini ya KES 85 = unyonyaji\nsokodata.co.ke`},
+  forex:{en:()=>`SOKODATA ${new Date().toLocaleDateString("en-KE")} | FOREX\nUSD/KES: ${(_cache.forex?.USD_KES||129.4).toFixed(2)}\nEUR/KES: ${(_cache.forex?.EUR_KES||140.2).toFixed(2)}\nUSD/SOS: ${(_cache.forex?.USD_SOS||571).toFixed(0)}\nRates: sokodata.co.ke`,
+    sw:()=>`SOKODATA ${new Date().toLocaleDateString("en-KE")} | FEDHA\nUSD/KES: ${(_cache.forex?.USD_KES||129.4).toFixed(2)}\nEUR/KES: ${(_cache.forex?.EUR_KES||140.2).toFixed(2)}\nViwango: sokodata.co.ke`},
+}
+
+let _smsKey="maize",_smsLang="en"
+function renderSMS(){
+  return `<div style="padding:1.25rem 1.5rem"><div class="grid2">
+    <div class="panel">
+      <div class="panel-head"><span class="panel-title">SMS Generator</span></div>
+      <div style="padding:16px;display:flex;flex-direction:column;gap:12px">
+        <div>
+          <label class="fc-label">Commodity</label>
+          <div style="display:flex;gap:6px;flex-wrap:wrap" id="smsToggles">
+            <button class="btn btn-primary" data-key="maize" onclick="setSmsKey(this,'maize')">Maize</button>
+            <button class="btn btn-ghost" data-key="coffee" onclick="setSmsKey(this,'coffee')">Coffee</button>
+            <button class="btn btn-ghost" data-key="forex" onclick="setSmsKey(this,'forex')">Forex</button>
+          </div>
+        </div>
+        <div>
+          <label class="fc-label">Language</label>
+          <div style="display:flex;gap:6px">
+            <button class="btn btn-primary" id="langEn" onclick="setSmsLang('en')">English</button>
+            <button class="btn btn-ghost" id="langSw" onclick="setSmsLang('sw')">Kiswahili</button>
+          </div>
+        </div>
+        <div style="font-family:var(--mono);font-size:11px;background:var(--tiber);border:1px solid var(--border);border-radius:5px;padding:12px;line-height:1.8;color:var(--husk);white-space:pre-wrap;word-break:break-word;min-height:100px" id="smsOut">Click generate below</div>
+        <div style="font-family:var(--mono);font-size:9px;color:var(--text4)" id="smsCnt">0 chars</div>
+        <div style="display:flex;gap:8px">
+          <button class="btn btn-primary" onclick="genSMS()">Generate</button>
+          <button class="btn btn-ghost" onclick="copySMS()">Copy</button>
+        </div>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="panel-head"><span class="panel-title">Scheduled Broadcasts</span><span class="badge b-pro">PRO</span></div>
+      <div style="padding:14px;display:flex;flex-direction:column;gap:8px">
+        <div style="background:var(--tiber);border-radius:6px;padding:12px">
+          <div style="font-family:var(--mono);font-size:11px;font-weight:500;color:var(--cream);margin-bottom:3px">Daily 6:00 AM — Maize + Beans</div>
+          <div style="font-size:11px;color:var(--text3)">All cooperatives &middot; Kiswahili</div>
+          <span class="badge b-live" style="margin-top:7px;display:inline-block">ACTIVE</span>
+        </div>
+        <div style="background:var(--tiber);border-radius:6px;padding:12px">
+          <div style="font-family:var(--mono);font-size:11px;font-weight:500;color:var(--husk);margin-bottom:3px">Alert trigger &lt;80% benchmark</div>
+          <div style="font-size:11px;color:var(--text3)">Instant &middot; All subscribers</div>
+          <span class="badge b-alert" style="margin-top:7px;display:inline-block">ON TRIGGER</span>
+        </div>
+      </div>
+    </div>
+  </div></div>`
+}
+
+function renderPlans(){
+  return `<div class="plans-wrap">
+    <div class="plans-hero">
+      <h1>Market intelligence, priced for impact.</h1>
+      <p>Real prices. Live forex. Exploitation alerts. From KES 0 to enterprise.</p>
+    </div>
+    <div class="plans-grid">
+      <div class="plan-card">
+        <div class="plan-name">Free</div>
+        <div class="plan-price">KES 0<span>/mo</span></div>
+        <div class="plan-period">No credit card required</div>
+        <ul class="plan-features">
+          <li>Nairobi daily prices</li><li>Maize, beans, tea</li>
+          <li>7-day price trend</li><li>1 SMS alert/week</li>
+          <li class="locked">Live forex rates</li><li class="locked">Arbitrage alerts</li>
+          <li class="locked">Somalia data</li>
+        </ul>
+        <button class="plan-btn plan-btn-outline" onclick="openModal('signup')">Get Started Free</button>
+      </div>
+      <div class="plan-card featured">
+        <div class="plan-badge">MOST POPULAR</div>
+        <div class="plan-name">Pro</div>
+        <div class="plan-price">KES 1,499<span>/mo</span></div>
+        <div class="plan-period">or KES 14,990/year — save 17%</div>
+        <ul class="plan-features">
+          <li>All Free features</li><li>Live forex — 8 currencies</li>
+          <li>Full commodity matrix</li><li>Somalia data</li>
+          <li>Arbitrage alerts</li><li>Unlimited SMS</li>
+          <li>Exploitation alerts</li>
+        </ul>
+        <button class="plan-btn plan-btn-primary" onclick="openModal('signup')">Start Pro &rarr;</button>
+      </div>
+      <div class="plan-card">
+        <div class="plan-name">Enterprise</div>
+        <div class="plan-price">Custom</div>
+        <div class="plan-period">Annual contract</div>
+        <ul class="plan-features">
+          <li>Everything in Pro</li><li>Full REST API</li>
+          <li>White-label SMS</li><li>Dedicated analyst</li>
+        </ul>
+        <button class="plan-btn plan-btn-ent" onclick="window.location='mailto:sales@sokodata.co.ke'">Contact Sales</button>
+      </div>
+    </div>
+    <div class="plans-footer">M-Pesa &middot; Card &middot; Bank Transfer &middot; Airtel Money</div>
+  </div>`
+}
+
+// APP CONTROLLER
+let _currentPage="dashboard"
+const PAGES={dashboard:renderDashboard,forex:renderForex,commodities:renderCommodities,livestock:renderLivestock,arbitrage:renderArbitrage,sms:renderSMS,plans:renderPlans}
+
+function showPage(id,tabEl){
+  _currentPage=id
+  document.querySelectorAll(".nav-tab").forEach(t=>t.classList.remove("active"))
+  if(tabEl)tabEl.classList.add("active")
+  else document.querySelector(`.nav-tab[data-page="${id}"]`)?.classList.add("active")
+  const main=document.getElementById("appMain")
+  main.innerHTML=PAGES[id]?PAGES[id]():"<div class='empty'>Page not found</div>"
+  if(id==="dashboard"){buildHeatmap();calcFX()}
+  if(id==="forex"||id==="dashboard")setTimeout(calcFX,100)
+}
+
+// NAV
+document.getElementById("navTabs").addEventListener("click",e=>{
+  const tab=e.target.closest(".nav-tab")
+  if(tab)showPage(tab.dataset.page,tab)
+})
+
+// ZONE 2 TABS
+function switchZ2(panel,btn){
+  document.querySelectorAll(".z2-tab").forEach(t=>t.classList.remove("active"))
+  document.querySelectorAll(".z2-panel").forEach(p=>p.classList.remove("active"))
+  btn.classList.add("active")
+  document.getElementById("z2-"+panel)?.classList.add("active")
+  if(panel==="forex")setTimeout(calcFX,50)
+}
+
+// HEATMAP
+function buildHeatmap(){
+  const el=document.getElementById("heatmap");if(!el)return
+  const regions=[{n:"Nairobi",v:2},{n:"Mombasa",v:1},{n:"Kisumu",v:1},{n:"Nakuru",v:1},{n:"Eldoret",v:0},{n:"Garissa",v:4},{n:"Wajir",v:5},{n:"Mandera",v:5},{n:"Isiolo",v:3},{n:"Marsabit",v:4},{n:"Malindi",v:2},{n:"Machakos",v:2},{n:"Thika",v:1},{n:"Nyeri",v:1},{n:"Meru",v:2},{n:"Kericho",v:0},{n:"Bomet",v:0},{n:"Busia",v:0}]
+  const colors=["#1a4d1a","#2d7a2d","#8b7300","#ba7517","#d85a30","#c23030"]
+  el.innerHTML=regions.map(r=>`<div class="hm-cell" title="${r.n}: ${["Low","Below avg","Average","Above avg","High","Critical"][r.v]}" style="background:${colors[Math.min(r.v,5)]};color:${r.v>=3?"#fff":"#ccc"};font-size:7px">${r.n.slice(0,3).toUpperCase()}</div>`).join("")
+}
+
+// FX CALC
+const FX_RATES=()=>{
+  const fx=_cache.forex||STATIC_FOREX
+  return{USD:1,KES:fx.USD_KES||129.4,SOS:fx.USD_SOS||571,UGX:fx.USD_UGX||3710,TZS:fx.USD_TZS||2615,ETB:fx.USD_ETB||57.85,EUR:fx.USD_KES?(fx.USD_KES/fx.EUR_KES||0.921):0.921,GBP:fx.USD_KES?(fx.USD_KES/fx.GBP_KES||0.779):0.779}
+}
+function calcFX(){
+  const amt=parseFloat(document.getElementById("fcAmt")?.value)||0
+  const from=document.getElementById("fcFrom")?.value
+  const to=document.getElementById("fcTo")?.value
+  if(!from||!to)return
+  const rates=FX_RATES()
+  const inUSD=amt/rates[from],result=inUSD*rates[to],rate=rates[to]/rates[from]
+  const res=document.getElementById("fcResult"),rat=document.getElementById("fcRate")
+  if(res)res.textContent=result.toLocaleString(undefined,{maximumFractionDigits:2})+" "+to
+  if(rat)rat.textContent=`1 ${from} = ${rate.toFixed(4)} ${to}`
+}
+
+// SMS
+function setSmsKey(btn,key){
+  _smsKey=key
+  document.querySelectorAll("#smsToggles button").forEach(b=>{b.className="btn btn-ghost";b.removeAttribute("data-active")})
+  btn.className="btn btn-primary"
+  genSMS()
+}
+function setSmsLang(lang){
+  _smsLang=lang
+  document.getElementById("langEn").className=lang==="en"?"btn btn-primary":"btn btn-ghost"
+  document.getElementById("langSw").className=lang==="sw"?"btn btn-primary":"btn btn-ghost"
+  genSMS()
+}
+function genSMS(){
+  const tpl=SMS_TEMPLATES[_smsKey]?.[_smsLang]
+  if(!tpl)return
+  const txt=tpl()
+  const out=document.getElementById("smsOut"),cnt=document.getElementById("smsCnt")
+  if(out)out.textContent=txt
+  if(cnt)cnt.textContent=`${txt.length} chars · ${Math.ceil(txt.length/160)} unit${txt.length>160?"s":""}`
+}
+function copySMS(){
+  const txt=document.getElementById("smsOut")?.textContent||""
+  navigator.clipboard.writeText(txt).then(()=>{
+    const btn=event.target;btn.textContent="Copied!";setTimeout(()=>btn.textContent="Copy",1500)
+  })
+}
+
+// TICKER
+function buildTicker(){
+  const fx=_cache.forex||STATIC_FOREX,comms=_cache.commodities||STATIC_COMMODITIES
+  const items=[
+    `<div class="t-item"><span class="t-sym">USD/KES</span><span class="t-val">${(fx.USD_KES||129.4).toFixed(2)}</span><span class="t-up">&#9650;</span></div><span style="color:var(--border2)">&middot;</span>`,
+    `<div class="t-item"><span class="t-sym">EUR/KES</span><span class="t-val">${(fx.EUR_KES||140.2).toFixed(2)}</span><span class="t-dn">&#9660;</span></div><span style="color:var(--border2)">&middot;</span>`,
+    ...comms.slice(0,7).map(c=>`<div class="t-item"><span class="t-sym">${c.commodity.split(" ")[0].toUpperCase()} &middot; ${c.location.split(" ")[0].toUpperCase()}</span><span class="t-val">KES ${c.price_kes}</span><span class="t-${c.trend||"up"}">${c.trend==="dn"?"&#9660;":"&#9650;"}</span></div><span style="color:var(--border2)">&middot;</span>`),
+  ]
+  const html=items.join("")
+  document.getElementById("tickerTrack").innerHTML=html+html
+}
+
+// AUTH
+let _sb2=null
+function getSB2(){if(!_sb2&&CONFIG.SUPABASE_URL)_sb2=supabase.createClient(CONFIG.SUPABASE_URL,CONFIG.SUPABASE_ANON);return _sb2}
+function openModal(tab){document.getElementById("authModal").classList.add("open");switchAuthTab(tab||"signup")}
+function closeModal(){document.getElementById("authModal").classList.remove("open")}
+document.getElementById("modalClose").addEventListener("click",closeModal)
+document.getElementById("authModal").addEventListener("click",e=>{if(e.target===document.getElementById("authModal"))closeModal()})
+document.getElementById("tabLogin").addEventListener("click",()=>switchAuthTab("login"))
+document.getElementById("tabSignup").addEventListener("click",()=>switchAuthTab("signup"))
+document.getElementById("btnLogin").addEventListener("click",()=>{openModal("login")})
+
+function switchAuthTab(tab){
+  document.getElementById("tabLogin").classList.toggle("active",tab==="login")
+  document.getElementById("tabSignup").classList.toggle("active",tab==="signup")
+  const f=document.getElementById("authForm")
+  if(tab==="login"){
+    f.innerHTML=`<div class="field"><label>Email</label><input type="email" id="aEmail" placeholder="you@example.com"/></div><div class="field"><label>Password</label><input type="password" id="aPass" placeholder="&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;"/></div><div class="auth-err" id="aErr"></div><button class="auth-btn" onclick="doAuth('login')">Login &rarr;</button><div style="text-align:center;margin-top:12px;font-size:11px;color:var(--text4)">No account? <span style="color:var(--husk);cursor:pointer" onclick="switchAuthTab('signup')">Sign up free</span></div>`
+  }else{
+    f.innerHTML=`<div class="field"><label>Full Name</label><input type="text" id="aName" placeholder="Jane Wanjiru"/></div><div class="field"><label>Email</label><input type="email" id="aEmail" placeholder="you@example.com"/></div><div class="field"><label>Phone (M-Pesa)</label><input type="tel" id="aPhone" placeholder="+254700000000"/></div><div class="field"><label>Password</label><input type="password" id="aPass" placeholder="Min 8 characters"/></div><div class="auth-err" id="aErr"></div><button class="auth-btn" onclick="doAuth('signup')">Create Free Account &rarr;</button><div style="text-align:center;margin-top:12px;font-size:11px;color:var(--text4)">Already have an account? <span style="color:var(--husk);cursor:pointer" onclick="switchAuthTab('login')">Login</span></div>`
+  }
+}
+
+async function doAuth(type){
+  const sb=getSB2();if(!sb){alert("Connecting...");return}
+  const btn=document.querySelector(".auth-btn"),err=document.getElementById("aErr")
+  const email=document.getElementById("aEmail").value.trim(),pass=document.getElementById("aPass").value
+  btn.disabled=true;btn.textContent="Please wait..."
+  err.textContent=""
+  let result
+  if(type==="login"){result=await sb.auth.signInWithPassword({email,password:pass})}
+  else{
+    const name=document.getElementById("aName")?.value.trim()||"",phone=document.getElementById("aPhone")?.value.trim()||""
+    result=await sb.auth.signUp({email,password:pass,options:{data:{full_name:name,phone}}})
+    if(!result.error&&result.data.user)await sb.from("users").upsert({id:result.data.user.id,email,full_name:name,phone,plan:"free"})
+  }
+  if(result.error){err.textContent=result.error.message;btn.disabled=false;btn.textContent=type==="login"?"Login →":"Create Free Account →"}
+  else{closeModal();document.getElementById("navPlan").textContent="PRO";document.getElementById("navPlan").className="nav-plan plan-pro"}
+}
+
+// CLOCK
+setInterval(()=>{
+  const eat=new Date(Date.now()+3*3600000)
+  const el=document.getElementById("navTime");if(el)el.textContent=eat.toISOString().slice(11,19)+" EAT"
+},1000)
+
+// CURSOR
+const cur=document.getElementById("cur"),curR=document.getElementById("curR")
+let mx=0,my=0,rx=0,ry=0
+document.addEventListener("mousemove",e=>{mx=e.clientX;my=e.clientY;cur.style.left=mx+"px";cur.style.top=my+"px"})
+;(function anim(){rx+=(mx-rx)*.13;ry+=(my-ry)*.13;curR.style.left=rx+"px";curR.style.top=ry+"px";requestAnimationFrame(anim)})()
+
+// INIT
+async function init(){
+  await fetchAll()
+  buildTicker()
+  showPage("dashboard")
+  setInterval(async()=>{await fetchAll();buildTicker();showPage(_currentPage)},6*60*1000)
+}
+document.addEventListener("DOMContentLoaded",init)
+</script>
 </body>
 </html>
-sokodata
