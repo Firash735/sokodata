@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>SokoData — Market Detail</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,600&family=Plus+Jakarta+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --tiber:#042820;--tiber-mid:#0a3d30;--tiber-light:#0d4d3c;--tiber-border:#0f5a46;
+  --husk:#b7a25e;--husk-l:#cdbf85;--husk-d:#9a8445;
+  --sanjuan:#35556e;--sanjuan-l:#4a6d8a;
+  --cherry:#74070e;--cherry-l:#c0101b;
+  --curious:#2092e9;--mulled:#614d70;
+  --cream:#f5f0e8;--text2:#a8c4b8;--text3:#5a8070;--text4:#3d5e58;
+  --border:rgba(183,162,94,0.1);--border2:rgba(183,162,94,0.18);
+  --sans:"Plus Jakarta Sans",sans-serif;--serif:"Fraunces",serif;--mono:"DM Mono",monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--sans);background:var(--tiber);color:var(--cream);min-height:100vh;cursor:none}
+
+/* CURSOR */
+.cursor{position:fixed;width:7px;height:7px;background:var(--husk);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:transform .1s}
+.cursor-ring{position:fixed;width:26px;height:26px;border:1px solid rgba(183,162,94,0.4);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:all .15s ease}
+
+/* NAV */
+.nav{height:56px;padding:0 1.5rem;display:flex;align-items:center;gap:14px;background:rgba(4,40,32,0.96);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100}
+.nav-back{display:flex;align-items:center;gap:8px;font-family:var(--mono);font-size:11px;color:var(--text3);text-decoration:none;cursor:none;transition:color .15s;border:none;background:none;padding:6px 12px;border-radius:4px;border:1px solid var(--border)}
+.nav-back:hover{color:var(--husk);border-color:var(--border2)}
+.nav-logo{display:flex;align-items:center;gap:8px;font-family:var(--mono);font-size:14px;font-weight:500;color:var(--husk);text-decoration:none;margin-left:auto}
+.nav-breadcrumb{font-family:var(--mono);font-size:11px;color:var(--text4)}
+
+/* HERO BAND */
+.hero-band{padding:2.5rem 1.5rem 2rem;border-bottom:1px solid var(--border);position:relative;overflow:hidden}
+.hero-band::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at 0% 50%,rgba(183,162,94,0.06) 0%,transparent 70%);pointer-events:none}
+.hero-inner{max-width:900px;margin:0 auto;position:relative;z-index:1}
+.hero-eyebrow{display:flex;align-items:center;gap:10px;margin-bottom:1rem}
+.hero-tag{font-family:var(--mono);font-size:9px;font-weight:500;color:var(--husk);background:rgba(183,162,94,0.1);border:1px solid rgba(183,162,94,0.2);padding:4px 12px;border-radius:12px;letter-spacing:0.1em;text-transform:uppercase}
+.hero-updated{font-family:var(--mono);font-size:9px;color:var(--text4);letter-spacing:0.06em}
+.hero-title{font-family:var(--serif);font-size:clamp(32px,5vw,56px);font-weight:700;letter-spacing:-0.02em;line-height:1.08;margin-bottom:.75rem}
+.hero-location{font-size:15px;color:var(--text2);margin-bottom:1.5rem;font-weight:300}
+.verdict-card{display:inline-flex;align-items:center;gap:14px;background:var(--tiber-mid);border:1px solid var(--border2);border-radius:10px;padding:14px 20px}
+.verdict-price{font-family:var(--mono);font-size:32px;font-weight:500;color:var(--cream);line-height:1}
+.verdict-divider{width:1px;height:40px;background:var(--border2)}
+.verdict-signal{display:flex;flex-direction:column;gap:4px}
+.verdict-action{font-family:var(--mono);font-size:14px;font-weight:700;letter-spacing:0.08em}
+.verdict-action.sell{color:var(--husk)}
+.verdict-action.hold{color:var(--sanjuan-l)}
+.verdict-action.alert{color:var(--cherry-l)}
+.verdict-reason{font-size:12px;color:var(--text2);max-width:280px;line-height:1.4}
+
+/* MAIN CONTENT */
+.main{max-width:900px;margin:0 auto;padding:2rem 1.5rem}
+
+/* STEP SYSTEM */
+.step{margin-bottom:2.5rem;opacity:0;transform:translateY(16px);transition:opacity .5s ease,transform .5s ease}
+.step.visible{opacity:1;transform:translateY(0)}
+.step-header{display:flex;align-items:center;gap:14px;margin-bottom:1.25rem}
+.step-num{width:32px;height:32px;border-radius:50%;background:rgba(183,162,94,0.12);border:1px solid rgba(183,162,94,0.22);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:11px;font-weight:500;color:var(--husk);flex-shrink:0}
+.step-title{font-family:var(--serif);font-size:20px;font-weight:600;color:var(--cream);letter-spacing:-0.01em}
+.step-card{background:var(--tiber-mid);border:1px solid var(--border);border-radius:12px;overflow:hidden}
+.step-body{padding:1.5rem}
+
+/* BENCHMARK VISUAL */
+.benchmark-wrap{display:flex;flex-direction:column;gap:16px}
+.bm-row{display:flex;align-items:center;gap:14px}
+.bm-label{font-family:var(--mono);font-size:10px;color:var(--text3);width:160px;flex-shrink:0;line-height:1.4}
+.bm-bar-wrap{flex:1}
+.bm-track{height:10px;background:rgba(255,255,255,0.06);border-radius:5px;overflow:hidden;position:relative}
+.bm-fill{height:100%;border-radius:5px;transition:width 1.2s cubic-bezier(0.34,1.56,0.64,1)}
+.bm-val{font-family:var(--mono);font-size:13px;font-weight:500;white-space:nowrap;flex-shrink:0;min-width:70px;text-align:right}
+.bm-gap{margin-top:14px;padding:12px 16px;border-radius:8px;font-family:var(--mono);font-size:12px;line-height:1.6}
+
+/* WHY REASONS */
+.reasons{display:flex;flex-direction:column;gap:10px}
+.reason{display:flex;align-items:flex-start;gap:12px;padding:12px 16px;background:var(--tiber);border-radius:8px;border-left:3px solid var(--border)}
+.reason.positive{border-left-color:var(--husk)}
+.reason.negative{border-left-color:var(--cherry-l)}
+.reason.neutral{border-left-color:var(--sanjuan)}
+.reason-icon{font-size:16px;flex-shrink:0;margin-top:1px}
+.reason-text{font-size:13px;color:var(--text2);line-height:1.65}
+.reason-text strong{color:var(--cream);font-weight:500}
+
+/* MARKET TABLE */
+.mkt-table{width:100%;border-collapse:collapse}
+.mkt-table th{font-family:var(--mono);font-size:9px;color:var(--text4);text-transform:uppercase;letter-spacing:.1em;padding:8px 14px;text-align:left;border-bottom:1px solid var(--border);font-weight:500}
+.mkt-table td{font-family:var(--mono);font-size:12px;padding:11px 14px;border-bottom:1px solid rgba(183,162,94,.04);vertical-align:middle}
+.mkt-table tr:last-child td{border-bottom:none}
+.mkt-table tr.highlight td{background:rgba(183,162,94,.05)}
+.mkt-table td:first-child{color:var(--cream);font-weight:500}
+.best-badge{font-size:8px;font-weight:700;padding:2px 6px;border-radius:2px;background:rgba(183,162,94,.15);color:var(--husk);letter-spacing:.06em;margin-left:6px}
+
+/* ACTION STEPS */
+.action-steps{display:flex;flex-direction:column;gap:0}
+.action-step{display:flex;align-items:flex-start;gap:14px;padding:14px 16px;border-bottom:1px solid var(--border)}
+.action-step:last-child{border-bottom:none}
+.action-num{width:26px;height:26px;border-radius:50%;background:var(--husk);color:var(--tiber);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:10px;font-weight:700;flex-shrink:0;margin-top:1px}
+.action-content{}
+.action-title{font-size:14px;font-weight:500;color:var(--cream);margin-bottom:4px}
+.action-desc{font-size:12px;color:var(--text2);line-height:1.65}
+
+/* RISK FACTORS */
+.risks{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.risk-item{background:var(--tiber);border-radius:8px;padding:12px 14px;border:1px solid var(--border)}
+.risk-title{font-size:13px;font-weight:500;color:var(--cream);margin-bottom:4px;display:flex;align-items:center;gap:7px}
+.risk-desc{font-size:12px;color:var(--text2);line-height:1.6}
+
+/* EXPLOITATION THRESHOLD */
+.threshold-card{background:var(--tiber);border:1px solid rgba(116,7,14,.25);border-radius:10px;padding:1.25rem 1.5rem}
+.threshold-title{font-family:var(--mono);font-size:10px;font-weight:500;color:var(--cherry-l);letter-spacing:.1em;text-transform:uppercase;margin-bottom:10px}
+.threshold-row{display:flex;align-items:center;gap:16px;margin-bottom:10px;flex-wrap:wrap}
+.threshold-val{font-family:var(--mono);font-size:28px;font-weight:500;line-height:1}
+.threshold-desc{font-size:13px;color:var(--text2);line-height:1.6;flex:1;min-width:200px}
+.threshold-action{background:rgba(116,7,14,.1);border:1px solid rgba(116,7,14,.2);border-radius:6px;padding:10px 14px;font-size:12px;color:rgba(192,16,27,.8);line-height:1.65;margin-top:8px}
+
+/* VERDICT FINAL */
+.final-verdict{background:var(--tiber-mid);border:1px solid var(--border2);border-radius:14px;padding:2rem;text-align:center;position:relative;overflow:hidden}
+.final-verdict::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(183,162,94,0.08) 0%,transparent 70%);pointer-events:none}
+.fv-inner{position:relative;z-index:1}
+.fv-label{font-family:var(--mono);font-size:9px;font-weight:500;color:var(--text4);letter-spacing:.14em;text-transform:uppercase;margin-bottom:12px}
+.fv-action{font-family:var(--serif);font-size:clamp(28px,5vw,48px);font-weight:700;letter-spacing:-0.02em;margin-bottom:.75rem}
+.fv-action.sell{color:var(--husk)}
+.fv-action.hold{color:var(--sanjuan-l)}
+.fv-action.alert{color:var(--cherry-l)}
+.fv-summary{font-size:15px;color:var(--text2);line-height:1.75;max-width:500px;margin:0 auto 1.5rem;font-weight:300}
+.fv-btn{display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);font-size:12px;font-weight:500;padding:12px 24px;background:var(--husk);color:var(--tiber);border:none;border-radius:6px;cursor:none;text-decoration:none;transition:all .2s;letter-spacing:.04em}
+.fv-btn:hover{background:var(--husk-l)}
+.fv-ghost{display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);font-size:12px;font-weight:500;padding:12px 24px;background:transparent;color:var(--husk);border:1px solid rgba(183,162,94,.3);border-radius:6px;cursor:none;text-decoration:none;transition:all .2s;letter-spacing:.04em;margin-left:10px}
+.fv-ghost:hover{border-color:var(--husk)}
+
+/* DIVIDER */
+.divider{height:1px;background:var(--border);margin:0 -1.5rem 1.5rem}
+
+/* SCROLLBAR */
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:var(--tiber)}::-webkit-scrollbar-thumb{background:var(--tiber-border);border-radius:2px}
+
+/* PROGRESS BAR */
+.progress-bar{position:fixed;top:0;left:0;height:2px;background:var(--husk);z-index:200;transition:width .1s}
+
+@media(max-width:600px){.risks{grid-template-columns:1fr}.bm-label{width:100px;font-size:9px}.verdict-card{flex-wrap:wrap;gap:10px}.fv-btn,.fv-ghost{width:100%;justify-content:center;margin:4px 0}}
+</style>
+</head>
+<body>
+<div class="progress-bar" id="progressBar"></div>
+<div class="cursor" id="cur"></div>
+<div class="cursor-ring" id="curR"></div>
+
+<nav class="nav">
+  <button class="nav-back" onclick="window.history.back()">&#8592; Back to Dashboard</button>
+  <span class="nav-breadcrumb" id="navBreadcrumb">Dashboard &rarr; Detail</span>
+  <a href="dashboard.html" class="nav-logo">
+    <svg width="22" height="22" viewBox="0 0 40 40" fill="none">
+      <circle cx="20" cy="5" r="2" fill="#b7a25e" opacity=".9"/>
+      <circle cx="30.6" cy="8.4" r="2" fill="#b7a25e" opacity=".9"/>
+      <circle cx="36.6" cy="18" r="2" fill="#b7a25e" opacity=".9"/>
+      <circle cx="13" cy="3.8" r="2" fill="#b7a25e" opacity=".9"/>
+      <line x1="20" y1="5" x2="20" y2="20" stroke="#b7a25e" stroke-width=".8" opacity=".3"/>
+      <line x1="30.6" y1="8.4" x2="20" y2="20" stroke="#b7a25e" stroke-width=".8" opacity=".3"/>
+      <circle cx="20" cy="20" r="4" fill="#b7a25e"/>
+    </svg>
+    SOKODATA
+  </a>
+</nav>
+
+<!-- HERO -->
+<div class="hero-band">
+  <div class="hero-inner">
+    <div class="hero-eyebrow">
+      <span class="hero-tag" id="heroTag">COMMODITY</span>
+      <span class="hero-updated" id="heroUpdated">Updated today</span>
+    </div>
+    <h1 class="hero-title" id="heroTitle">Loading...</h1>
+    <div class="hero-location" id="heroLocation">Kenya</div>
+    <div class="verdict-card">
+      <div class="verdict-price" id="verdictPrice">KES --</div>
+      <div class="verdict-divider"></div>
+      <div class="verdict-signal">
+        <div class="verdict-action" id="verdictAction">--</div>
+        <div class="verdict-reason" id="verdictReason">Loading market data...</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN STEPS -->
+<div class="main" id="mainContent">
+  <!-- Injected by JS -->
+</div>
+
+<script src="js/env.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script>
+// ── Cursor ──────────────────────────────────────────
+const cur=document.getElementById("cur"),curR=document.getElementById("curR")
+let mx=0,my=0,rx=0,ry=0
+document.addEventListener("mousemove",e=>{mx=e.clientX;my=e.clientY;cur.style.left=mx+"px";cur.style.top=my+"px"})
+;(function a(){rx+=(mx-rx)*.13;ry+=(my-ry)*.13;curR.style.left=rx+"px";curR.style.top=ry+"px";requestAnimationFrame(a)})()
+document.querySelectorAll("a,button").forEach(el=>{
+  el.addEventListener("mouseenter",()=>{cur.style.transform="translate(-50%,-50%) scale(2)";curR.style.transform="translate(-50%,-50%) scale(1.5)"})
+  el.addEventListener("mouseleave",()=>{cur.style.transform="translate(-50%,-50%) scale(1)";curR.style.transform="translate(-50%,-50%) scale(1)"})
+})
+
+// ── Progress bar ────────────────────────────────────
+window.addEventListener("scroll",()=>{
+  const pct=(window.scrollY/(document.body.scrollHeight-window.innerHeight))*100
+  document.getElementById("progressBar").style.width=pct+"%"
+})
+
+// ── Scroll reveal ────────────────────────────────────
+const obs=new IntersectionObserver(e=>e.forEach(x=>{if(x.isIntersecting)x.target.classList.add("visible")}),{threshold:0.08})
+
+// ── DATA ──────────────────────────────────────────────
+const COMMODITY_DATA = {
+  "maize-nairobi": {
+    name:"Maize (White)", location:"Nairobi Wholesale Market", tag:"STAPLE CROP",
+    price:66, action:"hold", signal_color:"sanjuan-l",
+    verdict:"Hold your maize. The price is fair but not exceptional. Mandera and Garissa are paying significantly more — if you have transport, sell there instead.",
+    benchmark:{ world_bank:62, local:66, fair_min:55, exploit_thresh:50,
+      world_bank_label:"World Bank benchmark (USD converted to KES)",
+      local_label:"Current Nairobi wholesale price",
+      gap_text:"You are receiving KES 4/kg above the World Bank benchmark. This is a fair price — no exploitation detected.",
+      gap_color:"husk" },
+    why:[
+      {type:"positive", icon:"&#9650;", text:"<strong>Above 5-year average:</strong> Nairobi maize prices are 11% above the five-year average, driven by reduced supply from main production zones and higher input costs post-drought."},
+      {type:"neutral", icon:"&#9472;", text:"<strong>Tanzania imports arriving:</strong> Tanzania and Uganda surplus maize is entering Kenya through border markets. This will moderate prices from May onward — do not hold long."},
+      {type:"positive", icon:"&#9650;", text:"<strong>Deficit markets nearby:</strong> Garissa (KES 85) and Mandera (KES 94) have much higher prices due to supply deficits. If you can transport there, the arbitrage is real and significant."},
+      {type:"neutral", icon:"&#9472;", text:"<strong>Long rains approaching:</strong> March-May long rains will increase production by July. Prices typically soften 15-20% after harvest. The window to sell at current prices is narrowing."},
+    ],
+    markets:[
+      {location:"Nairobi", price:66, action:"hold", note:"Current market", highlight:true},
+      {location:"Garissa", price:85, action:"sell", note:"Deficit — sell here"},
+      {location:"Mandera", price:94, action:"sell", note:"Best price in Kenya"},
+      {location:"Mombasa", price:71, action:"sell", note:"Coastal premium"},
+      {location:"Kisumu", price:58, action:"hold", note:"Surplus region"},
+      {location:"Mogadishu SOM", price:93, action:"sell", note:"Cross-border opportunity"},
+      {location:"Buale SOM", price:161, action:"sell", note:"Severe deficit"},
+    ],
+    actions:[
+      {title:"If you are in Nairobi or near Nairobi:", desc:"Current price is fair. If you need cash now, sell at KES 66. If you can wait 2-3 weeks and have storage, monitor the Garissa price — it has been rising."},
+      {title:"If you have transport access to Garissa or Mandera:", desc:"Do not sell in Nairobi. The KES 28-58/kg difference to Garissa/Mandera is significant. After transport costs (estimate KES 8-15/kg for corridor), net gain is KES 13-43/kg. On a 90kg bag that is KES 1,170 to KES 3,870 extra per bag."},
+      {title:"If you are a cooperative:", desc:"Pool transport to Mandera corridor. Split the arbitrage gain among members. At KES 43 net per kg on 10 tonnes, that is KES 430,000 in additional cooperative income."},
+      {title:"Timing advice:", desc:"The long rains start in March. Prices historically soften 15-20% in June-July as new harvest hits markets. If you have storage, sell before June. If you do not have storage, sell now at KES 66 rather than holding into a softer market."},
+    ],
+    risks:[
+      {title:"&#9888; Long rains failure", desc:"If the March-May rains fail again (as in 2022), prices will spike higher. This would make holding the right decision."},
+      {title:"&#9660; Tanzania import surge", desc:"If Tanzania releases more surplus at the border, Nairobi prices could drop to KES 55-60 within 3 weeks."},
+      {title:"&#9650; Somalia demand increase", desc:"Escalating humanitarian needs in southern Somalia could push cross-border demand higher, benefiting Mandera corridor sellers."},
+      {title:"&#9472; Currency movement", desc:"A weakening KES against USD raises import costs and supports local prices. Watch the USD/KES rate on SokoData forex."},
+    ],
+    exploit_thresh:50,
+    exploit_currency:"KES",
+    exploit_text:"If any buyer offers you less than KES 50/kg for your maize, that is exploitation — they are paying you 20% below the minimum fair price. Do not accept. Report to your cooperative or contact SokoData.",
+    final_verdict:"HOLD in Nairobi. SELL if you can reach Garissa or Mandera. The arbitrage opportunity is real — a 42% price premium exists 400km from Nairobi right now.",
+    final_action:"hold",
+    final_detail:"The Nairobi price is fair and stable. But the real opportunity is the corridor to deficit markets in northeastern Kenya and southern Somalia. Make the logistics work and the gain is substantial.",
+  },
+
+  "coffee-nce": {
+    name:"Coffee AA", location:"Nairobi Coffee Exchange (NCE)", tag:"EXPORT CROP",
+    price:637, action:"sell", signal_color:"husk",
+    verdict:"Sell now. The NCE auction just hit a season high of KES 637/kg average, with top lots reaching KES 1,008/kg. This is the best price in 8 months. Do not wait.",
+    benchmark:{ world_bank:480, local:637, fair_min:510, exploit_thresh:85,
+      world_bank_label:"ICO Arabica benchmark (converted to KES/kg clean bean)",
+      local_label:"NCE auction average this week",
+      gap_text:"Nairobi auction price is 33% ABOVE the ICO benchmark. This is an exceptionally strong market. Take advantage of it now.",
+      gap_color:"husk" },
+    why:[
+      {type:"positive", icon:"&#9650;", text:"<strong>Season high:</strong> NCE Sale 21 achieved KES 31,839 per 50kg bag — the highest price of the 2024/25 season. Top lot Gatina AA reached KES 50,391 per bag."},
+      {type:"positive", icon:"&#9650;", text:"<strong>Global demand surge:</strong> Premium Arabica demand from European and Asian buyers is at a multi-year high. Kenya AA is particularly sought after for its bright acidity and wine-like profile."},
+      {type:"negative", icon:"&#9660;", text:"<strong>Cherry supply is tight:</strong> The current season has produced lower cherry volumes than forecast. This scarcity is supporting high prices — but also means cooperatives may not have large stocks to sell."},
+      {type:"negative", icon:"&#9660;", text:"<strong>Prices will correct:</strong> When the next main crop season arrives (October-December), supply increases and prices historically drop 15-25%. Sell now, not then."},
+    ],
+    markets:[
+      {location:"NCE Nairobi — AA Grade", price:637, action:"sell", note:"Current auction average", highlight:true},
+      {location:"NCE Nairobi — AA Top Lot", price:1008, action:"sell", note:"Gatina premium lot"},
+      {location:"NCE Nairobi — AB Grade", price:490, action:"sell", note:"Good price"},
+      {location:"NCE Nairobi — C Grade", price:364, action:"hold", note:"Below season average"},
+      {location:"Farm gate — Cherry", price:122, action:"sell", note:"Check for exploitation"},
+      {location:"Mombasa export", price:580, action:"sell", note:"Direct export route"},
+    ],
+    actions:[
+      {title:"If you have clean bean to deliver to NCE:", desc:"Register with your cooperative for the next NCE sale immediately. Sale 22 registration opens this week. Do not wait — prices at this level are unusual and will not last the full season."},
+      {title:"If you are delivering cherry to a cooperative collection point:", desc:"The cherry-to-clean bean ratio is approximately 6:1. At KES 637/kg clean bean, the fair farm gate for cherry is KES 106/kg. If you are being offered less than KES 102/kg, that is below the 80% exploitation threshold — report it."},
+      {title:"If you are a cooperative manager:", desc:"Prioritize pulping and drying all cherry as fast as possible. Every day of delay risks quality loss. The market window at these prices may be 4-6 weeks."},
+      {title:"For smallholder farmers:", desc:"If your cooperative has not contacted you about cherry collection, contact them directly. You have a right to know what your cherry is worth and to deliver it at fair prices."},
+    ],
+    risks:[
+      {title:"&#9660; Quality downgrade risk", desc:"Poor drying or processing can drop AA grade to AB or C, significantly reducing price. Maintain strict quality protocols."},
+      {title:"&#9660; Early season correction", desc:"If the October crop is large, prices will soften. The current window is limited to the current season surplus."},
+      {title:"&#9650; El Nino impact", desc:"Dry conditions in some growing regions could reduce October crop. This would extend the current tight supply and support prices longer."},
+      {title:"&#9472; Currency risk", desc:"Coffee is priced in USD at ICO. A strengthening KES would reduce the KES equivalent received. Current USD/KES rate favors sellers."},
+    ],
+    exploit_thresh:85,
+    exploit_currency:"KES",
+    exploit_text:"If any buyer offers you less than KES 85/kg for coffee cherry, that is exploitation — 33% below the minimum fair farm gate price. Do not accept. Contact your cooperative or the Kenya Coffee Directorate immediately.",
+    final_verdict:"SELL NOW. The NCE is at a season high. This is the moment your crop pays maximum return. Every week you wait risks a price correction.",
+    final_action:"sell",
+    final_detail:"Strong global Arabica demand, tight Kenya supply, and a season-high NCE price create a rare window. Farmers and cooperatives who act this week will receive the best returns of the 2024/25 season.",
+  },
+
+  "goat-garissa": {
+    name:"Goat (Mature)", location:"Garissa Market", tag:"LIVESTOCK",
+    price:400, action:"sell", signal_color:"husk",
+    verdict:"Good time to sell. Prices are above average in Garissa and demand from Nairobi terminal buyers is strong. If your animals are in good body condition, move them now before the dry season weakens them.",
+    benchmark:{ world_bank:320, local:400, fair_min:300, exploit_thresh:280,
+      world_bank_label:"Regional average for mature goat (FEWS NET benchmark)",
+      local_label:"Current Garissa market price",
+      gap_text:"Garissa price is 25% above regional benchmark. Strong buyer demand is supporting prices above average.",
+      gap_color:"husk" },
+    why:[
+      {type:"positive", icon:"&#9650;", text:"<strong>Above average price:</strong> Garissa mature goat prices are 25% above the five-year average, driven by strong urban demand from Nairobi, Mombasa, and the Gulf export market through Mombasa port."},
+      {type:"positive", icon:"&#9650;", text:"<strong>Gulf export demand:</strong> Middle East import demand (UAE, Saudi Arabia, Qatar) for East African small ruminants remains strong, supporting prices at the export gateway."},
+      {type:"negative", icon:"&#9660;", text:"<strong>Wajir and Mandera distress:</strong> Neighboring pastoral areas are showing distress selling as drought worsens body conditions. This increases supply pressure and could soften Garissa prices in 4-6 weeks if the drought continues northward."},
+      {type:"neutral", icon:"&#9472;", text:"<strong>Eid premium approaching:</strong> Eid al-Adha creates significant demand spike for livestock in 8-10 weeks. Animals in good body condition could command a 15-25% premium if held to that date. Risk: body condition must be maintained."},
+    ],
+    markets:[
+      {location:"Garissa", price:400, action:"sell", note:"Current price — good", highlight:true},
+      {location:"Nairobi terminal", price:450, action:"sell", note:"Best price — needs transport"},
+      {location:"Wajir", price:310, action:"hold", note:"Distress prices — avoid selling"},
+      {location:"Mandera", price:290, action:"hold", note:"Severe distress — do not sell"},
+      {location:"Isiolo", price:380, action:"sell", note:"Good regional price"},
+      {location:"Burao — Somalia", price:420, action:"sell", note:"Cross-border — good demand"},
+      {location:"Bossaso — Somalia", price:380, action:"sell", note:"Gulf export gateway"},
+    ],
+    actions:[
+      {title:"If your animals are in good body condition now:", desc:"Sell in Garissa now at KES 380-420/head. Do not wait for Eid unless you have reliable water and grazing for the next 8-10 weeks — the risk of body condition deterioration in current dry conditions outweighs the Eid premium for most pastoralists."},
+      {title:"If your animals are in poor or declining body condition:", desc:"Sell immediately. A goat in declining condition loses 10-15% of market value per week in poor conditions. Every week you hold a declining animal, you lose more than you would gain from market price movements."},
+      {title:"If you are in Wajir or Mandera:", desc:"Do not sell your core breeding animals — only sell animals you would have culled anyway. The distress prices in those markets (KES 290-310) are 25% below Garissa. If you can transport to Garissa, the KES 90-110/head difference covers most transport costs."},
+      {title:"For cooperative bulk sales:", desc:"Pool animals and negotiate direct with Nairobi terminal buyers. Removing the middleman at Garissa market adds KES 30-50/head. Contact the Garissa County Livestock office for registered buyer contacts."},
+    ],
+    risks:[
+      {title:"&#9660; Drought spreading", desc:"If current drought conditions spread from Wajir/Mandera into Garissa county, pasture deterioration will force mass selling and prices could drop 20-30% within 6 weeks."},
+      {title:"&#9650; Eid premium window", desc:"In 8-10 weeks, Eid al-Adha demand could push prices 15-25% higher. Animals in excellent body condition should be held if water/grazing is secured."},
+      {title:"&#9472; Currency impact", desc:"Gulf buyers pay in USD. A strengthening USD/KES rate benefits the export price in KES terms. Monitor SokoData forex for this signal."},
+      {title:"&#9660; Disease risk", desc:"Dry season increases Foot and Mouth Disease risk in concentrated market areas. Animals that contract disease lose all market value. Vaccination status matters."},
+    ],
+    exploit_thresh:280,
+    exploit_currency:"KES",
+    exploit_text:"If any buyer offers you less than KES 280/head for a mature goat in Garissa, that is below the 80% fair price threshold. This is exploitation — they know the true market value. Do not accept. Compare prices at the market before selling and negotiate with multiple buyers.",
+    final_verdict:"SELL in Garissa now if body condition is good. TRANSPORT to Nairobi if you can — the KES 50/head premium covers costs. HOLD minimum breeding stock only.",
+    final_action:"sell",
+    final_detail:"Current prices are 25% above average and market conditions favor sellers. The Eid premium is tempting but the body condition risk in drought conditions is real. A good animal sold today at KES 400 is better than a weakened animal sold in 8 weeks at KES 420.",
+  },
+
+  "tea-nyamira": {
+    name:"Tea Green Leaf", location:"Nyamira — KTDA Zone 10", tag:"CASH CROP",
+    price:24, action:"hold", signal_color:"sanjuan-l",
+    verdict:"Continue delivering your green leaf. Do not reduce plucking. The KES 24/kg factory price is frozen but the end-of-season bonus payment will add to your income. Stopping now costs you that bonus.",
+    benchmark:{ world_bank:28, local:24, fair_min:22, exploit_thresh:20,
+      world_bank_label:"Mombasa Tea Auction average equivalent (KTDA formula)",
+      local_label:"Current KTDA Nyamira factory payment",
+      gap_text:"Factory payment is KES 4/kg below the equivalent benchmark. KTDA has frozen payments due to low auction prices. This is a system-level issue, not individual exploitation.",
+      gap_color:"sanjuan-l" },
+    why:[
+      {type:"negative", icon:"&#9660;", text:"<strong>KTDA payment frozen:</strong> KTDA confirmed Nyamira Zone 10 factories will retain the KES 24/kg rate for February 2026 due to low Mombasa auction prices and factory cash flow constraints."},
+      {type:"negative", icon:"&#9660;", text:"<strong>Mombasa auction subdued:</strong> The Mombasa tea auction has been averaging around $2.04/kg for made tea — below the levels KTDA needs to pay a higher green leaf rate. Pakistan and Egypt buying has been inconsistent."},
+      {type:"positive", icon:"&#9650;", text:"<strong>Bonus payment at end of season:</strong> KTDA pays an annual bonus based on total production and final auction performance. Farmers who maintain delivery volumes receive higher bonus payments. Stopping delivery now reduces your bonus entitlement."},
+      {type:"positive", icon:"&#9650;", text:"<strong>Long-term price recovery expected:</strong> Global tea demand from Russia and Central Asia is recovering. Analysts expect Mombasa auction prices to improve in Q3 2026, which will feed into higher factory payments."},
+    ],
+    markets:[
+      {location:"Nyamira — KTDA Zone 10", price:24, action:"hold", note:"Current factory rate — frozen", highlight:true},
+      {location:"Kericho — KTDA", price:24, action:"hold", note:"Same freeze"},
+      {location:"Nandi — KTDA", price:24, action:"hold", note:"Same freeze"},
+      {location:"Bomet — KTDA", price:23, action:"hold", note:"Slightly lower zone"},
+      {location:"Private factories", price:22, action:"hold", note:"Lower — avoid switching"},
+      {location:"Mombasa made tea", price:280, action:"hold", note:"Auction reference (not farmgate)"},
+    ],
+    actions:[
+      {title:"Do not reduce or stop plucking:", desc:"Every kg of green leaf you deliver contributes to your end-of-season bonus calculation. The bonus payment historically adds KES 4-8/kg equivalent to your total annual earnings. Stopping now for KES 24 loses you a potential KES 28-32 total per kg average."},
+      {title:"Maintain plucking quality:", desc:"KTDA pays a premium for quality leaf (two leaves and a bud standard). In a low-price environment, the quality bonus becomes more important. Reject coarse leaf and focus on quality plucking."},
+      {title:"Do not switch to private factories:", desc:"Private buyers are offering KES 22-23/kg during this period — lower than KTDA. They are taking advantage of farmer frustration. KTDA membership includes the bonus payment that private buyers do not offer."},
+      {title:"Engage your KTDA cooperative:", desc:"Attend the next KTDA cooperative meeting and ask for a transparent breakdown of the auction prices driving the freeze. You have a right to this information as a member."},
+    ],
+    risks:[
+      {title:"&#9660; Extended auction weakness", desc:"If the Mombasa auction remains depressed through Q2 2026, KTDA may be unable to increase the factory price for the full season."},
+      {title:"&#9650; Currency benefit", desc:"Tea is sold in USD at Mombasa. A weaker KES means each dollar of auction revenue converts to more KES — which could improve factory payment capacity."},
+      {title:"&#9472; Climate impact on quality", desc:"Dry weather affects leaf quality. Maintaining irrigation where possible protects your quality bonus."},
+      {title:"&#9650; Russia/Central Asia demand recovery", desc:"Geopolitical normalization could bring Russian buyers back to Mombasa in H2 2026. This is the most likely price recovery catalyst."},
+    ],
+    exploit_thresh:20,
+    exploit_currency:"KES",
+    exploit_text:"If any buyer offers you less than KES 20/kg for green leaf tea, that is exploitation. However, at KES 24/kg KTDA is within the acceptable range given current auction conditions. The system issue is real but it is not individual middleman exploitation — it is a market cycle that KTDA is managing.",
+    final_verdict:"HOLD — keep delivering. The frozen price is frustrating but the bonus payment at season end makes continued delivery the right financial decision.",
+    final_action:"hold",
+    final_detail:"KTDA Zone 10 farmers who stop delivering now lose both current income and bonus entitlement. The frozen price reflects global auction conditions, not exploitation. Continue, maintain quality, and engage your cooperative for transparency on the recovery timeline.",
+  }
+}
+
+// ── URL params ──────────────────────────────────────
+const params = new URLSearchParams(window.location.search)
+const commodityKey = params.get("c") || "maize-nairobi"
+const data = COMMODITY_DATA[commodityKey]
+
+if (!data) {
+  document.getElementById("heroTitle").textContent = "Commodity not found"
+  document.getElementById("mainContent").innerHTML = "<p style=\"padding:2rem;color:var(--text2)\">Return to dashboard and click a price card to see its detail.</p>"
+} else {
+  renderDetail(data)
+}
+
+function renderDetail(d) {
+  // Hero
+  document.getElementById("heroTag").textContent = d.tag
+  document.getElementById("heroTitle").textContent = d.name
+  document.getElementById("heroLocation").textContent = d.location
+  document.getElementById("verdictPrice").textContent = "KES " + d.price
+  document.getElementById("verdictAction").textContent = d.action.toUpperCase()
+  document.getElementById("verdictAction").className = "verdict-action " + d.action
+  document.getElementById("verdictReason").textContent = d.verdict.split(".")[0] + "."
+  document.getElementById("heroUpdated").textContent = "Updated " + new Date().toLocaleDateString("en-KE", {day:"numeric",month:"long",year:"numeric"})
+  document.getElementById("navBreadcrumb").textContent = "Dashboard → " + d.name
+
+  const main = document.getElementById("mainContent")
+
+  // STEP 1 — PRICE VS BENCHMARK
+  const bmPct = Math.round((d.benchmark.local / d.benchmark.world_bank) * 100)
+  const localPct = 100
+  const wbPct = Math.round((d.benchmark.world_bank / d.benchmark.local) * 100)
+  const step1 = `
+  <div class="step" id="s1">
+    <div class="step-header">
+      <div class="step-num">01</div>
+      <div class="step-title">Is the price fair? Benchmark comparison</div>
+    </div>
+    <div class="step-card">
+      <div class="step-body">
+        <div class="benchmark-wrap">
+          <div class="bm-row">
+            <div class="bm-label">${d.benchmark.world_bank_label}</div>
+            <div class="bm-bar-wrap"><div class="bm-track"><div class="bm-fill" style="width:0%;background:var(--sanjuan)" data-target="${wbPct}"></div></div></div>
+            <div class="bm-val" style="color:var(--sanjuan-l)">KES ${d.benchmark.world_bank}</div>
+          </div>
+          <div class="bm-row">
+            <div class="bm-label">${d.benchmark.local_label}</div>
+            <div class="bm-bar-wrap"><div class="bm-track"><div class="bm-fill" style="width:0%;background:var(--husk)" data-target="100"></div></div></div>
+            <div class="bm-val" style="color:var(--husk)">KES ${d.benchmark.local}</div>
+          </div>
+          <div class="bm-row">
+            <div class="bm-label">Exploitation threshold (80% of fair)</div>
+            <div class="bm-bar-wrap"><div class="bm-track"><div class="bm-fill" style="width:0%;background:var(--cherry)" data-target="${Math.round((d.benchmark.exploit_thresh/d.benchmark.local)*100)}"></div></div></div>
+            <div class="bm-val" style="color:var(--cherry-l)">KES ${d.benchmark.exploit_thresh}</div>
+          </div>
+        </div>
+        <div class="bm-gap" style="background:rgba(183,162,94,0.08);border:1px solid rgba(183,162,94,0.15);color:var(--text2)">
+          <strong style="color:var(--husk)">Verdict:</strong> ${d.benchmark.gap_text}
+        </div>
+      </div>
+    </div>
+  </div>`
+
+  // STEP 2 — WHY THIS SIGNAL
+  const step2 = `
+  <div class="step" id="s2">
+    <div class="step-header">
+      <div class="step-num">02</div>
+      <div class="step-title">Why this signal? The reasoning</div>
+    </div>
+    <div class="step-card">
+      <div class="step-body">
+        <div class="reasons">
+          ${d.why.map(r=>`<div class="reason ${r.type}"><div class="reason-icon">${r.icon}</div><div class="reason-text">${r.text}</div></div>`).join("")}
+        </div>
+      </div>
+    </div>
+  </div>`
+
+  // STEP 3 — MARKET COMPARISON
+  const step3 = `
+  <div class="step" id="s3">
+    <div class="step-header">
+      <div class="step-num">03</div>
+      <div class="step-title">Where else is this selling? Market comparison</div>
+    </div>
+    <div class="step-card">
+      <div class="tbl-wrap"><table class="mkt-table">
+        <thead><tr><th>Location</th><th>Price</th><th>Signal</th><th>Note</th></tr></thead>
+        <tbody>
+          ${d.markets.map(m=>`<tr ${m.highlight?"class=\"highlight\"":""}>
+            <td>${m.location}${m.highlight?"<span class=\"best-badge\">YOU ARE HERE</span>":""}</td>
+            <td style="font-family:var(--mono);color:var(--cream);font-weight:500">KES ${m.price}</td>
+            <td><span style="font-family:var(--mono);font-size:9px;font-weight:700;padding:2px 7px;border-radius:2px;letter-spacing:.06em;${m.action==="sell"?"background:rgba(183,162,94,.14);color:var(--husk)":m.action==="hold"?"background:rgba(53,85,110,.2);color:var(--sanjuan-l)":"background:rgba(192,16,27,.14);color:var(--cherry-l)"}">${m.action.toUpperCase()}</span></td>
+            <td style="font-size:11px;color:var(--text3)">${m.note}</td>
+          </tr>`).join("")}
+        </tbody>
+      </table></div>
+    </div>
+  </div>`
+
+  // STEP 4 — WHAT TO DO
+  const step4 = `
+  <div class="step" id="s4">
+    <div class="step-header">
+      <div class="step-num">04</div>
+      <div class="step-title">What should you do? Step by step</div>
+    </div>
+    <div class="step-card">
+      <div class="action-steps">
+        ${d.actions.map((a,i)=>`<div class="action-step">
+          <div class="action-num">${i+1}</div>
+          <div class="action-content">
+            <div class="action-title">${a.title}</div>
+            <div class="action-desc">${a.desc}</div>
+          </div>
+        </div>`).join("")}
+      </div>
+    </div>
+  </div>`
+
+  // STEP 5 — RISK FACTORS
+  const step5 = `
+  <div class="step" id="s5">
+    <div class="step-header">
+      <div class="step-num">05</div>
+      <div class="step-title">What could change this? Risk factors</div>
+    </div>
+    <div class="step-card">
+      <div class="step-body">
+        <div class="risks">
+          ${d.risks.map(r=>`<div class="risk-item">
+            <div class="risk-title">${r.title}</div>
+            <div class="risk-desc">${r.desc}</div>
+          </div>`).join("")}
+        </div>
+      </div>
+    </div>
+  </div>`
+
+  // STEP 6 — EXPLOITATION THRESHOLD
+  const step6 = `
+  <div class="step" id="s6">
+    <div class="step-header">
+      <div class="step-num">06</div>
+      <div class="step-title">Know your rights — exploitation threshold</div>
+    </div>
+    <div class="threshold-card">
+      <div class="threshold-title">&#9888; MINIMUM ACCEPTABLE PRICE</div>
+      <div class="threshold-row">
+        <div class="threshold-val" style="color:var(--cherry-l)">KES ${d.exploit_thresh}/${d.exploit_currency==="KES"?"kg":"head"}</div>
+        <div class="threshold-desc">This is the 80% exploitation threshold for ${d.name}. Any offer below this price is exploitation.</div>
+      </div>
+      <div class="threshold-action">${d.exploit_text}</div>
+    </div>
+  </div>`
+
+  // FINAL VERDICT
+  const finalVerdict = `
+  <div class="step" id="s7">
+    <div class="final-verdict">
+      <div class="fv-inner">
+        <div class="fv-label">SOKODATA FINAL VERDICT</div>
+        <div class="fv-action ${d.final_action}">${d.final_verdict.split(".")[0]}</div>
+        <p class="fv-summary">${d.final_detail}</p>
+        <div>
+          <a href="dashboard.html" class="fv-btn">&#8592; Back to Dashboard</a>
+          <a href="dashboard.html#arbitrage" class="fv-ghost">View Arbitrage &#8594;</a>
+        </div>
+      </div>
+    </div>
+  </div>`
+
+  main.innerHTML = step1 + step2 + step3 + step4 + step5 + step6 + finalVerdict
+
+  // Scroll reveal
+  document.querySelectorAll(".step").forEach(el=>obs.observe(el))
+
+  // Animate bars after a delay
+  setTimeout(()=>{
+    document.querySelectorAll(".bm-fill[data-target]").forEach(bar=>{
+      bar.style.width = bar.dataset.target + "%"
+    })
+  }, 400)
+}
+</script>
+</body>
+</html>
