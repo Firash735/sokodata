@@ -377,13 +377,18 @@ td:first-child{color:var(--cream);font-weight:500}
 
 /* ── COMMODITY DETAIL SYSTEM ─────────────────────── */
 .detail-overlay {
-  position: fixed; inset: 0; z-index: 400;
-  background: var(--tiber-dark);
+  position: fixed;
+  inset: 0;
+  z-index: 400;
+  background: #042820;
   overflow-y: auto;
   transform: translateY(100%);
   transition: transform 0.35s cubic-bezier(0.32,0.72,0,1);
+  -webkit-overflow-scrolling: touch;
 }
-.detail-overlay.open { transform: translateY(0); }
+.detail-overlay.open {
+  transform: translateY(0);
+}
 
 .detail-modal { max-width: 720px; margin: 0 auto; padding: 0 0 3rem; }
 
@@ -549,7 +554,7 @@ td:first-child{color:var(--cream);font-weight:500}
 
 /* MAKE ANSWER CARDS CLICKABLE */
 .answer-card { cursor: none !important; }
-.answer-card:hover { border-color: var(--border2) !important; }
+.answer-card:hover { border-color: var(--husk) !important; box-shadow: 0 0 0 1px rgba(183,162,94,0.15); }
 
 @media(max-width:600px){
   .markets-grid { grid-template-columns: repeat(2,1fr); }
@@ -738,7 +743,7 @@ function renderDashboard(){
         <div class="ac-price">KES ${c.price_kes}</div>
         <div><span class="ac-signal sig-${c.action}">${c.action==="sell"?"&#9650; SELL NOW":c.action==="hold"?"&#9472; HOLD":"&#9888; ALERT"}</span></div>
         <div class="ac-trend trend-${c.trend}">${c.trend==="up"?"&#9650; Above average":c.trend==="dn"?"&#9660; Below average":"&#9472; Near average"}</div>
-        <div style="font-family:var(--mono);font-size:9px;color:var(--text4);margin-top:6px;letter-spacing:0.06em">TAP FOR FULL ANALYSIS &#8594;</div>
+        <div style="font-family:var(--mono);font-size:9px;color:var(--husk);margin-top:8px;letter-spacing:0.06em;padding-top:7px;border-top:1px solid var(--border);opacity:0.7">TAP FOR FULL ANALYSIS &#8594;</div>
       </div>`).join("")}
     </div>
   </div>
@@ -1438,14 +1443,20 @@ const LIVESTOCK_MAP = {
 }
 
 function goDetail(commodity, location) {
-  const key = DETAIL_MAP[commodity+":"+location]
-    || DETAIL_MAP[commodity+":"+location?.split(" ")[0]]
-    || "maize-nairobi"
-  window.location.href = "detail.html?c=" + key
+  // Find commodity data from cache
+  const item = (_cache.commodities || STATIC_COMMODITIES)
+    .find(c => c.commodity === commodity && c.location === location)
+    || (_cache.commodities || STATIC_COMMODITIES)
+    .find(c => c.commodity === commodity)
+  if (item) {
+    openCommodityDetail(item.commodity, item.location, item.price_kes, item.action, item.trend, item.source || 'KAMIS')
+  }
 }
 function goDetailLivestock(animal) {
-  const key = LIVESTOCK_MAP[animal] || "goat-garissa"
-  window.location.href = "detail.html?c=" + key
+  const item = (_cache.livestock || STATIC_LIVESTOCK).find(a => a.animal === animal)
+  if (item) {
+    openCommodityDetail(item.animal, item.location, item.price_kes_kg, item.action, item.trend, item.source || 'FEWS NET')
+  }
 }
 
 
