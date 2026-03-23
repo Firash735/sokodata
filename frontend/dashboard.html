@@ -877,158 +877,128 @@ function renderDashboard(){
 }
 
 function renderForex(){
-  const fx=_cache.forex
-  const kes=fx.USD_KES||129.4
-  // Explain what the rate means for farmers
-  const FX_EXPLAIN={
-    "USD/KES":{
-      what:"How many Kenyan Shillings you get for 1 US Dollar",
-      why:`At KES ${kes.toFixed(2)}, the shilling is ${kes>130?"weaker than":"near"} its recent average. A higher number means KES is weaker — imports cost more, but export crops like coffee and tea earn more KES per kilogram sold.`,
-      impact:`Coffee farmers: every $1 rise in USD/KES adds ~KES ${(1*637/480).toFixed(0)} to your effective NCE payout. Tea farmers: KTDA earns more KES per USD of Mombasa auction revenue.`,
-      change:"Updated every 6 hours from ExchangeRate-API"
-    },
-    "EUR/KES":{
-      what:"How many Kenyan Shillings you get for 1 Euro",
-      why:"The Euro affects Kenya's flower and horticultural export earnings. Kenya is the EU's top flower supplier — a stronger Euro means higher KES earnings for flower farmers.",
-      impact:"Naivasha and Thika flower farmers earn more KES when EUR/KES rises.",
-      change:"Moves with European Central Bank policy and global risk appetite"
-    },
-    "GBP/KES":{
-      what:"How many Kenyan Shillings you get for 1 British Pound",
-      why:"The UK is a major buyer of Kenyan tea and horticulture. A stronger GBP means Kenyan exporters earn more KES from UK-bound shipments.",
-      impact:"KTDA tea and Kenyan flower exporters benefit when GBP rises.",
-      change:"Moves with Bank of England policy decisions"
-    },
-    "USD/SOS":{
-      what:"How many Somali Shillings you get for 1 US Dollar",
-      why:"Somalia uses USD widely for large transactions. Most livestock and grain trade in Somalia is priced in USD. A higher USD/SOS means imported goods cost more for Somali consumers.",
-      impact:"Somali livestock traders: the USD price of your camels and cattle determines your real earnings. Always convert using the live rate on SokoData.",
-      change:"Somali shilling is volatile — check before every major transaction"
-    },
-    "USD/UGX":{
-      what:"How many Ugandan Shillings you get for 1 US Dollar",
-      why:"Uganda is a major maize and bean exporter to Kenya. A weaker UGX makes Ugandan maize cheaper in KES terms — this can push Kenyan maize prices down when Uganda has surplus.",
-      impact:"Kenyan maize farmers: watch USD/UGX. When UGX weakens significantly, Uganda can flood Kenya with cheap maize within weeks.",
-      change:"Moves with Bank of Uganda monetary policy"
-    }
-  }
+  var fx = _cache.forex
+  var kes = fx.USD_KES || 129.4
+  var eur = fx.EUR_KES || 140.2
+  var gbp = fx.GBP_KES || 165.8
+  var ugx = fx.USD_UGX || 3710
+  var tzs = fx.USD_TZS || 2615
+  var etb = fx.USD_ETB || 57.85
+  var sos = fx.USD_SOS || 571
+  var kesos = fx.KES_SOS || 4.41
+  var coffeeEarning = (5 * kes).toFixed(0)
+  var kesRise5pct = (5 * kes * 0.05).toFixed(0)
+  var sosTrend = sos > 560 ? "weaker than" : "near"
+  var kesTrend = kes > 130 ? "weaker than" : "near"
+  var date = new Date().toLocaleDateString("en-KE")
 
-  const mainRates=[
-    ["USD/KES",fx.USD_KES,"FX_EXPLAIN['USD/KES']"],
-    ["EUR/KES",fx.EUR_KES,"FX_EXPLAIN['EUR/KES']"],
-    ["GBP/KES",fx.GBP_KES,"FX_EXPLAIN['GBP/KES']"],
-    ["USD/SOS",fx.USD_SOS,"FX_EXPLAIN['USD/SOS']"],
-    ["USD/UGX",fx.USD_UGX,"FX_EXPLAIN['USD/UGX']"],
-    ["USD/TZS",fx.USD_TZS,null],
-    ["USD/ETB",fx.USD_ETB,null],
-    ["KES/SOS",fx.KES_SOS,null],
-  ]
+  return '<div style="padding:1.25rem 1.5rem;display:flex;flex-direction:column;gap:1.25rem">'
 
-  return \`<div style="padding:1.25rem 1.5rem;display:flex;flex-direction:column;gap:1.25rem">
+  // Explanation panel
+  + '<div class="panel">'
+  + '<div class="panel-head"><span class="panel-title">What these rates mean for you</span><span class="badge b-live">LIVE &middot; Updated 6h</span></div>'
+  + '<div style="padding:14px;display:flex;flex-direction:column;gap:10px">'
 
-    <!-- EXPLANATION CARDS FOR KEY RATES -->
-    <div class="panel">
-      <div class="panel-head"><span class="panel-title">What these rates mean for you</span><span class="badge b-live">LIVE · Updated 6h</span></div>
-      <div style="padding:14px;display:flex;flex-direction:column;gap:10px">
+  // USD/KES
+  + '<div style="background:var(--tiber);border:1px solid var(--border2);border-left:3px solid var(--husk);border-radius:0 8px 8px 0;padding:14px 16px">'
+  + '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">'
+  + '<div style="font-family:var(--mono);font-size:13px;font-weight:500;color:var(--cream)">USD / KES</div>'
+  + '<div style="font-family:var(--mono);font-size:22px;font-weight:500;color:var(--husk)">' + kes.toFixed(2) + '</div>'
+  + '</div>'
+  + '<div style="font-size:12px;color:var(--text2);line-height:1.7;margin-bottom:6px">'
+  + '<strong style="color:var(--cream)">What this means:</strong> For every $1 USD, you get KES ' + kes.toFixed(2) + '. '
+  + 'The shilling is ' + kesTrend + ' its recent average. A higher number means KES is weaker &mdash; imports cost more but export crops earn more KES.'
+  + '</div>'
+  + '<div style="font-size:12px;color:var(--husk);line-height:1.6">'
+  + '<strong>Farmer impact:</strong> Coffee sold at $5/kg globally earns KES ' + coffeeEarning + '/kg in Kenya today. '
+  + 'A 5% rise in USD/KES would add KES ' + kesRise5pct + ' per kg to your effective payout.'
+  + '</div>'
+  + '<div style="font-family:var(--mono);font-size:9px;color:var(--text4);margin-top:8px">Source: ExchangeRate-API &middot; ' + date + '</div>'
+  + '</div>'
 
-        <!-- USD/KES — most important -->
-        <div style="background:var(--tiber);border:1px solid var(--border2);border-left:3px solid var(--husk);border-radius:0 8px 8px 0;padding:14px 16px">
-          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
-            <div style="font-family:var(--mono);font-size:13px;font-weight:500;color:var(--cream)">USD / KES</div>
-            <div style="font-family:var(--mono);font-size:22px;font-weight:500;color:var(--husk)">\${(fx.USD_KES||129.4).toFixed(2)}</div>
-          </div>
-          <div style="font-size:12px;color:var(--text2);line-height:1.7;margin-bottom:6px">
-            <strong style="color:var(--cream)">What this means:</strong> For every $1 USD, you get KES \${(fx.USD_KES||129.4).toFixed(2)}. This rate directly affects the KES value of all export crops — coffee, tea, flowers, and livestock sold to international buyers.
-          </div>
-          <div style="font-size:12px;color:var(--husk);line-height:1.6">
-            <strong>Impact today:</strong> At this rate, coffee sold at $5/kg on the global market earns KES \${(5*(fx.USD_KES||129.4)).toFixed(0)}/kg in Kenya. A 5% rise in USD/KES would add KES \${(5*(fx.USD_KES||129.4)*0.05).toFixed(0)} per kg to your effective payout.
-          </div>
-          <div style="font-family:var(--mono);font-size:9px;color:var(--text4);margin-top:8px">Source: ExchangeRate-API · \${new Date().toLocaleDateString('en-KE')}</div>
-        </div>
+  // EUR/KES
+  + '<div style="background:var(--tiber);border:1px solid var(--border);border-left:3px solid var(--sanjuan-l);border-radius:0 8px 8px 0;padding:14px 16px">'
+  + '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">'
+  + '<div style="font-family:var(--mono);font-size:13px;font-weight:500;color:var(--cream)">EUR / KES</div>'
+  + '<div style="font-family:var(--mono);font-size:22px;font-weight:500;color:var(--sanjuan-l)">' + eur.toFixed(2) + '</div>'
+  + '</div>'
+  + '<div style="font-size:12px;color:var(--text2);line-height:1.7">'
+  + '<strong style="color:var(--cream)">What this means:</strong> The Euro rate matters most for flower and vegetable farmers selling to Europe. '
+  + 'Kenya exports over KES 80 billion in flowers to the EU annually. A stronger EUR means higher KES earnings for Naivasha and Thika farmers.'
+  + '</div>'
+  + '</div>'
 
-        <!-- EUR/KES -->
-        <div style="background:var(--tiber);border:1px solid var(--border);border-left:3px solid var(--sanjuan-l);border-radius:0 8px 8px 0;padding:14px 16px">
-          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
-            <div style="font-family:var(--mono);font-size:13px;font-weight:500;color:var(--cream)">EUR / KES</div>
-            <div style="font-family:var(--mono);font-size:22px;font-weight:500;color:var(--sanjuan-l)">\${(fx.EUR_KES||140.2).toFixed(2)}</div>
-          </div>
-          <div style="font-size:12px;color:var(--text2);line-height:1.7">
-            <strong style="color:var(--cream)">What this means:</strong> The Euro rate matters most for flower and vegetable farmers selling to Europe. Kenya exports over KES 80 billion in flowers to the EU annually. A stronger EUR means higher KES earnings for Naivasha and Thika farmers.
-          </div>
-        </div>
+  // USD/SOS
+  + '<div style="background:var(--tiber);border:1px solid var(--border);border-left:3px solid var(--curious);border-radius:0 8px 8px 0;padding:14px 16px">'
+  + '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">'
+  + '<div style="font-family:var(--mono);font-size:13px;font-weight:500;color:var(--cream)">USD / SOS</div>'
+  + '<div style="font-family:var(--mono);font-size:22px;font-weight:500;color:var(--curious)">' + sos.toFixed(0) + '</div>'
+  + '</div>'
+  + '<div style="font-size:12px;color:var(--text2);line-height:1.7">'
+  + '<strong style="color:var(--cream)">What this means:</strong> Somalia uses USD for most large trades. '
+  + 'At ' + sos.toFixed(0) + ' SOS per dollar, the Somali shilling is ' + sosTrend + ' its recent average. '
+  + 'Check this before any cross-border transaction.'
+  + '</div>'
+  + '</div>'
 
-        <!-- USD/SOS -->
-        <div style="background:var(--tiber);border:1px solid var(--border);border-left:3px solid var(--curious);border-radius:0 8px 8px 0;padding:14px 16px">
-          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
-            <div style="font-family:var(--mono);font-size:13px;font-weight:500;color:var(--cream)">USD / SOS</div>
-            <div style="font-family:var(--mono);font-size:22px;font-weight:500;color:var(--curious)">\${(fx.USD_SOS||571).toFixed(0)}</div>
-          </div>
-          <div style="font-size:12px;color:var(--text2);line-height:1.7">
-            <strong style="color:var(--cream)">What this means:</strong> Somalia uses USD for most large trades. Livestock, grain, and remittances flow through USD. At \${(fx.USD_SOS||571).toFixed(0)} SOS per dollar, the Somali shilling is \${(fx.USD_SOS||571)>560?"weaker than":"near"} its recent average. Check this before any cross-border transaction.
-          </div>
-        </div>
+  // KES/SOS
+  + '<div style="background:var(--tiber);border:1px solid var(--border);border-left:3px solid var(--mulled);border-radius:0 8px 8px 0;padding:14px 16px">'
+  + '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">'
+  + '<div style="font-family:var(--mono);font-size:13px;font-weight:500;color:var(--cream)">KES / SOS</div>'
+  + '<div style="font-family:var(--mono);font-size:22px;font-weight:500;color:#9b7db8">' + kesos.toFixed(2) + '</div>'
+  + '</div>'
+  + '<div style="font-size:12px;color:var(--text2);line-height:1.7">'
+  + '<strong style="color:var(--cream)">What this means:</strong> The direct Kenya-Somalia exchange rate. '
+  + 'Critical for cross-border traders on the Mandera-Bulo Hawo and Garissa-Dobley corridors. '
+  + 'Every KES 1,000 converts to SOS ' + (kesos * 1000).toFixed(0) + ' today.'
+  + '</div>'
+  + '</div>'
 
-        <!-- KES/SOS — cross border -->
-        <div style="background:var(--tiber);border:1px solid var(--border);border-left:3px solid var(--mulled);border-radius:0 8px 8px 0;padding:14px 16px">
-          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
-            <div style="font-family:var(--mono);font-size:13px;font-weight:500;color:var(--cream)">KES / SOS</div>
-            <div style="font-family:var(--mono);font-size:22px;font-weight:500;color:#9b7db8">\${(fx.KES_SOS||4.41).toFixed(2)}</div>
-          </div>
-          <div style="font-size:12px;color:var(--text2);line-height:1.7">
-            <strong style="color:var(--cream)">What this means:</strong> The direct Kenya-Somalia exchange rate. Critical for cross-border traders moving maize, sugar, and livestock between Mandera-Bulo Hawo and Garissa-Dobley corridors. At \${(fx.KES_SOS||4.41).toFixed(2)}, every KES 1,000 converts to SOS \${((fx.KES_SOS||4.41)*1000).toFixed(0)}.
-          </div>
-        </div>
+  + '</div></div>'
 
-      </div>
-    </div>
-
-    <!-- ALL RATES + CALCULATOR -->
-    <div class="grid2">
-      <div class="panel">
-        <div class="panel-head"><span class="panel-title">All EA Rates</span><span class="badge b-live">LIVE</span></div>
-        \${[["USD/KES",fx.USD_KES],["EUR/KES",fx.EUR_KES],["GBP/KES",fx.GBP_KES],["USD/UGX",fx.USD_UGX],["USD/TZS",fx.USD_TZS],["USD/ETB",fx.USD_ETB],["USD/SOS",fx.USD_SOS],["KES/SOS",fx.KES_SOS]].map(([s,v])=>\`
-        <div class="fx-row"><span class="fx-sym" style="font-size:13px">\${s}</span><span class="fx-rate" style="font-size:15px">\${v?Number(v).toLocaleString(undefined,{maximumFractionDigits:2}):"&#8212;"}</span></div>\`).join("")}
-        <div style="padding:8px 14px;font-family:var(--mono);font-size:9px;color:var(--text4)">\${fx.source}</div>
-      </div>
-      <div class="panel">
-        <div class="panel-head"><span class="panel-title">Currency Calculator</span></div>
-        <div class="fx-calc">
-          <div><label class="fc-label">Amount</label><input class="fc-input" type="number" id="fcAmt" value="1000" oninput="calcFX()"/></div>
-          <div><label class="fc-label">From</label>
-            <select class="fc-input" id="fcFrom" onchange="calcFX()">
-              <option value="KES" selected>KES — Kenyan Shilling</option>
-              <option value="USD">USD — US Dollar</option>
-              <option value="SOS">SOS — Somali Shilling</option>
-              <option value="UGX">UGX — Ugandan Shilling</option>
-              <option value="TZS">TZS — Tanzanian Shilling</option>
-              <option value="ETB">ETB — Ethiopian Birr</option>
-              <option value="EUR">EUR — Euro</option>
-              <option value="GBP">GBP — Sterling</option>
-            </select>
-          </div>
-          <div><label class="fc-label">To</label>
-            <select class="fc-input" id="fcTo" onchange="calcFX()">
-              <option value="USD" selected>USD — US Dollar</option>
-              <option value="KES">KES — Kenyan Shilling</option>
-              <option value="SOS">SOS — Somali Shilling</option>
-              <option value="UGX">UGX — Ugandan Shilling</option>
-              <option value="TZS">TZS — Tanzanian Shilling</option>
-              <option value="ETB">ETB — Ethiopian Birr</option>
-              <option value="EUR">EUR — Euro</option>
-              <option value="GBP">GBP — Sterling</option>
-            </select>
-          </div>
-          <div class="fc-result">
-            <div class="fc-res-lbl">CONVERTED</div>
-            <div class="fc-res-val" id="fcResult">&#8212;</div>
-            <div class="fc-res-rate" id="fcRate">&#8212;</div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>\`
+  // All rates + calculator
+  + '<div class="grid2">'
+  + '<div class="panel">'
+  + '<div class="panel-head"><span class="panel-title">All EA Rates</span><span class="badge b-live">LIVE</span></div>'
+  + [["USD/KES",kes],["EUR/KES",eur],["GBP/KES",gbp],["USD/UGX",ugx],["USD/TZS",tzs],["USD/ETB",etb],["USD/SOS",sos],["KES/SOS",kesos]].map(function(pair){
+      return '<div class="fx-row"><span class="fx-sym" style="font-size:13px">' + pair[0] + '</span><span class="fx-rate" style="font-size:15px">' + Number(pair[1]).toLocaleString(undefined,{maximumFractionDigits:2}) + '</span></div>'
+    }).join("")
+  + '<div style="padding:8px 14px;font-family:var(--mono);font-size:9px;color:var(--text4)">' + (fx.source||"ExchangeRate-API") + '</div>'
+  + '</div>'
+  + '<div class="panel">'
+  + '<div class="panel-head"><span class="panel-title">Currency Calculator</span></div>'
+  + '<div class="fx-calc">'
+  + '<div><label class="fc-label">Amount</label><input class="fc-input" type="number" id="fcAmt" value="1000" oninput="calcFX()"/></div>'
+  + '<div><label class="fc-label">From</label>'
+  + '<select class="fc-input" id="fcFrom" onchange="calcFX()">'
+  + '<option value="KES" selected>KES &mdash; Kenyan Shilling</option>'
+  + '<option value="USD">USD &mdash; US Dollar</option>'
+  + '<option value="SOS">SOS &mdash; Somali Shilling</option>'
+  + '<option value="UGX">UGX &mdash; Ugandan Shilling</option>'
+  + '<option value="TZS">TZS &mdash; Tanzanian Shilling</option>'
+  + '<option value="ETB">ETB &mdash; Ethiopian Birr</option>'
+  + '<option value="EUR">EUR &mdash; Euro</option>'
+  + '<option value="GBP">GBP &mdash; Sterling</option>'
+  + '</select></div>'
+  + '<div><label class="fc-label">To</label>'
+  + '<select class="fc-input" id="fcTo" onchange="calcFX()">'
+  + '<option value="USD" selected>USD &mdash; US Dollar</option>'
+  + '<option value="KES">KES &mdash; Kenyan Shilling</option>'
+  + '<option value="SOS">SOS &mdash; Somali Shilling</option>'
+  + '<option value="UGX">UGX &mdash; Ugandan Shilling</option>'
+  + '<option value="TZS">TZS &mdash; Tanzanian Shilling</option>'
+  + '<option value="ETB">ETB &mdash; Ethiopian Birr</option>'
+  + '<option value="EUR">EUR &mdash; Euro</option>'
+  + '<option value="GBP">GBP &mdash; Sterling</option>'
+  + '</select></div>'
+  + '<div class="fc-result">'
+  + '<div class="fc-res-lbl">CONVERTED</div>'
+  + '<div class="fc-res-val" id="fcResult">&#8212;</div>'
+  + '<div class="fc-res-rate" id="fcRate">&#8212;</div>'
+  + '</div></div></div>'
+  + '</div>'
+  + '</div>'
 }
-
 function renderCommodities(){
   const comms=_cache.commodities
   return `<div style="padding:1.25rem 1.5rem">
