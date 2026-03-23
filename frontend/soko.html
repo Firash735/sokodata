@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>SokoData Soko — East Africa Farmer Marketplace</title>
+<meta name="description" content="Buy and sell commodities directly with verified East African farmers and traders. Fair prices guaranteed by live market data."/>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,400&family=Plus+Jakarta+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --tiber:#042820;--tiber-mid:#0a3d30;--tiber-light:#0d4d3c;
+  --husk:#b7a25e;--husk-l:#cdbf85;--husk-d:#9a8445;
+  --sanjuan:#35556e;--sanjuan-l:#4a6d8a;
+  --cherry:#74070e;--cherry-l:#c0101b;
+  --curious:#2092e9;--mulled:#614d70;
+  --cream:#f5f0e8;--text2:#a8c4b8;--text3:#5a8070;--text4:#3d5e58;
+  --border:rgba(183,162,94,0.1);--border2:rgba(183,162,94,0.18);
+  --sans:"Plus Jakarta Sans",sans-serif;--serif:"Fraunces",serif;--mono:"DM Mono",monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--sans);background:var(--tiber);color:var(--cream);min-height:100vh;cursor:none}
+
+/* CURSOR */
+.cursor{position:fixed;width:7px;height:7px;background:var(--husk);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:transform .1s}
+.cursor-ring{position:fixed;width:26px;height:26px;border:1px solid rgba(183,162,94,0.4);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:all .15s ease}
+
+/* NAV */
+.nav{position:sticky;top:0;z-index:100;height:56px;padding:0 1.5rem;display:flex;align-items:center;gap:14px;background:rgba(4,40,32,0.96);backdrop-filter:blur(16px);border-bottom:1px solid var(--border)}
+.nav-logo{display:flex;align-items:center;gap:8px;font-family:var(--mono);font-size:14px;font-weight:500;color:var(--husk);text-decoration:none;flex-shrink:0}
+.nav-links{display:flex;align-items:center;gap:1.5rem;flex:1}
+.nav-link{font-size:12px;color:var(--text2);text-decoration:none;font-family:var(--mono);letter-spacing:0.04em;cursor:none;transition:color .15s}
+.nav-link:hover,.nav-link.active{color:var(--husk)}
+.nav-right{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.btn{font-family:var(--mono);font-size:11px;font-weight:600;padding:7px 16px;border-radius:4px;cursor:none;border:none;transition:all .15s;letter-spacing:0.04em}
+.btn-primary{background:var(--husk);color:var(--tiber)}
+.btn-primary:hover{background:var(--husk-l)}
+.btn-ghost{background:transparent;color:var(--text2);border:1px solid var(--border2)}
+.btn-ghost:hover{border-color:var(--husk);color:var(--husk)}
+
+/* HERO BAND */
+.hero-band{background:var(--tiber-mid);border-bottom:1px solid var(--border);padding:2rem 1.5rem}
+.hero-inner{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:1fr auto;gap:2rem;align-items:center}
+.hero-tag{font-family:var(--mono);font-size:9px;font-weight:500;color:var(--husk);letter-spacing:0.14em;text-transform:uppercase;margin-bottom:8px;display:flex;align-items:center;gap:8px}
+.hero-tag::before{content:"";width:16px;height:1px;background:var(--husk)}
+.hero-title{font-family:var(--serif);font-size:clamp(24px,3.5vw,40px);font-weight:600;letter-spacing:-0.02em;line-height:1.15;margin-bottom:8px}
+.hero-sub{font-size:14px;color:var(--text2);line-height:1.7;font-weight:300;max-width:500px}
+.hero-stats{display:flex;gap:1.5rem;flex-wrap:wrap}
+.hero-stat{text-align:center}
+.hs-val{font-family:var(--mono);font-size:22px;font-weight:500;color:var(--husk);line-height:1}
+.hs-lbl{font-family:var(--mono);font-size:9px;color:var(--text4);letter-spacing:0.1em;margin-top:4px}
+
+/* LAYOUT */
+.page-inner{max-width:1200px;margin:0 auto;padding:1.5rem;display:grid;grid-template-columns:260px 1fr;gap:1.5rem}
+
+/* SIDEBAR */
+.sidebar{}
+.filter-panel{background:var(--tiber-mid);border:1px solid var(--border);border-radius:10px;padding:16px;margin-bottom:12px}
+.filter-title{font-family:var(--mono);font-size:9px;font-weight:500;color:var(--text4);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:12px}
+.filter-search{width:100%;background:var(--tiber);border:1px solid var(--border2);color:var(--cream);font-family:var(--mono);font-size:12px;padding:9px 11px;border-radius:5px;outline:none;transition:border-color .15s;cursor:auto}
+.filter-search:focus{border-color:var(--husk)}
+.filter-search::placeholder{color:var(--text4)}
+.cat-list{display:flex;flex-direction:column;gap:2px}
+.cat-item{display:flex;align-items:center;justify-content:space-between;padding:7px 10px;border-radius:5px;cursor:none;transition:background .15s;font-size:12px;color:var(--text2);background:none;border:none;text-align:left;width:100%}
+.cat-item:hover{background:rgba(183,162,94,0.06);color:var(--cream)}
+.cat-item.active{background:rgba(183,162,94,0.1);color:var(--husk)}
+.cat-count{font-family:var(--mono);font-size:9px;color:var(--text4)}
+.filter-row{display:flex;flex-direction:column;gap:6px;margin-bottom:10px}
+.filter-label{font-family:var(--mono);font-size:9px;color:var(--text4);letter-spacing:0.08em;text-transform:uppercase}
+.filter-select{width:100%;background:var(--tiber);border:1px solid var(--border2);color:var(--cream);font-family:var(--mono);font-size:11px;padding:7px 9px;border-radius:4px;outline:none;cursor:none}
+.filter-select:focus{border-color:var(--husk)}
+
+/* POST LISTING CTA */
+.post-cta{background:linear-gradient(135deg,rgba(183,162,94,0.12),rgba(183,162,94,0.06));border:1px solid var(--border2);border-radius:10px;padding:16px;text-align:center}
+.post-cta-title{font-family:var(--serif);font-size:15px;font-weight:600;color:var(--cream);margin-bottom:6px}
+.post-cta-sub{font-size:11px;color:var(--text2);line-height:1.6;margin-bottom:12px}
+.post-cta-btn{width:100%;padding:10px;font-family:var(--mono);font-size:11px;font-weight:600;background:var(--husk);color:var(--tiber);border:none;border-radius:5px;cursor:none;letter-spacing:0.04em;transition:all .15s}
+.post-cta-btn:hover{background:var(--husk-l)}
+.post-sms{font-family:var(--mono);font-size:10px;color:var(--text4);margin-top:8px;line-height:1.5;text-align:center}
+
+/* LISTINGS GRID */
+.listings-area{}
+.listings-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:8px}
+.listings-count{font-family:var(--mono);font-size:11px;color:var(--text4)}
+.sort-row{display:flex;gap:6px}
+.sort-btn{font-family:var(--mono);font-size:10px;font-weight:500;padding:5px 12px;border-radius:3px;cursor:none;border:1px solid var(--border);background:none;color:var(--text3);transition:all .15s;letter-spacing:0.04em}
+.sort-btn:hover,.sort-btn.active{background:rgba(183,162,94,0.1);color:var(--husk);border-color:var(--border2)}
+.listings-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px}
+
+/* LISTING CARD */
+.listing-card{background:var(--tiber-mid);border:1px solid var(--border);border-radius:10px;overflow:hidden;transition:border-color .2s,transform .2s;cursor:none}
+.listing-card:hover{border-color:var(--border2);transform:translateY(-2px)}
+.lc-header{padding:14px 14px 10px;border-bottom:1px solid var(--border)}
+.lc-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:8px}
+.lc-commodity{font-family:var(--serif);font-size:16px;font-weight:600;color:var(--cream);line-height:1.2}
+.lc-category{font-family:var(--mono);font-size:8px;font-weight:600;padding:2px 7px;border-radius:2px;letter-spacing:0.08em;background:rgba(183,162,94,0.1);color:var(--husk);margin-top:4px;display:inline-block}
+.lc-price-block{text-align:right}
+.lc-price{font-family:var(--mono);font-size:18px;font-weight:500;color:var(--husk);line-height:1}
+.lc-unit{font-family:var(--mono);font-size:9px;color:var(--text4);margin-top:2px}
+.lc-fair{font-family:var(--mono);font-size:9px;margin-top:3px}
+.lc-body{padding:10px 14px}
+.lc-detail{display:flex;align-items:center;gap:7px;font-size:11px;color:var(--text2);margin-bottom:6px}
+.lc-icon{font-size:12px;width:16px;text-align:center;flex-shrink:0}
+.lc-footer{padding:10px 14px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.lc-seller{display:flex;align-items:center;gap:7px}
+.lc-avatar{width:24px;height:24px;border-radius:50%;background:rgba(183,162,94,0.15);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0}
+.lc-seller-name{font-family:var(--mono);font-size:10px;color:var(--text3)}
+.trust-badge{font-family:var(--mono);font-size:8px;font-weight:600;padding:2px 6px;border-radius:2px;letter-spacing:0.06em}
+.trust-verified{background:rgba(0,164,82,0.12);color:#00a452;border:1px solid rgba(0,164,82,0.2)}
+.trust-building{background:rgba(53,85,110,0.15);color:var(--sanjuan-l);border:1px solid rgba(53,85,110,0.2)}
+.trust-new{background:rgba(255,255,255,0.05);color:var(--text4);border:1px solid var(--border)}
+.lc-btn{font-family:var(--mono);font-size:10px;font-weight:600;padding:6px 14px;background:var(--husk);color:var(--tiber);border:none;border-radius:4px;cursor:none;transition:all .15s}
+.lc-btn:hover{background:var(--husk-l)}
+.fair-good{color:var(--husk)}
+.fair-ok{color:var(--text3)}
+.fair-low{color:var(--cherry-l)}
+
+/* POST MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(4,40,32,.9);backdrop-filter:blur(10px);z-index:200;display:none;align-items:center;justify-content:center}
+.modal-overlay.open{display:flex}
+.modal{background:var(--tiber-mid);border:1px solid var(--border2);border-radius:14px;padding:2rem;width:520px;max-width:95vw;max-height:90vh;overflow-y:auto;position:relative}
+.modal-close{position:absolute;top:14px;right:14px;background:none;border:none;color:var(--text4);font-size:18px;cursor:none}
+.modal-title{font-family:var(--serif);font-size:22px;font-weight:600;color:var(--cream);margin-bottom:4px}
+.modal-sub{font-size:13px;color:var(--text2);margin-bottom:1.5rem;line-height:1.6}
+.field{margin-bottom:14px}
+.field label{display:block;font-family:var(--mono);font-size:9px;font-weight:500;color:var(--text4);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:5px}
+.field input,.field select,.field textarea{width:100%;background:var(--tiber);border:1px solid var(--border2);color:var(--cream);font-family:var(--mono);font-size:12px;padding:9px 11px;border-radius:4px;outline:none;transition:border-color .15s;cursor:auto}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--husk)}
+.field textarea{resize:vertical;min-height:70px;font-family:var(--sans);font-size:13px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.fair-indicator{background:var(--tiber);border:1px solid var(--border);border-radius:6px;padding:10px 12px;margin-top:6px;font-family:var(--mono);font-size:11px;line-height:1.6;display:none}
+.submit-btn{width:100%;padding:12px;background:var(--husk);color:var(--tiber);font-family:var(--mono);font-size:12px;font-weight:700;border:none;border-radius:5px;cursor:none;transition:all .15s;letter-spacing:0.05em}
+.submit-btn:hover{background:var(--husk-l)}
+.submit-btn:disabled{opacity:.5}
+.form-err{font-family:var(--mono);font-size:10px;color:var(--cherry-l);min-height:14px;margin-bottom:8px}
+.trust-info{background:rgba(183,162,94,0.06);border:1px solid var(--border2);border-radius:6px;padding:12px;margin-bottom:16px;font-size:12px;color:var(--text2);line-height:1.7}
+.trust-info strong{color:var(--husk)}
+.sms-box{background:rgba(32,146,233,0.06);border:1px solid rgba(32,146,233,0.15);border-radius:8px;padding:14px;margin-top:12px}
+.sms-title{font-family:var(--mono);font-size:10px;font-weight:500;color:var(--curious);letter-spacing:0.08em;margin-bottom:8px}
+.sms-example{font-family:var(--mono);font-size:11px;background:var(--tiber);border-radius:4px;padding:8px 10px;color:var(--husk);line-height:1.8;word-break:break-all}
+.sms-note{font-size:11px;color:var(--text3);margin-top:6px;line-height:1.5}
+
+/* DETAIL MODAL */
+.detail-modal{background:var(--tiber-mid);border:1px solid var(--border2);border-radius:14px;padding:0;width:600px;max-width:95vw;max-height:90vh;overflow-y:auto;position:relative}
+.dm-header{padding:1.5rem;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--tiber-light);z-index:5;backdrop-filter:blur(10px)}
+.dm-title{font-family:var(--serif);font-size:22px;font-weight:600;color:var(--cream);margin-bottom:4px}
+.dm-sub{font-size:12px;color:var(--text2)}
+.dm-body{padding:1.5rem}
+.dm-section{margin-bottom:1.25rem}
+.dm-section-title{font-family:var(--mono);font-size:9px;font-weight:500;color:var(--text4);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:10px}
+.price-compare{background:var(--tiber);border:1px solid var(--border);border-radius:8px;padding:14px}
+.pc-row{display:flex;align-items:center;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border)}
+.pc-row:last-child{border-bottom:none}
+.pc-label{font-size:12px;color:var(--text2)}
+.pc-val{font-family:var(--mono);font-size:14px;font-weight:500}
+.interest-btn{width:100%;padding:13px;background:var(--husk);color:var(--tiber);font-family:var(--mono);font-size:13px;font-weight:700;border:none;border-radius:6px;cursor:none;transition:all .15s;letter-spacing:0.06em;margin-top:8px}
+.interest-btn:hover{background:var(--husk-l)}
+.contact-method-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.cm-badge{font-family:var(--mono);font-size:9px;font-weight:500;padding:4px 10px;border-radius:12px;letter-spacing:0.06em}
+.cm-sms{background:rgba(32,146,233,0.12);color:var(--curious);border:1px solid rgba(32,146,233,0.2)}
+.cm-whatsapp{background:rgba(0,164,82,0.12);color:#00a452;border:1px solid rgba(0,164,82,0.2)}
+.cm-web{background:rgba(183,162,94,0.12);color:var(--husk);border:1px solid rgba(183,162,94,0.2)}
+
+/* EMPTY */
+.empty{padding:48px;text-align:center;font-family:var(--mono);font-size:12px;color:var(--text4);line-height:1.8}
+
+/* SCROLLBAR */
+::-webkit-scrollbar{width:4px;height:4px}
+::-webkit-scrollbar-track{background:var(--tiber)}
+::-webkit-scrollbar-thumb{background:#0f5a46;border-radius:2px}
+
+/* RESPONSIVE */
+@media(max-width:900px){.page-inner{grid-template-columns:1fr}.sidebar{display:none}.hero-inner{grid-template-columns:1fr}}
+@media(max-width:600px){.nav-links{display:none}.listings-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cur"></div>
+<div class="cursor-ring" id="curR"></div>
+
+<nav class="nav">
+  <a href="index.html" class="nav-logo">
+    <svg width="22" height="22" viewBox="0 0 40 40" fill="none">
+      <circle cx="20" cy="5" r="2" fill="#b7a25e" opacity=".9"/>
+      <circle cx="30.6" cy="8.4" r="2" fill="#b7a25e" opacity=".9"/>
+      <circle cx="36.6" cy="18" r="2" fill="#b7a25e" opacity=".9"/>
+      <circle cx="13" cy="3.8" r="2" fill="#b7a25e" opacity=".9"/>
+      <line x1="20" y1="5" x2="20" y2="20" stroke="#b7a25e" stroke-width=".8" opacity=".3"/>
+      <line x1="30.6" y1="8.4" x2="20" y2="20" stroke="#b7a25e" stroke-width=".8" opacity=".3"/>
+      <circle cx="20" cy="20" r="4" fill="#b7a25e"/>
+    </svg>
+    SOKODATA
+  </a>
+  <div class="nav-links">
+    <a href="dashboard.html" class="nav-link">Dashboard</a>
+    <a href="soko.html" class="nav-link active">Soko Marketplace</a>
+    <a href="index.html" class="nav-link">Home</a>
+  </div>
+  <div class="nav-right">
+    <button class="btn btn-primary" onclick="openPostModal()">+ Post Listing</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero-band">
+  <div class="hero-inner">
+    <div>
+      <div class="hero-tag">East Africa Farmer Marketplace</div>
+      <h1 class="hero-title">Buy and sell with<br><em style="color:var(--husk);font-weight:400">fair prices guaranteed.</em></h1>
+      <p class="hero-sub">Every listing shows the live SokoData benchmark price. Buyers cannot offer below the fair floor. Farmers cannot be cheated. The market is honest here.</p>
+    </div>
+    <div class="hero-stats">
+      <div class="hero-stat"><div class="hs-val" id="statListings">0</div><div class="hs-lbl">ACTIVE LISTINGS</div></div>
+      <div class="hero-stat"><div class="hs-val" id="statCommodities">103</div><div class="hs-lbl">COMMODITIES</div></div>
+      <div class="hero-stat"><div class="hs-val">19+</div><div class="hs-lbl">COUNTIES</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="page-inner">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="filter-panel">
+      <div class="filter-title">Search</div>
+      <input class="filter-search" id="searchInput" placeholder="Maize, goat, tomato..." oninput="filterListings()"/>
+    </div>
+
+    <div class="filter-panel">
+      <div class="filter-title">Category</div>
+      <div class="cat-list" id="catList"></div>
+    </div>
+
+    <div class="filter-panel">
+      <div class="filter-title">Filter</div>
+      <div class="filter-row">
+        <div class="filter-label">County</div>
+        <select class="filter-select" id="countyFilter" onchange="filterListings()">
+          <option value="">All counties</option>
+          <option>Nairobi</option><option>Mombasa</option><option>Kisumu</option>
+          <option>Nakuru</option><option>Eldoret</option><option>Garissa</option>
+          <option>Wajir</option><option>Mandera</option><option>Isiolo</option>
+          <option>Marsabit</option><option>Nyeri</option><option>Kirinyaga</option>
+          <option>Murang'a</option><option>Embu</option><option>Meru</option>
+          <option>Kericho</option><option>Bomet</option><option>Nyamira</option>
+          <option>Busia</option><option>Kakamega</option>
+          <option>Mogadishu (SOM)</option><option>Garowe (SOM)</option>
+          <option>Bossaso (SOM)</option><option>Burao (SOM)</option>
+        </select>
+      </div>
+      <div class="filter-row">
+        <div class="filter-label">Price fairness</div>
+        <select class="filter-select" id="fairFilter" onchange="filterListings()">
+          <option value="">All prices</option>
+          <option value="fair">Fair price only</option>
+          <option value="good">Good deal</option>
+          <option value="urgent">Urgent sale</option>
+        </select>
+      </div>
+      <div class="filter-row">
+        <div class="filter-label">Seller trust</div>
+        <select class="filter-select" id="trustFilter" onchange="filterListings()">
+          <option value="">All sellers</option>
+          <option value="verified">Verified only</option>
+          <option value="trusted">Trusted +</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="post-cta">
+      <div class="post-cta-title">Sell your produce</div>
+      <div class="post-cta-sub">Post a listing in 2 minutes. SokoData shows buyers your fair price automatically.</div>
+      <button class="post-cta-btn" onclick="openPostModal()">Post a Listing</button>
+      <div class="post-sms">No smartphone? Send SMS:<br><strong style="color:var(--husk)">SOKO LIST [item] [qty] [price] [county]</strong><br>to +254 700 000 000</div>
+    </div>
+  </div>
+
+  <!-- LISTINGS -->
+  <div class="listings-area">
+    <div class="listings-header">
+      <div class="listings-count" id="listingsCount">Loading listings...</div>
+      <div class="sort-row">
+        <button class="sort-btn active" onclick="sortBy('recent',this)">Recent</button>
+        <button class="sort-btn" onclick="sortBy('price_asc',this)">Price &#9650;</button>
+        <button class="sort-btn" onclick="sortBy('price_dn',this)">Price &#9660;</button>
+        <button class="sort-btn" onclick="sortBy('trusted',this)">Most Trusted</button>
+      </div>
+    </div>
+    <div class="listings-grid" id="listingsGrid"></div>
+  </div>
+</div>
+
+<!-- POST MODAL -->
+<div class="modal-overlay" id="postModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closePostModal()">&#215;</button>
+    <div class="modal-title">Post a Listing</div>
+    <div class="modal-sub">Your listing will show verified buyers the live SokoData fair price alongside your asking price. Buyers cannot offer below the exploitation floor.</div>
+
+    <div class="trust-info">
+      <strong>How SokoData protects you:</strong> Your phone number is never shared until you accept a buyer. All payments go through M-Pesa escrow — you receive money only after confirming the buyer has paid. If anything goes wrong, SokoData refunds the buyer and you keep your goods.
+    </div>
+
+    <div class="field">
+      <label>What are you selling?</label>
+      <select id="fCommodity" onchange="onCommoditySelect()">
+        <option value="">Select commodity...</option>
+      </select>
+    </div>
+
+    <div class="fair-indicator" id="fairIndicator"></div>
+
+    <div class="grid2">
+      <div class="field">
+        <label>Quantity</label>
+        <input type="number" id="fQty" placeholder="e.g. 500" min="0.1" step="0.1"/>
+      </div>
+      <div class="field">
+        <label>Unit</label>
+        <select id="fUnit">
+          <option value="kg">kg</option>
+          <option value="head">head (livestock)</option>
+          <option value="bag">bag (90kg)</option>
+          <option value="litre">litre</option>
+          <option value="tray">tray (eggs)</option>
+          <option value="tonne">tonne</option>
+          <option value="piece">piece</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Your asking price (KES per unit)</label>
+      <input type="number" id="fPrice" placeholder="e.g. 66" min="1" oninput="checkFairness()"/>
+    </div>
+
+    <div class="grid2">
+      <div class="field">
+        <label>County</label>
+        <select id="fCounty">
+          <option value="">Select county...</option>
+          <option>Nairobi</option><option>Mombasa</option><option>Kisumu</option>
+          <option>Nakuru</option><option>Eldoret / Uasin Gishu</option>
+          <option>Garissa</option><option>Wajir</option><option>Mandera</option>
+          <option>Isiolo</option><option>Marsabit</option><option>Nyeri</option>
+          <option>Kirinyaga</option><option>Murang'a</option><option>Embu</option>
+          <option>Meru</option><option>Kericho</option><option>Bomet</option>
+          <option>Nyamira</option><option>Busia</option><option>Kakamega</option>
+          <option>Mogadishu (SOM)</option><option>Garowe (SOM)</option>
+          <option>Bossaso (SOM)</option><option>Burao (SOM)</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Specific location</label>
+        <input type="text" id="fLocation" placeholder="e.g. Kamuthe Market"/>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Quality notes (optional)</label>
+      <textarea id="fNotes" placeholder="Describe quality, variety, condition, harvest date..."></textarea>
+    </div>
+
+    <div class="field">
+      <label>How should buyers contact you?</label>
+      <select id="fContact">
+        <option value="sms">SMS only (SokoData protects your number)</option>
+        <option value="whatsapp">WhatsApp</option>
+        <option value="web">Web platform message</option>
+      </select>
+    </div>
+
+    <div class="form-err" id="postErr"></div>
+    <button class="submit-btn" onclick="submitListing()">Post Listing &rarr;</button>
+
+    <div class="sms-box">
+      <div class="sms-title">&#128241; POSTING BY SMS (Basic phone)</div>
+      <div class="sms-example">SOKO LIST MAIZE 500 66 NAIROBI</div>
+      <div class="sms-note">Format: SOKO LIST [commodity] [quantity in kg] [price KES] [county]<br>Send to: <strong style="color:var(--curious)">+254 700 000 000</strong><br>We will SMS you back with your listing ID within 2 minutes.</div>
+    </div>
+  </div>
+</div>
+
+<!-- LISTING DETAIL MODAL -->
+<div class="modal-overlay" id="detailModal">
+  <div class="detail-modal">
+    <div class="dm-header">
+      <button class="modal-close" onclick="closeDetailModal()" style="position:absolute;top:14px;right:14px">&#215;</button>
+      <div class="dm-title" id="dmTitle">Listing Detail</div>
+      <div class="dm-sub" id="dmSub"></div>
+    </div>
+    <div class="dm-body" id="dmBody"></div>
+  </div>
+</div>
+
+<script src="js/env.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script>
+// ── Cursor ──────────────────────────────────────────
+var cur=document.getElementById("cur"),curR=document.getElementById("curR")
+var mx=0,my=0,rx=0,ry=0
+document.addEventListener("mousemove",function(e){mx=e.clientX;my=e.clientY;cur.style.left=mx+"px";cur.style.top=my+"px"})
+;(function a(){rx+=(mx-rx)*.13;ry+=(my-ry)*.13;curR.style.left=rx+"px";curR.style.top=ry+"px";requestAnimationFrame(a)})()
+document.querySelectorAll("a,button,.listing-card").forEach(function(el){
+  el.addEventListener("mouseenter",function(){cur.style.transform="translate(-50%,-50%) scale(2)";curR.style.transform="translate(-50%,-50%) scale(1.5)"})
+  el.addEventListener("mouseleave",function(){cur.style.transform="translate(-50%,-50%) scale(1)";curR.style.transform="translate(-50%,-50%) scale(1)"})
+})
+
+// ── Supabase ─────────────────────────────────────────
+var _sb = null
+function getSB(){
+  if(!_sb && window.__SOKO__?.url)
+    _sb = supabase.createClient(window.__SOKO__.url, window.__SOKO__.anon)
+  return _sb
+}
+
+// ── Commodity catalog ─────────────────────────────────
+var CATEGORIES = [
+  {id:"grains",      label:"Grains & Cereals",    icon:"🌾"},
+  {id:"legumes",     label:"Legumes & Pulses",     icon:"🫘"},
+  {id:"roots",       label:"Roots & Tubers",       icon:"🥔"},
+  {id:"vegetables",  label:"Vegetables",           icon:"🥬"},
+  {id:"fruits",      label:"Fruits",               icon:"🥭"},
+  {id:"cash_crops",  label:"Cash Crops",           icon:"☕"},
+  {id:"livestock",   label:"Livestock",            icon:"🐄"},
+  {id:"dairy",       label:"Dairy & Eggs",         icon:"🥛"},
+  {id:"fish",        label:"Fish",                 icon:"🐟"},
+  {id:"hides",       label:"Hides & Skins",        icon:"🪣"},
+  {id:"honey",       label:"Honey & Beeswax",      icon:"🍯"},
+  {id:"spices",      label:"Spices",               icon:"🌶"},
+  {id:"timber",      label:"Timber & Charcoal",    icon:"🪵"},
+]
+
+// Static commodity data for dropdowns (loaded from DB in production)
+var STATIC_COMMODITIES_LIST = [
+  {name:"Maize (white)",category:"grains",unit:"kg",benchmark_kes:62,exploit_thresh:50},
+  {name:"Beans (Nyayo)",category:"legumes",unit:"kg",benchmark_kes:100,exploit_thresh:80},
+  {name:"Coffee (cherry)",category:"cash_crops",unit:"kg",benchmark_kes:106,exploit_thresh:85},
+  {name:"Tea (green leaf)",category:"cash_crops",unit:"kg",benchmark_kes:28,exploit_thresh:20},
+  {name:"Tomato",category:"vegetables",unit:"kg",benchmark_kes:40,exploit_thresh:30},
+  {name:"Onion",category:"vegetables",unit:"kg",benchmark_kes:60,exploit_thresh:48},
+  {name:"Irish potato",category:"roots",unit:"kg",benchmark_kes:35,exploit_thresh:28},
+  {name:"Mango",category:"fruits",unit:"kg",benchmark_kes:30,exploit_thresh:24},
+  {name:"Avocado",category:"fruits",unit:"kg",benchmark_kes:40,exploit_thresh:32},
+  {name:"Goat (mature)",category:"livestock",unit:"head",benchmark_kes:8500,exploit_thresh:6800},
+  {name:"Cattle Grade 1",category:"livestock",unit:"head",benchmark_kes:45000,exploit_thresh:36000},
+  {name:"Camel (mature)",category:"livestock",unit:"head",benchmark_kes:65000,exploit_thresh:52000},
+  {name:"Milk (fresh)",category:"dairy",unit:"litre",benchmark_kes:55,exploit_thresh:44},
+  {name:"Honey (raw)",category:"honey",unit:"kg",benchmark_kes:600,exploit_thresh:480},
+  {name:"Tilapia (fresh)",category:"fish",unit:"kg",benchmark_kes:280,exploit_thresh:224},
+  {name:"Charcoal (bag)",category:"timber",unit:"bag",benchmark_kes:600,exploit_thresh:480},
+  {name:"Green grams",category:"legumes",unit:"kg",benchmark_kes:120,exploit_thresh:96},
+  {name:"Sorghum",category:"grains",unit:"kg",benchmark_kes:45,exploit_thresh:36},
+  {name:"Wheat",category:"grains",unit:"kg",benchmark_kes:55,exploit_thresh:44},
+  {name:"Cassava (fresh)",category:"roots",unit:"kg",benchmark_kes:20,exploit_thresh:16},
+  {name:"Sweet potato",category:"roots",unit:"kg",benchmark_kes:25,exploit_thresh:20},
+  {name:"Kale",category:"vegetables",unit:"kg",benchmark_kes:20,exploit_thresh:16},
+  {name:"Carrots",category:"vegetables",unit:"kg",benchmark_kes:35,exploit_thresh:28},
+  {name:"Capsicum",category:"vegetables",unit:"kg",benchmark_kes:80,exploit_thresh:64},
+  {name:"Banana (Cavendish)",category:"fruits",unit:"kg",benchmark_kes:35,exploit_thresh:28},
+  {name:"Passion fruit",category:"fruits",unit:"kg",benchmark_kes:80,exploit_thresh:64},
+  {name:"Watermelon",category:"fruits",unit:"kg",benchmark_kes:20,exploit_thresh:16},
+  {name:"Eggs (tray)",category:"dairy",unit:"tray",benchmark_kes:420,exploit_thresh:336},
+  {name:"Groundnuts (shelled)",category:"legumes",unit:"kg",benchmark_kes:150,exploit_thresh:120},
+  {name:"Sheep (mature)",category:"livestock",unit:"head",benchmark_kes:7500,exploit_thresh:6000},
+  {name:"Chicken (kienyeji)",category:"livestock",unit:"head",benchmark_kes:900,exploit_thresh:720},
+  {name:"Ghee",category:"dairy",unit:"kg",benchmark_kes:600,exploit_thresh:480},
+  {name:"Dagaa (omena)",category:"fish",unit:"kg",benchmark_kes:180,exploit_thresh:144},
+  {name:"Cardamom",category:"spices",unit:"kg",benchmark_kes:2000,exploit_thresh:1600},
+  {name:"Turmeric",category:"spices",unit:"kg",benchmark_kes:250,exploit_thresh:200},
+  {name:"Sugarcane",category:"cash_crops",unit:"tonne",benchmark_kes:3800,exploit_thresh:3000},
+  {name:"Sunflower (seed)",category:"cash_crops",unit:"kg",benchmark_kes:55,exploit_thresh:44},
+  {name:"Cotton (seed)",category:"cash_crops",unit:"kg",benchmark_kes:40,exploit_thresh:32},
+  {name:"Goat skin (dry)",category:"hides",unit:"kg",benchmark_kes:80,exploit_thresh:64},
+  {name:"Cattle hide (dry)",category:"hides",unit:"kg",benchmark_kes:55,exploit_thresh:44},
+]
+
+// ── Static demo listings ─────────────────────────────
+var DEMO_LISTINGS = [
+  {id:"L001",commodity_name:"Maize (white)",category:"grains",quantity_kg:500,asking_price_kes:66,fair_price_kes:62,exploit_floor_kes:50,county:"Nairobi",location_detail:"Wakulima Market",quality_notes:"Grade 1, dry, clean. Harvested Jan 2026.",seller_name:"Jane Wanjiru",seller_trust:"verified",contact_method:"sms",created_at:"2026-03-20"},
+  {id:"L002",commodity_name:"Goat (mature)",category:"livestock",quantity_kg:15,asking_price_kes:8200,fair_price_kes:8500,exploit_floor_kes:6800,county:"Garissa",location_detail:"Main livestock market",quality_notes:"15 mature does, good body condition, Galla breed.",seller_name:"Hassan Abdi",seller_trust:"trusted",contact_method:"whatsapp",created_at:"2026-03-21"},
+  {id:"L003",commodity_name:"Avocado",category:"fruits",quantity_kg:200,asking_price_kes:38,fair_price_kes:40,exploit_floor_kes:32,county:"Murang'a",location_detail:"Kandara",quality_notes:"Hass variety, ready for export grade. 200kg available now.",seller_name:"Peter Kamau",seller_trust:"building",contact_method:"web",created_at:"2026-03-22"},
+  {id:"L004",commodity_name:"Honey (raw)",category:"honey",quantity_kg:80,asking_price_kes:580,fair_price_kes:600,exploit_floor_kes:480,county:"Kericho",location_detail:"Kabianga",quality_notes:"Wild forest honey, unprocessed, tested by KBS. Dark amber colour.",seller_name:"Ruth Chebet",seller_trust:"verified",contact_method:"sms",created_at:"2026-03-21"},
+  {id:"L005",commodity_name:"Camel (mature)",category:"livestock",quantity_kg:3,asking_price_kes:62000,fair_price_kes:65000,exploit_floor_kes:52000,county:"Wajir",location_detail:"Wajir South",quality_notes:"3 adult male camels, excellent condition, vaccinated. Urgent — drought pressure.",seller_name:"Mohamed Farah",seller_trust:"new",contact_method:"sms",created_at:"2026-03-22"},
+  {id:"L006",commodity_name:"Coffee (cherry)",category:"cash_crops",quantity_kg:800,asking_price_kes:110,fair_price_kes:106,exploit_floor_kes:85,county:"Kirinyaga",location_detail:"Sagana Cooperative",quality_notes:"Current flush, red ripe, SL28 and SL34 varieties. Ready for immediate collection.",seller_name:"Kirinyaga Coop",seller_trust:"verified",contact_method:"web",created_at:"2026-03-20"},
+  {id:"L007",commodity_name:"Irish potato",category:"roots",quantity_kg:2000,asking_price_kes:33,fair_price_kes:35,exploit_floor_kes:28,county:"Nakuru",location_detail:"Molo Town",quality_notes:"Shangi variety, Size A. 2 tonnes available. Bulk buyer preferred.",seller_name:"John Mwangi",seller_trust:"trusted",contact_method:"sms",created_at:"2026-03-19"},
+  {id:"L008",commodity_name:"Tilapia (fresh)",category:"fish",quantity_kg:150,asking_price_kes:270,fair_price_kes:280,exploit_floor_kes:224,county:"Kisumu",location_detail:"Dunga Beach",quality_notes:"Fresh caught this morning. 150kg available. Own lake fishing boat.",seller_name:"Otieno Odhiambo",seller_trust:"building",contact_method:"whatsapp",created_at:"2026-03-23"},
+  {id:"L009",commodity_name:"Onion",category:"vegetables",quantity_kg:500,asking_price_kes:55,fair_price_kes:60,exploit_floor_kes:48,county:"Isiolo",location_detail:"Isiolo Market",quality_notes:"Red onions, medium size. Grown in Merti. 500kg, well dried.",seller_name:"Amina Wako",seller_trust:"new",contact_method:"sms",created_at:"2026-03-22"},
+  {id:"L010",commodity_name:"Green grams",category:"legumes",quantity_kg:300,asking_price_kes:118,fair_price_kes:120,exploit_floor_kes:96,county:"Meru",location_detail:"Tigania East",quality_notes:"Fully dry, clean. Machine sorted. 300kg available immediately.",seller_name:"James Mutua",seller_trust:"trusted",contact_method:"web",created_at:"2026-03-21"},
+  {id:"L011",commodity_name:"Milk (fresh)",category:"dairy",quantity_kg:200,asking_price_kes:52,fair_price_kes:55,exploit_floor_kes:44,county:"Kericho",location_detail:"Sotik",quality_notes:"200L daily production. Friesian cross cows. Chilled delivery available.",seller_name:"Dairy Farm Sotik",seller_trust:"verified",contact_method:"web",created_at:"2026-03-23"},
+  {id:"L012",commodity_name:"Maize (white)",category:"grains",quantity_kg:5000,asking_price_kes:58,fair_price_kes:62,exploit_floor_kes:50,county:"Busia",location_detail:"Nambale",quality_notes:"5 tonnes. Long rains harvest. Needs transport from farm. Good moisture content.",seller_name:"Farmers Coop Nambale",seller_trust:"verified",contact_method:"sms",created_at:"2026-03-19"},
+]
+
+// State
+var _allListings = DEMO_LISTINGS.slice()
+var _filtered = _allListings.slice()
+var _activeCategory = ""
+var _sortMode = "recent"
+
+// ── Build category list ───────────────────────────────
+function buildCategories(){
+  var catEl = document.getElementById("catList")
+  catEl.innerHTML = ""
+
+  // All categories button
+  var allBtn = document.createElement("button")
+  allBtn.className = "cat-item active"
+  allBtn.innerHTML = "<span>All Categories</span><span class='cat-count'>" + _allListings.length + "</span>"
+  allBtn.addEventListener("click", function(){ setCategory(allBtn, "") })
+  catEl.appendChild(allBtn)
+
+  // Individual category buttons
+  CATEGORIES.forEach(function(c){
+    var count = _allListings.filter(function(l){ return l.category === c.id }).length
+    if(count === 0) return
+    var btn = document.createElement("button")
+    btn.className = "cat-item"
+    btn.innerHTML = "<span>" + c.icon + " " + c.label + "</span><span class='cat-count'>" + count + "</span>"
+    btn.addEventListener("click", function(){ setCategory(btn, c.id) })
+    catEl.appendChild(btn)
+  })
+}
+function setCategory(btn, catId){
+  _activeCategory = catId
+  document.querySelectorAll(".cat-item").forEach(function(b){ b.classList.remove("active") })
+  btn.classList.add("active")
+  filterListings()
+}
+function buildCommodityDropdown(){
+  var sel = document.getElementById("fCommodity")
+  var grouped = {}
+  STATIC_COMMODITIES_LIST.forEach(function(c){
+    if(!grouped[c.category]) grouped[c.category] = []
+    grouped[c.category].push(c)
+  })
+  var html = '<option value="">Select commodity...</option>'
+  CATEGORIES.forEach(function(cat){
+    if(!grouped[cat.id]) return
+    html += '<optgroup label="' + cat.icon + " " + cat.label + '">'
+    grouped[cat.id].forEach(function(c){
+      html += '<option value="' + c.name + '">' + c.name + ' (' + c.unit + ')</option>'
+    })
+    html += '</optgroup>'
+  })
+  sel.innerHTML = html
+}
+
+// ── Filter and sort ───────────────────────────────────
+// category filter handled by setCategory()
+
+function filterListings(){
+  var search = document.getElementById("searchInput").value.toLowerCase()
+  var county = document.getElementById("countyFilter").value
+  var fair = document.getElementById("fairFilter").value
+  var trust = document.getElementById("trustFilter").value
+
+  _filtered = _allListings.filter(function(l){
+    if(_activeCategory && l.category !== _activeCategory) return false
+    if(search && l.commodity_name.toLowerCase().indexOf(search)<0 && l.county.toLowerCase().indexOf(search)<0) return false
+    if(county && l.county !== county) return false
+    if(trust === "verified" && l.seller_trust !== "verified") return false
+    if(trust === "trusted" && l.seller_trust === "new") return false
+    return true
+  })
+
+  sortAndRender()
+}
+
+function sortBy(mode, btn){
+  _sortMode = mode
+  document.querySelectorAll(".sort-btn").forEach(function(b){b.classList.remove("active")})
+  btn.classList.add("active")
+  sortAndRender()
+}
+
+function sortAndRender(){
+  var sorted = _filtered.slice()
+  if(_sortMode === "price_asc") sorted.sort(function(a,b){return a.asking_price_kes - b.asking_price_kes})
+  else if(_sortMode === "price_dn") sorted.sort(function(a,b){return b.asking_price_kes - a.asking_price_kes})
+  else if(_sortMode === "trusted") sorted.sort(function(a,b){
+    var order = {verified:0,trusted:1,building:2,new:3}
+    return (order[a.seller_trust]||3) - (order[b.seller_trust]||3)
+  })
+  renderListings(sorted)
+}
+
+// ── Render listings ───────────────────────────────────
+function getFairLabel(asking, fair, floor){
+  if(!fair) return {label:"",color:"var(--text4)"}
+  var pct = ((asking - fair) / fair) * 100
+  if(asking < floor) return {label:"&#9888; Below fair floor",color:"var(--cherry-l)"}
+  if(pct > 5) return {label:"&#9650; Above benchmark +"+Math.round(pct)+"%",color:"var(--husk)"}
+  if(pct < -5) return {label:"&#9660; "+Math.abs(Math.round(pct))+"% below benchmark",color:"var(--sanjuan-l)"}
+  return {label:"&#9472; At fair price",color:"var(--text2)"}
+}
+
+function getTrustHTML(trust){
+  if(trust==="verified") return '<span class="trust-badge trust-verified">&#10003; VERIFIED</span>'
+  if(trust==="trusted") return '<span class="trust-badge trust-building">TRUSTED</span>'
+  return '<span class="trust-badge trust-new">NEW</span>'
+}
+
+function renderListings(listings){
+  var grid = document.getElementById("listingsGrid")
+  var countEl = document.getElementById("listingsCount")
+  countEl.textContent = listings.length + " listing" + (listings.length!==1?"s":"") + " found"
+  document.getElementById("statListings").textContent = _allListings.length
+  grid.innerHTML = ""
+
+  if(!listings.length){
+    var empty = document.createElement("div")
+    empty.className = "empty"
+    empty.innerHTML = "No listings found.<br><br>Be the first to post in this category.<br><button class='btn btn-primary' style='margin-top:12px' onclick='openPostModal()'>Post a Listing</button>"
+    grid.appendChild(empty)
+    return
+  }
+
+  listings.forEach(function(l){
+    var fair = getFairLabel(l.asking_price_kes, l.fair_price_kes, l.exploit_floor_kes)
+    var catObj = CATEGORIES.find(function(c){return c.id===l.category}) || {icon:"📦",id:"other"}
+    var card = document.createElement("div")
+    card.className = "listing-card"
+    card.addEventListener("click", function(){ openListingDetail(l.id) })
+
+    var priceDisplay = "KES " + l.asking_price_kes.toLocaleString()
+    var unitLabel = l.category==="livestock" ? "head" : "kg"
+
+    card.innerHTML =
+      "<div class='lc-header'>" +
+        "<div class='lc-top'>" +
+          "<div>" +
+            "<div class='lc-commodity'>" + l.commodity_name + "</div>" +
+            "<div class='lc-category'>" + catObj.icon + " " + (l.category||"").replace("_"," ").toUpperCase() + "</div>" +
+          "</div>" +
+          "<div class='lc-price-block'>" +
+            "<div class='lc-price'>" + priceDisplay + "</div>" +
+            "<div class='lc-unit'>per " + l.quantity_kg + " " + unitLabel + "</div>" +
+            "<div class='lc-fair' style='color:" + fair.color + "'>" + fair.label + "</div>" +
+          "</div>" +
+        "</div>" +
+      "</div>" +
+      "<div class='lc-body'>" +
+        "<div class='lc-detail'><span class='lc-icon'>📍</span>" + l.county + (l.location_detail ? " · " + l.location_detail : "") + "</div>" +
+        (l.quality_notes ? "<div class='lc-detail'><span class='lc-icon'>📋</span><span style='color:var(--text3)'>" + l.quality_notes.slice(0,60) + (l.quality_notes.length>60?"...":"") + "</span></div>" : "") +
+        "<div class='lc-detail'><span class='lc-icon'>📅</span>" + l.created_at + "</div>" +
+      "</div>" +
+      "<div class='lc-footer'>" +
+        "<div class='lc-seller'>" +
+          "<div class='lc-avatar'>" + l.seller_name[0].toUpperCase() + "</div>" +
+          "<div>" +
+            "<div class='lc-seller-name'>" + l.seller_name + "</div>" +
+            getTrustHTML(l.seller_trust) +
+          "</div>" +
+        "</div>" +
+        "<button class='lc-btn'>View →</button>" +
+      "</div>"
+
+    // View button click
+    card.querySelector(".lc-btn").addEventListener("click", function(e){
+      e.stopPropagation()
+      openListingDetail(l.id)
+    })
+
+    grid.appendChild(card)
+  })
+}
+
+
+// ── Listing detail ────────────────────────────────────
+function openListingDetail(id){
+  var l = _allListings.find(function(x){return x.id===id})
+  if(!l) return
+
+  var fair = getFairLabel(l.asking_price_kes, l.fair_price_kes, l.exploit_floor_kes)
+  var pctAbove = l.fair_price_kes ? Math.round(((l.asking_price_kes - l.fair_price_kes)/l.fair_price_kes)*100) : 0
+
+  document.getElementById("dmTitle").textContent = l.commodity_name
+  document.getElementById("dmSub").textContent = l.county + (l.location_detail ? " · " + l.location_detail : "") + " · Posted " + l.created_at
+
+  document.getElementById("dmBody").innerHTML =
+    '<div class="dm-section">'+
+      '<div class="dm-section-title">Price Analysis</div>'+
+      '<div class="price-compare">'+
+        '<div class="pc-row"><div class="pc-label">Asking price</div><div class="pc-val" style="color:var(--husk)">KES '+l.asking_price_kes.toLocaleString()+' / '+(l.category==="livestock"?"head":"kg")+'</div></div>'+
+        '<div class="pc-row"><div class="pc-label">SokoData benchmark</div><div class="pc-val" style="color:var(--text2)">KES '+(l.fair_price_kes||"—")+'</div></div>'+
+        '<div class="pc-row"><div class="pc-label">Exploitation floor</div><div class="pc-val" style="color:var(--cherry-l)">KES '+(l.exploit_floor_kes||"—")+'</div></div>'+
+        '<div class="pc-row"><div class="pc-label">Price fairness</div><div class="pc-val" style="font-size:12px;color:'+fair.color+'">'+fair.label+'</div></div>'+
+      '</div>'+
+      (l.asking_price_kes < (l.exploit_floor_kes||0) ?
+        '<div style="background:rgba(116,7,14,0.08);border:1px solid rgba(116,7,14,0.2);border-radius:6px;padding:10px 12px;margin-top:10px;font-size:12px;color:var(--cherry-l)">&#9888; This asking price is below the exploitation floor. Consider negotiating up before transacting.</div>'
+        : "")+
+    '</div>'+
+
+    '<div class="dm-section">'+
+      '<div class="dm-section-title">Listing Details</div>'+
+      '<div class="detail-card" style="background:var(--tiber);border:1px solid var(--border);border-radius:8px;padding:14px;display:flex;flex-direction:column;gap:8px">'+
+        '<div style="display:flex;justify-content:space-between;font-size:13px"><span style="color:var(--text3)">Quantity</span><span style="font-family:var(--mono);color:var(--cream)">'+l.quantity_kg.toLocaleString()+(l.category==="livestock"?" head":" kg")+'</span></div>'+
+        '<div style="display:flex;justify-content:space-between;font-size:13px"><span style="color:var(--text3)">County</span><span style="font-family:var(--mono);color:var(--cream)">'+l.county+'</span></div>'+
+        (l.location_detail?'<div style="display:flex;justify-content:space-between;font-size:13px"><span style="color:var(--text3)">Location</span><span style="font-family:var(--mono);color:var(--cream)">'+l.location_detail+'</span></div>':"")+
+        (l.quality_notes?'<div style="padding-top:8px;border-top:1px solid var(--border);font-size:12px;color:var(--text2);line-height:1.65">'+l.quality_notes+'</div>':"")+
+      '</div>'+
+    '</div>'+
+
+    '<div class="dm-section">'+
+      '<div class="dm-section-title">Seller</div>'+
+      '<div style="display:flex;align-items:center;gap:12px;background:var(--tiber);border:1px solid var(--border);border-radius:8px;padding:14px">'+
+        '<div style="width:40px;height:40px;border-radius:50%;background:rgba(183,162,94,0.15);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:16px;font-weight:500;color:var(--husk)">'+l.seller_name[0].toUpperCase()+'</div>'+
+        '<div style="flex:1">'+
+          '<div style="font-size:14px;font-weight:500;color:var(--cream);margin-bottom:4px">'+l.seller_name+'</div>'+
+          getTrustHTML(l.seller_trust)+
+        '</div>'+
+      '</div>'+
+    '</div>'+
+
+    '<div class="dm-section">'+
+      '<div class="dm-section-title">How to buy</div>'+
+      '<div style="font-size:13px;color:var(--text2);line-height:1.8;background:rgba(183,162,94,0.06);border:1px solid var(--border2);border-radius:8px;padding:14px">'+
+        '<strong style="color:var(--cream)">1.</strong> Click "Express Interest" below<br>'+
+        '<strong style="color:var(--cream)">2.</strong> Seller gets an SMS notification — they reply YES or NO<br>'+
+        '<strong style="color:var(--cream)">3.</strong> If YES, SokoData connects you by SMS without sharing personal numbers<br>'+
+        '<strong style="color:var(--cream)">4.</strong> Agree on delivery — send M-Pesa to SokoData escrow number<br>'+
+        '<strong style="color:var(--cream)">5.</strong> Seller confirms receipt — escrow released immediately<br>'+
+        '<strong style="color:var(--cream)">6.</strong> Both parties rate each other — builds the trust network'+
+      '</div>'+
+      '<div class="contact-method-row">'+
+        '<span style="font-size:11px;color:var(--text4)">Seller accepts:</span>'+
+        (l.contact_method==="sms"||l.contact_method==="all"?'<span class="cm-badge cm-sms">SMS</span>':"")+
+        (l.contact_method==="whatsapp"||l.contact_method==="all"?'<span class="cm-badge cm-whatsapp">WhatsApp</span>':"")+
+        (l.contact_method==="web"||l.contact_method==="all"?'<span class="cm-badge cm-web">Web</span>':"")+
+      '</div>'+
+      '<button class="interest-btn" id="interestBtn">Express Interest &rarr;</button>'+
+    '</div>'
+
+  document.getElementById("detailModal").classList.add("open")
+  // Attach interest button after DOM is set
+  var iBtn = document.getElementById("interestBtn")
+  if(iBtn){
+    var capturedId = l.id
+    iBtn.addEventListener("click", function(){ expressInterest(capturedId) })
+  }
+}
+
+function closeDetailModal(){
+  document.getElementById("detailModal").classList.remove("open")
+}
+
+function expressInterest(listingId){
+  closeDetailModal()
+  // In production: create buyer_interest record, send SMS to seller
+  alert("Interest registered! The seller will receive an SMS within 2 minutes. If they accept, SokoData will connect you. You will receive a confirmation SMS at your registered number.")
+}
+
+// ── Post modal ────────────────────────────────────────
+function openPostModal(){
+  document.getElementById("postModal").classList.add("open")
+}
+
+function closePostModal(){
+  document.getElementById("postModal").classList.remove("open")
+}
+
+function onCommoditySelect(){
+  var name = document.getElementById("fCommodity").value
+  var commodity = STATIC_COMMODITIES_LIST.find(function(c){return c.name===name})
+  var ind = document.getElementById("fairIndicator")
+  if(commodity){
+    ind.style.display = "block"
+    ind.style.background = "rgba(183,162,94,0.06)"
+    ind.style.border = "1px solid var(--border2)"
+    ind.style.borderRadius = "6px"
+    ind.style.padding = "10px 12px"
+    ind.style.marginTop = "6px"
+    ind.style.fontFamily = "var(--mono)"
+    ind.style.fontSize = "11px"
+    ind.style.color = "var(--text2)"
+    ind.style.lineHeight = "1.7"
+    ind.innerHTML =
+      '<span style="color:var(--husk)">&#9679; SokoData Benchmark:</span> KES '+commodity.benchmark_kes+' / '+commodity.unit+'<br>'+
+      '<span style="color:var(--cherry-l)">&#9888; Exploitation floor:</span> KES '+commodity.exploit_thresh+' / '+commodity.unit+'<br>'+
+      '<span style="color:var(--text3)">Your buyers will see this benchmark alongside your asking price.</span>'
+    document.getElementById("fUnit").value = commodity.unit
+  } else {
+    ind.style.display = "none"
+  }
+  checkFairness()
+}
+
+function checkFairness(){
+  var name = document.getElementById("fCommodity").value
+  var price = parseFloat(document.getElementById("fPrice").value)
+  var commodity = STATIC_COMMODITIES_LIST.find(function(c){return c.name===name})
+  if(!commodity || !price) return
+
+  var ind = document.getElementById("fairIndicator")
+  if(price < commodity.exploit_thresh){
+    ind.style.borderColor = "var(--cherry-l)"
+    ind.style.background = "rgba(116,7,14,0.06)"
+    ind.innerHTML =
+      '<span style="color:var(--cherry-l)">&#9888; WARNING:</span> Your price of KES '+price+' is below the exploitation floor of KES '+commodity.exploit_thresh+'. Buyers may flag this listing.<br>'+
+      '<span style="color:var(--text3)">Consider raising your price to at least KES '+commodity.exploit_thresh+' to protect yourself.</span>'
+  } else {
+    ind.style.borderColor = "var(--border2)"
+    ind.style.background = "rgba(183,162,94,0.06)"
+    var pct = Math.round(((price - commodity.benchmark_kes)/commodity.benchmark_kes)*100)
+    var pctText = pct > 0 ? "+"+pct+"% above benchmark" : pct < 0 ? Math.abs(pct)+"% below benchmark" : "At benchmark"
+    ind.innerHTML =
+      '<span style="color:var(--husk)">&#9679; Benchmark:</span> KES '+commodity.benchmark_kes+' / '+commodity.unit+' &nbsp; <span style="color:var(--text3)">('+pctText+')</span><br>'+
+      '<span style="color:var(--cherry-l)">&#9888; Floor:</span> KES '+commodity.exploit_thresh+' / '+commodity.unit+'<br>'+
+      '<span style="color:var(--text3)">Your listing will show this benchmark to buyers automatically.</span>'
+  }
+}
+
+function submitListing(){
+  var commodity = document.getElementById("fCommodity").value
+  var qty = document.getElementById("fQty").value
+  var price = document.getElementById("fPrice").value
+  var county = document.getElementById("fCounty").value
+  var err = document.getElementById("postErr")
+
+  if(!commodity){err.textContent="Please select a commodity.";return}
+  if(!qty||parseFloat(qty)<=0){err.textContent="Please enter a valid quantity.";return}
+  if(!price||parseFloat(price)<=0){err.textContent="Please enter your asking price.";return}
+  if(!county){err.textContent="Please select your county.";return}
+
+  err.textContent=""
+
+  var commodityData = STATIC_COMMODITIES_LIST.find(function(c){return c.name===commodity})
+  var newListing = {
+    id: "L"+(Date.now()),
+    commodity_name: commodity,
+    category: commodityData ? commodityData.category : "grains",
+    quantity_kg: parseFloat(qty),
+    asking_price_kes: parseFloat(price),
+    fair_price_kes: commodityData ? commodityData.benchmark_kes : null,
+    exploit_floor_kes: commodityData ? commodityData.exploit_thresh : null,
+    county: county,
+    location_detail: document.getElementById("fLocation").value,
+    quality_notes: document.getElementById("fNotes").value,
+    seller_name: "You",
+    seller_trust: "new",
+    contact_method: document.getElementById("fContact").value,
+    created_at: new Date().toISOString().slice(0,10)
+  }
+
+  _allListings.unshift(newListing)
+  _filtered = _allListings.slice()
+  buildCategories()
+  filterListings()
+  closePostModal()
+
+  // Show success message
+  setTimeout(function(){
+    alert("Listing posted! Your "+commodity+" is now visible to buyers across East Africa. You will receive an SMS when a buyer expresses interest.")
+  }, 200)
+}
+
+// ── Modal close on overlay click ──────────────────────
+document.getElementById("postModal").addEventListener("click",function(e){
+  if(e.target===document.getElementById("postModal"))closePostModal()
+})
+document.getElementById("detailModal").addEventListener("click",function(e){
+  if(e.target===document.getElementById("detailModal"))closeDetailModal()
+})
+
+// ── INIT ──────────────────────────────────────────────
+buildCommodityDropdown()
+buildCategories()
+filterListings()
+</script>
+</body>
+</html>
