@@ -832,7 +832,7 @@ function renderDashboard(){
         ${arb.length?arb.map(a=>`
         <div class="arb-row">
           <div style="flex:1">
-            <div class="arb-name">${a.commodity}</div>
+            <div class="arb-name">${a.commodity} <span style="font-family:var(--mono);font-size:8px;color:var(--text4)">&#8599;</span></div>
             <div class="arb-route">Buy ${a.buy_loc} @ KES ${a.buy_price} &rarr; Sell ${a.sell_loc} @ KES ${a.sell_price}</div>
             <div class="arb-route" style="color:var(--husk)">Est. net: KES ${a.net}/kg after transport</div>
           </div>
@@ -878,12 +878,117 @@ function renderDashboard(){
 
 function renderForex(){
   const fx=_cache.forex
-  return `<div style="padding:1.25rem 1.5rem">
+  const kes=fx.USD_KES||129.4
+  // Explain what the rate means for farmers
+  const FX_EXPLAIN={
+    "USD/KES":{
+      what:"How many Kenyan Shillings you get for 1 US Dollar",
+      why:`At KES ${kes.toFixed(2)}, the shilling is ${kes>130?"weaker than":"near"} its recent average. A higher number means KES is weaker — imports cost more, but export crops like coffee and tea earn more KES per kilogram sold.`,
+      impact:`Coffee farmers: every $1 rise in USD/KES adds ~KES ${(1*637/480).toFixed(0)} to your effective NCE payout. Tea farmers: KTDA earns more KES per USD of Mombasa auction revenue.`,
+      change:"Updated every 6 hours from ExchangeRate-API"
+    },
+    "EUR/KES":{
+      what:"How many Kenyan Shillings you get for 1 Euro",
+      why:"The Euro affects Kenya's flower and horticultural export earnings. Kenya is the EU's top flower supplier — a stronger Euro means higher KES earnings for flower farmers.",
+      impact:"Naivasha and Thika flower farmers earn more KES when EUR/KES rises.",
+      change:"Moves with European Central Bank policy and global risk appetite"
+    },
+    "GBP/KES":{
+      what:"How many Kenyan Shillings you get for 1 British Pound",
+      why:"The UK is a major buyer of Kenyan tea and horticulture. A stronger GBP means Kenyan exporters earn more KES from UK-bound shipments.",
+      impact:"KTDA tea and Kenyan flower exporters benefit when GBP rises.",
+      change:"Moves with Bank of England policy decisions"
+    },
+    "USD/SOS":{
+      what:"How many Somali Shillings you get for 1 US Dollar",
+      why:"Somalia uses USD widely for large transactions. Most livestock and grain trade in Somalia is priced in USD. A higher USD/SOS means imported goods cost more for Somali consumers.",
+      impact:"Somali livestock traders: the USD price of your camels and cattle determines your real earnings. Always convert using the live rate on SokoData.",
+      change:"Somali shilling is volatile — check before every major transaction"
+    },
+    "USD/UGX":{
+      what:"How many Ugandan Shillings you get for 1 US Dollar",
+      why:"Uganda is a major maize and bean exporter to Kenya. A weaker UGX makes Ugandan maize cheaper in KES terms — this can push Kenyan maize prices down when Uganda has surplus.",
+      impact:"Kenyan maize farmers: watch USD/UGX. When UGX weakens significantly, Uganda can flood Kenya with cheap maize within weeks.",
+      change:"Moves with Bank of Uganda monetary policy"
+    }
+  }
+
+  const mainRates=[
+    ["USD/KES",fx.USD_KES,"FX_EXPLAIN['USD/KES']"],
+    ["EUR/KES",fx.EUR_KES,"FX_EXPLAIN['EUR/KES']"],
+    ["GBP/KES",fx.GBP_KES,"FX_EXPLAIN['GBP/KES']"],
+    ["USD/SOS",fx.USD_SOS,"FX_EXPLAIN['USD/SOS']"],
+    ["USD/UGX",fx.USD_UGX,"FX_EXPLAIN['USD/UGX']"],
+    ["USD/TZS",fx.USD_TZS,null],
+    ["USD/ETB",fx.USD_ETB,null],
+    ["KES/SOS",fx.KES_SOS,null],
+  ]
+
+  return \`<div style="padding:1.25rem 1.5rem;display:flex;flex-direction:column;gap:1.25rem">
+
+    <!-- EXPLANATION CARDS FOR KEY RATES -->
+    <div class="panel">
+      <div class="panel-head"><span class="panel-title">What these rates mean for you</span><span class="badge b-live">LIVE · Updated 6h</span></div>
+      <div style="padding:14px;display:flex;flex-direction:column;gap:10px">
+
+        <!-- USD/KES — most important -->
+        <div style="background:var(--tiber);border:1px solid var(--border2);border-left:3px solid var(--husk);border-radius:0 8px 8px 0;padding:14px 16px">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+            <div style="font-family:var(--mono);font-size:13px;font-weight:500;color:var(--cream)">USD / KES</div>
+            <div style="font-family:var(--mono);font-size:22px;font-weight:500;color:var(--husk)">\${(fx.USD_KES||129.4).toFixed(2)}</div>
+          </div>
+          <div style="font-size:12px;color:var(--text2);line-height:1.7;margin-bottom:6px">
+            <strong style="color:var(--cream)">What this means:</strong> For every $1 USD, you get KES \${(fx.USD_KES||129.4).toFixed(2)}. This rate directly affects the KES value of all export crops — coffee, tea, flowers, and livestock sold to international buyers.
+          </div>
+          <div style="font-size:12px;color:var(--husk);line-height:1.6">
+            <strong>Impact today:</strong> At this rate, coffee sold at $5/kg on the global market earns KES \${(5*(fx.USD_KES||129.4)).toFixed(0)}/kg in Kenya. A 5% rise in USD/KES would add KES \${(5*(fx.USD_KES||129.4)*0.05).toFixed(0)} per kg to your effective payout.
+          </div>
+          <div style="font-family:var(--mono);font-size:9px;color:var(--text4);margin-top:8px">Source: ExchangeRate-API · \${new Date().toLocaleDateString('en-KE')}</div>
+        </div>
+
+        <!-- EUR/KES -->
+        <div style="background:var(--tiber);border:1px solid var(--border);border-left:3px solid var(--sanjuan-l);border-radius:0 8px 8px 0;padding:14px 16px">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+            <div style="font-family:var(--mono);font-size:13px;font-weight:500;color:var(--cream)">EUR / KES</div>
+            <div style="font-family:var(--mono);font-size:22px;font-weight:500;color:var(--sanjuan-l)">\${(fx.EUR_KES||140.2).toFixed(2)}</div>
+          </div>
+          <div style="font-size:12px;color:var(--text2);line-height:1.7">
+            <strong style="color:var(--cream)">What this means:</strong> The Euro rate matters most for flower and vegetable farmers selling to Europe. Kenya exports over KES 80 billion in flowers to the EU annually. A stronger EUR means higher KES earnings for Naivasha and Thika farmers.
+          </div>
+        </div>
+
+        <!-- USD/SOS -->
+        <div style="background:var(--tiber);border:1px solid var(--border);border-left:3px solid var(--curious);border-radius:0 8px 8px 0;padding:14px 16px">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+            <div style="font-family:var(--mono);font-size:13px;font-weight:500;color:var(--cream)">USD / SOS</div>
+            <div style="font-family:var(--mono);font-size:22px;font-weight:500;color:var(--curious)">\${(fx.USD_SOS||571).toFixed(0)}</div>
+          </div>
+          <div style="font-size:12px;color:var(--text2);line-height:1.7">
+            <strong style="color:var(--cream)">What this means:</strong> Somalia uses USD for most large trades. Livestock, grain, and remittances flow through USD. At \${(fx.USD_SOS||571).toFixed(0)} SOS per dollar, the Somali shilling is \${(fx.USD_SOS||571)>560?"weaker than":"near"} its recent average. Check this before any cross-border transaction.
+          </div>
+        </div>
+
+        <!-- KES/SOS — cross border -->
+        <div style="background:var(--tiber);border:1px solid var(--border);border-left:3px solid var(--mulled);border-radius:0 8px 8px 0;padding:14px 16px">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+            <div style="font-family:var(--mono);font-size:13px;font-weight:500;color:var(--cream)">KES / SOS</div>
+            <div style="font-family:var(--mono);font-size:22px;font-weight:500;color:#9b7db8">\${(fx.KES_SOS||4.41).toFixed(2)}</div>
+          </div>
+          <div style="font-size:12px;color:var(--text2);line-height:1.7">
+            <strong style="color:var(--cream)">What this means:</strong> The direct Kenya-Somalia exchange rate. Critical for cross-border traders moving maize, sugar, and livestock between Mandera-Bulo Hawo and Garissa-Dobley corridors. At \${(fx.KES_SOS||4.41).toFixed(2)}, every KES 1,000 converts to SOS \${((fx.KES_SOS||4.41)*1000).toFixed(0)}.
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ALL RATES + CALCULATOR -->
     <div class="grid2">
       <div class="panel">
-        <div class="panel-head"><span class="panel-title">Live EA Rates</span><span class="badge b-live">LIVE</span></div>
-        ${[["USD/KES",fx.USD_KES],["EUR/KES",fx.EUR_KES],["GBP/KES",fx.GBP_KES],["USD/UGX",fx.USD_UGX],["USD/TZS",fx.USD_TZS],["USD/ETB",fx.USD_ETB],["USD/SOS",fx.USD_SOS],["KES/SOS",fx.KES_SOS]].map(([s,v])=>`
-        <div class="fx-row"><span class="fx-sym" style="font-size:14px">${s}</span><span class="fx-rate" style="font-size:16px">${v?Number(v).toLocaleString(undefined,{maximumFractionDigits:2}):"&#8212;"}</span></div>`).join("")}
+        <div class="panel-head"><span class="panel-title">All EA Rates</span><span class="badge b-live">LIVE</span></div>
+        \${[["USD/KES",fx.USD_KES],["EUR/KES",fx.EUR_KES],["GBP/KES",fx.GBP_KES],["USD/UGX",fx.USD_UGX],["USD/TZS",fx.USD_TZS],["USD/ETB",fx.USD_ETB],["USD/SOS",fx.USD_SOS],["KES/SOS",fx.KES_SOS]].map(([s,v])=>\`
+        <div class="fx-row"><span class="fx-sym" style="font-size:13px">\${s}</span><span class="fx-rate" style="font-size:15px">\${v?Number(v).toLocaleString(undefined,{maximumFractionDigits:2}):"&#8212;"}</span></div>\`).join("")}
+        <div style="padding:8px 14px;font-family:var(--mono);font-size:9px;color:var(--text4)">\${fx.source}</div>
       </div>
       <div class="panel">
         <div class="panel-head"><span class="panel-title">Currency Calculator</span></div>
@@ -891,12 +996,26 @@ function renderForex(){
           <div><label class="fc-label">Amount</label><input class="fc-input" type="number" id="fcAmt" value="1000" oninput="calcFX()"/></div>
           <div><label class="fc-label">From</label>
             <select class="fc-input" id="fcFrom" onchange="calcFX()">
-              <option value="KES" selected>KES</option><option value="USD">USD</option><option value="SOS">SOS</option><option value="UGX">UGX</option><option value="TZS">TZS</option><option value="ETB">ETB</option><option value="EUR">EUR</option><option value="GBP">GBP</option>
+              <option value="KES" selected>KES — Kenyan Shilling</option>
+              <option value="USD">USD — US Dollar</option>
+              <option value="SOS">SOS — Somali Shilling</option>
+              <option value="UGX">UGX — Ugandan Shilling</option>
+              <option value="TZS">TZS — Tanzanian Shilling</option>
+              <option value="ETB">ETB — Ethiopian Birr</option>
+              <option value="EUR">EUR — Euro</option>
+              <option value="GBP">GBP — Sterling</option>
             </select>
           </div>
           <div><label class="fc-label">To</label>
             <select class="fc-input" id="fcTo" onchange="calcFX()">
-              <option value="USD" selected>USD</option><option value="KES">KES</option><option value="SOS">SOS</option><option value="UGX">UGX</option><option value="TZS">TZS</option><option value="ETB">ETB</option><option value="EUR">EUR</option><option value="GBP">GBP</option>
+              <option value="USD" selected>USD — US Dollar</option>
+              <option value="KES">KES — Kenyan Shilling</option>
+              <option value="SOS">SOS — Somali Shilling</option>
+              <option value="UGX">UGX — Ugandan Shilling</option>
+              <option value="TZS">TZS — Tanzanian Shilling</option>
+              <option value="ETB">ETB — Ethiopian Birr</option>
+              <option value="EUR">EUR — Euro</option>
+              <option value="GBP">GBP — Sterling</option>
             </select>
           </div>
           <div class="fc-result">
@@ -907,7 +1026,7 @@ function renderForex(){
         </div>
       </div>
     </div>
-  </div>`
+  </div>\`
 }
 
 function renderCommodities(){
@@ -917,8 +1036,8 @@ function renderCommodities(){
       <div class="panel-head"><span class="panel-title">Full Commodity Matrix</span><span class="badge b-live">${new Date().toLocaleDateString("en-KE")}</span></div>
       <div class="tbl-wrap"><table>
         <thead><tr><th>Commodity</th><th>Location</th><th>KES/kg</th><th>USD/kg</th><th>Trend</th><th>Action</th><th>Source</th></tr></thead>
-        <tbody>${comms.map(c=>`<tr>
-          <td>${c.commodity}</td><td style="color:var(--text3)">${c.location}</td>
+        <tbody>${comms.map(c=>`<tr onclick="goDetail('${c.commodity}','${c.location}')" style="cursor:none" title="Tap for full analysis">
+          <td>${c.commodity} <span style="font-family:var(--mono);font-size:8px;color:var(--text4);margin-left:4px">&#8599;</span></td><td style="color:var(--text3)">${c.location}</td>
           <td style="color:var(--cream);font-weight:500">KES ${c.price_kes}</td>
           <td style="color:var(--text3)">$${((c.price_usd)||(c.price_kes/129.4)).toFixed(3)}</td>
           <td class="${c.trend==="up"?"trend-up":c.trend==="dn"?"trend-dn":"trend-flat"}">${c.trend==="up"?"&#9650;":c.trend==="dn"?"&#9660;":"&#9472;"}</td>
@@ -955,9 +1074,9 @@ function renderArbitrage(){
     <div class="panel">
       <div class="panel-head"><span class="panel-title">All Arbitrage Corridors</span><span class="badge b-alert">${arb.filter(a=>a.rating==="hot").length} HOT &middot; ${arb.length} TOTAL</span></div>
       ${arb.length?arb.map(a=>`
-      <div class="arb-row">
+      <div class="arb-row" onclick="goDetail('${a.commodity}','${a.buy_loc}')" style="cursor:none" title="Tap for full analysis">
         <div style="flex:1">
-          <div class="arb-name">${a.commodity}</div>
+          <div class="arb-name">${a.commodity} <span style="font-family:var(--mono);font-size:8px;color:var(--text4)">&#8599;</span></div>
           <div class="arb-route">Buy: ${a.buy_loc} @ KES ${a.buy_price}/kg</div>
           <div class="arb-route">Sell: ${a.sell_loc} @ KES ${a.sell_price}/kg</div>
           <div class="arb-route" style="color:var(--husk)">Net after transport: KES ${a.net}/kg</div>
