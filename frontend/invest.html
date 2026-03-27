@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>SokoData — Investor Brief 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,600&family=Plus+Jakarta+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --tiber:#042820;--tiber-mid:#0a3d30;--tiber-light:#0d4d3c;
+  --husk:#b7a25e;--husk-l:#cdbf85;--husk-d:#9a8445;
+  --sanjuan:#35556e;--sanjuan-l:#4a6d8a;
+  --cherry:#74070e;--cherry-l:#c0101b;
+  --cream:#f5f0e8;--text2:#a8c4b8;--text3:#5a8070;--text4:#3d5e58;
+  --border:rgba(183,162,94,0.1);--border2:rgba(183,162,94,0.18);
+  --sans:"Plus Jakarta Sans",sans-serif;--serif:"Fraunces",serif;--mono:"DM Mono",monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;scroll-snap-type:y mandatory}
+body{font-family:var(--sans);background:var(--tiber);color:var(--cream);overflow-x:hidden;cursor:none}
+
+/* CURSOR */
+.cursor{position:fixed;width:8px;height:8px;background:var(--husk);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:transform .15s}
+.cursor-ring{position:fixed;width:30px;height:30px;border:1.5px solid rgba(183,162,94,0.4);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:all .18s ease}
+
+/* PROGRESS */
+.progress{position:fixed;left:0;top:0;width:3px;height:0%;background:var(--husk);z-index:200;transition:height .1s}
+
+/* NAV */
+.nav{position:fixed;top:0;left:0;right:0;z-index:100;height:54px;padding:0 2rem;display:flex;align-items:center;justify-content:space-between;background:rgba(4,40,32,0.92);backdrop-filter:blur(16px);border-bottom:1px solid var(--border)}
+.nav-logo{font-family:var(--mono);font-size:13px;font-weight:500;color:var(--husk);letter-spacing:0.08em;display:flex;align-items:center;gap:8px}
+.nav-sections{display:flex;gap:1.5rem}
+.nav-sec{font-family:var(--mono);font-size:10px;color:var(--text4);text-decoration:none;letter-spacing:0.06em;cursor:none;transition:color .15s}
+.nav-sec:hover,.nav-sec.active{color:var(--husk)}
+.nav-cta{font-family:var(--mono);font-size:11px;font-weight:500;padding:7px 18px;background:var(--husk);color:var(--tiber);border:none;border-radius:4px;cursor:none;letter-spacing:0.04em}
+
+/* SECTIONS — full screen scroll-snap */
+.section{min-height:100vh;scroll-snap-align:start;display:flex;flex-direction:column;justify-content:center;padding:80px 2rem 60px;position:relative;overflow:hidden}
+.section-inner{max-width:1100px;margin:0 auto;width:100%}
+
+/* SECTION BACKGROUNDS */
+.s-cover{background:var(--tiber)}
+.s-problem{background:var(--tiber)}
+.s-solution{background:var(--tiber-mid)}
+.s-platform{background:var(--tiber)}
+.s-spl{background:var(--tiber-mid)}
+.s-traction{background:var(--tiber)}
+.s-ask{background:var(--tiber-mid)}
+.s-team{background:var(--tiber)}
+
+/* SECTION NUMBERS */
+.sec-num{font-family:var(--mono);font-size:9px;font-weight:500;color:var(--husk);letter-spacing:0.16em;text-transform:uppercase;margin-bottom:1rem;display:flex;align-items:center;gap:10px}
+.sec-num::before{content:"";width:20px;height:1px;background:var(--husk)}
+
+/* TYPOGRAPHY */
+.display{font-family:var(--serif);font-size:clamp(36px,6vw,80px);font-weight:700;letter-spacing:-0.03em;line-height:1.05}
+.display em{color:var(--husk);font-style:italic;font-weight:400}
+.h2{font-family:var(--serif);font-size:clamp(28px,4vw,52px);font-weight:600;letter-spacing:-0.02em;line-height:1.12}
+.h2 em{color:var(--husk);font-style:italic;font-weight:400}
+.lead{font-size:clamp(16px,2vw,20px);color:var(--text2);line-height:1.75;font-weight:300;max-width:640px}
+.body{font-size:15px;color:var(--text2);line-height:1.85;font-weight:300}
+
+/* STAT CARDS */
+.stat-row{display:flex;gap:1px;background:var(--border);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-top:2.5rem}
+.stat{flex:1;background:var(--tiber-mid);padding:1.75rem;text-align:center}
+.stat-val{font-family:var(--mono);font-size:clamp(28px,4vw,48px);font-weight:500;color:var(--husk);line-height:1;margin-bottom:6px}
+.stat-lbl{font-family:var(--mono);font-size:9px;color:var(--text4);letter-spacing:0.12em;text-transform:uppercase;line-height:1.5}
+
+/* PROBLEM VISUAL */
+.problem-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-top:2.5rem}
+.prob-card{background:var(--tiber-mid);padding:2rem;position:relative}
+.prob-card::before{content:"";position:absolute;top:0;left:0;right:0;height:2px;background:var(--cherry-l)}
+.prob-icon{font-size:28px;margin-bottom:1rem}
+.prob-title{font-family:var(--serif);font-size:18px;font-weight:600;color:var(--cream);margin-bottom:8px}
+.prob-body{font-size:13px;color:var(--text2);line-height:1.7}
+.prob-stat{font-family:var(--mono);font-size:22px;font-weight:500;color:var(--cherry-l);margin-top:12px}
+
+/* FLOW DIAGRAM */
+.flow{display:flex;align-items:center;gap:0;margin-top:2.5rem;overflow-x:auto;padding-bottom:8px}
+.flow-node{background:var(--tiber-mid);border:1px solid var(--border2);border-radius:10px;padding:16px 18px;min-width:160px;flex-shrink:0}
+.flow-node.highlight{background:rgba(183,162,94,0.1);border-color:var(--husk)}
+.flow-node.bad{background:rgba(116,7,14,0.08);border-color:rgba(116,7,14,0.25)}
+.flow-node.good{background:rgba(10,61,48,0.8);border-color:rgba(183,162,94,0.25)}
+.fn-label{font-family:var(--mono);font-size:9px;color:var(--text4);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:6px}
+.fn-val{font-size:15px;font-weight:500;color:var(--cream);margin-bottom:4px}
+.fn-sub{font-size:12px;color:var(--text3)}
+.flow-arrow{font-family:var(--mono);font-size:18px;color:var(--text4);padding:0 12px;flex-shrink:0}
+.flow-arrow.bad{color:var(--cherry-l)}
+.flow-arrow.good{color:var(--husk)}
+
+/* FEATURE GRID */
+.feat-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:2rem}
+.feat{background:var(--tiber);border:1px solid var(--border);border-radius:10px;padding:1.5rem;display:flex;gap:14px;align-items:flex-start}
+.feat-icon{width:40px;height:40px;border-radius:8px;background:rgba(183,162,94,0.1);border:1px solid rgba(183,162,94,0.18);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.feat-title{font-family:var(--serif);font-size:16px;font-weight:600;color:var(--cream);margin-bottom:5px}
+.feat-body{font-size:12px;color:var(--text2);line-height:1.65}
+
+/* ARCHITECTURE DIAGRAM */
+.arch{background:var(--tiber);border:1px solid var(--border2);border-radius:14px;padding:2rem;margin-top:2rem;position:relative}
+.arch-title{font-family:var(--mono);font-size:9px;font-weight:500;color:var(--husk);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:1.5rem}
+.arch-layers{display:flex;flex-direction:column;gap:10px}
+.arch-layer{display:flex;gap:10px;align-items:center}
+.arch-label{font-family:var(--mono);font-size:10px;color:var(--text4);width:100px;flex-shrink:0;text-align:right;letter-spacing:0.06em}
+.arch-nodes{display:flex;gap:8px;flex-wrap:wrap}
+.arch-node{padding:8px 14px;border-radius:6px;font-family:var(--mono);font-size:11px;font-weight:500;white-space:nowrap}
+.an-edge{background:rgba(183,162,94,0.12);color:var(--husk);border:1px solid rgba(183,162,94,0.2)}
+.an-sync{background:rgba(53,85,110,0.2);color:var(--sanjuan-l);border:1px solid rgba(53,85,110,0.25)}
+.an-trust{background:rgba(97,77,112,0.2);color:#9b7db8;border:1px solid rgba(97,77,112,0.25)}
+.an-cloud{background:rgba(32,146,233,0.12);color:#4ab0f5;border:1px solid rgba(32,146,233,0.2)}
+.an-export{background:rgba(0,164,82,0.12);color:#00c862;border:1px solid rgba(0,164,82,0.2)}
+.arch-arrow{font-size:16px;color:var(--text4)}
+
+/* TIMELINE */
+.timeline{display:flex;flex-direction:column;gap:0;margin-top:2rem;position:relative}
+.timeline::before{content:"";position:absolute;left:120px;top:0;bottom:0;width:1px;background:var(--border2)}
+.tl-item{display:flex;gap:0;align-items:flex-start;padding:1.25rem 0}
+.tl-date{font-family:var(--mono);font-size:10px;font-weight:500;color:var(--husk);width:120px;flex-shrink:0;padding-top:4px;letter-spacing:0.06em}
+.tl-dot{width:10px;height:10px;border-radius:50%;background:var(--husk);flex-shrink:0;margin:4px 20px 0 -5px;position:relative;z-index:1;box-shadow:0 0 0 3px var(--tiber)}
+.tl-content{}
+.tl-title{font-size:15px;font-weight:500;color:var(--cream);margin-bottom:4px}
+.tl-body{font-size:12px;color:var(--text2);line-height:1.65}
+
+/* BUDGET */
+.budget{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-top:2rem}
+.budget-item{background:var(--tiber);padding:1.75rem}
+.budget-item.featured{background:var(--tiber-mid)}
+.bi-amount{font-family:var(--mono);font-size:32px;font-weight:500;color:var(--husk);margin-bottom:6px;line-height:1}
+.bi-title{font-size:15px;font-weight:500;color:var(--cream);margin-bottom:8px}
+.bi-items{list-style:none;display:flex;flex-direction:column;gap:6px}
+.bi-items li{font-size:12px;color:var(--text2);display:flex;align-items:flex-start;gap:8px;line-height:1.5}
+.bi-items li::before{content:"";width:4px;height:4px;border-radius:50%;background:var(--husk);flex-shrink:0;margin-top:5px}
+
+/* TEAM */
+.team-card{background:var(--tiber-mid);border:1px solid var(--border2);border-radius:14px;padding:2.5rem;margin-top:2rem;display:grid;grid-template-columns:auto 1fr;gap:2rem;align-items:start}
+.team-avatar{width:80px;height:80px;border-radius:50%;background:rgba(183,162,94,0.15);border:2px solid var(--husk);display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-size:32px;font-weight:700;color:var(--husk);flex-shrink:0}
+.team-name{font-family:var(--serif);font-size:26px;font-weight:600;color:var(--cream);margin-bottom:4px}
+.team-role{font-family:var(--mono);font-size:11px;color:var(--husk);letter-spacing:0.08em;margin-bottom:1rem}
+.team-bio{font-size:14px;color:var(--text2);line-height:1.8;font-weight:300;margin-bottom:1.25rem}
+.team-credentials{display:flex;gap:8px;flex-wrap:wrap}
+.cred{font-family:var(--mono);font-size:10px;font-weight:500;padding:4px 12px;border-radius:12px;background:rgba(183,162,94,0.1);color:var(--husk);border:1px solid rgba(183,162,94,0.18)}
+
+/* MOAT */
+.moat-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:2rem}
+.moat-card{background:var(--tiber);border:1px solid var(--border);border-radius:10px;padding:1.5rem}
+.moat-title{font-family:var(--mono);font-size:10px;font-weight:500;color:var(--husk);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:8px}
+.moat-body{font-size:13px;color:var(--text2);line-height:1.7}
+
+/* ASK CARD */
+.ask-card{background:linear-gradient(135deg,rgba(183,162,94,0.1),rgba(183,162,94,0.04));border:1px solid var(--border2);border-radius:14px;padding:2.5rem;margin-top:2rem;text-align:center}
+.ask-amount{font-family:var(--mono);font-size:clamp(36px,6vw,72px);font-weight:500;color:var(--husk);line-height:1;margin-bottom:8px}
+.ask-label{font-family:var(--mono);font-size:10px;color:var(--text4);letter-spacing:0.14em;text-transform:uppercase;margin-bottom:1.5rem}
+.ask-contact{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin-top:1.5rem}
+.ask-btn{font-family:var(--mono);font-size:12px;font-weight:600;padding:12px 28px;background:var(--husk);color:var(--tiber);border:none;border-radius:6px;cursor:none;letter-spacing:0.05em;text-decoration:none;display:inline-flex;align-items:center;gap:8px;transition:all .2s}
+.ask-btn:hover{background:var(--husk-l)}
+.ask-ghost{font-family:var(--mono);font-size:12px;font-weight:500;padding:12px 28px;background:transparent;color:var(--husk);border:1px solid rgba(183,162,94,0.3);border-radius:6px;cursor:none;text-decoration:none;display:inline-flex;align-items:center;gap:8px;letter-spacing:0.05em;transition:all .2s}
+.ask-ghost:hover{border-color:var(--husk)}
+
+/* QUOTE */
+.quote{border-left:3px solid var(--husk);padding:1.25rem 1.5rem;margin:2rem 0;background:rgba(183,162,94,0.04);border-radius:0 8px 8px 0}
+.quote-text{font-family:var(--serif);font-size:18px;font-weight:400;color:var(--cream);line-height:1.7;font-style:italic;margin-bottom:8px}
+.quote-attr{font-family:var(--mono);font-size:10px;color:var(--text4);letter-spacing:0.08em}
+
+/* COVER SPECIFIC */
+.cover-tag{display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);font-size:10px;font-weight:500;color:var(--husk);background:rgba(183,162,94,0.08);border:1px solid rgba(183,162,94,0.2);padding:6px 14px;border-radius:20px;margin-bottom:2rem;letter-spacing:0.1em}
+.cover-tag-dot{width:6px;height:6px;border-radius:50%;background:var(--husk);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(183,162,94,0.5)}50%{box-shadow:0 0 0 8px rgba(183,162,94,0)}}
+.cover-sub{font-size:18px;color:var(--text2);line-height:1.7;font-weight:300;max-width:600px;margin:1.5rem 0 2.5rem}
+.cover-urls{display:flex;gap:14px;flex-wrap:wrap}
+.cover-url{font-family:var(--mono);font-size:12px;color:var(--text3);text-decoration:none;border:1px solid var(--border);padding:8px 16px;border-radius:5px;transition:all .15s;cursor:none}
+.cover-url:hover{color:var(--husk);border-color:var(--border2)}
+.cover-url strong{color:var(--husk)}
+
+/* LIVE BADGE */
+.live-badge{display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);font-size:9px;font-weight:600;color:var(--tiber);background:var(--husk);padding:3px 10px;border-radius:3px;letter-spacing:0.1em;margin-left:8px;vertical-align:middle}
+
+/* DIVIDER */
+.section-divider{width:40px;height:2px;background:var(--husk);margin:1.5rem 0}
+
+/* SCROLL HINT */
+.scroll-hint{position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:6px;font-family:var(--mono);font-size:9px;color:var(--text4);letter-spacing:0.1em;animation:bounce 2s infinite}
+@keyframes bounce{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(6px)}}
+.scroll-arrow{font-size:16px;color:var(--text4)}
+
+/* SCROLLBAR */
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:var(--tiber)}::-webkit-scrollbar-thumb{background:var(--tiber-light);border-radius:2px}
+
+/* RESPONSIVE */
+@media(max-width:900px){
+  .problem-grid,.feat-grid,.budget,.moat-grid{grid-template-columns:1fr}
+  .stat-row{flex-direction:column}
+  .team-card{grid-template-columns:1fr}
+  .flow{flex-direction:column}
+  .flow-arrow{transform:rotate(90deg)}
+  .nav-sections{display:none}
+}
+@media(max-width:600px){
+  .section{padding:80px 1rem 60px}
+}
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cur"></div>
+<div class="cursor-ring" id="curR"></div>
+<div class="progress" id="prog"></div>
+
+<nav class="nav">
+  <div class="nav-logo">
+    <svg width="20" height="20" viewBox="0 0 40 40" fill="none">
+      <circle cx="20" cy="5" r="2" fill="#b7a25e"/>
+      <circle cx="30.6" cy="8.4" r="2" fill="#b7a25e"/>
+      <circle cx="36.6" cy="18" r="2" fill="#b7a25e"/>
+      <circle cx="13" cy="3.8" r="2" fill="#b7a25e"/>
+      <line x1="20" y1="5" x2="20" y2="20" stroke="#b7a25e" stroke-width=".8" opacity=".3"/>
+      <line x1="30.6" y1="8.4" x2="20" y2="20" stroke="#b7a25e" stroke-width=".8" opacity=".3"/>
+      <circle cx="20" cy="20" r="4" fill="#b7a25e"/>
+    </svg>
+    SOKODATA
+  </div>
+  <div class="nav-sections">
+    <a href="#problem" class="nav-sec">Problem</a>
+    <a href="#solution" class="nav-sec">Solution</a>
+    <a href="#platform" class="nav-sec">Platform</a>
+    <a href="#spl" class="nav-sec">SPL</a>
+    <a href="#ask" class="nav-sec">The Ask</a>
+    <a href="#team" class="nav-sec">Team</a>
+  </div>
+  <a href="https://firash735.github.io/sokodata/" target="_blank" class="nav-cta">View Live Platform</a>
+</nav>
+
+<!-- SECTION 0: COVER -->
+<section class="section s-cover" id="cover">
+  <div class="section-inner">
+    <div class="cover-tag"><div class="cover-tag-dot"></div>INVESTOR BRIEF &middot; MARCH 2026</div>
+    <h1 class="display">Price information<br>is <em>power.</em><br>We give it back.</h1>
+    <p class="cover-sub">SokoData is East Africa's first real-time commodity price intelligence and farmer marketplace platform. Built. Deployed. Live. Serving Kenya and Somalia today.</p>
+    <div class="cover-urls">
+      <a href="https://firash735.github.io/sokodata/" target="_blank" class="cover-url">&#9679; <strong>Live Platform</strong> &rarr; firash735.github.io/sokodata</a>
+      <a href="https://firash735.github.io/sokodata/soko.html" target="_blank" class="cover-url">&#9679; <strong>Marketplace</strong> &rarr; /soko.html</a>
+      <a href="mailto:sharifabdi735@gmail.com" class="cover-url">&#9679; <strong>Contact</strong> &rarr; sharifabdi735@gmail.com</a>
+    </div>
+    <div class="stat-row" style="margin-top:3rem">
+      <div class="stat"><div class="stat-val">$2.3T</div><div class="stat-lbl">Annual EA agricultural output at risk from price asymmetry</div></div>
+      <div class="stat"><div class="stat-val">4M+</div><div class="stat-lbl">Smallholder farming households in Kenya alone</div></div>
+      <div class="stat"><div class="stat-val">$400M</div><div class="stat-lbl">Somalia livestock export value — zero digital traceability</div></div>
+      <div class="stat"><div class="stat-val">0</div><div class="stat-lbl">Competitors with live price + marketplace + traceability combined</div></div>
+    </div>
+  </div>
+  <div class="scroll-hint">SCROLL TO EXPLORE <div class="scroll-arrow">&#8595;</div></div>
+</section>
+
+<!-- SECTION 1: PROBLEM -->
+<section class="section s-problem" id="problem">
+  <div class="section-inner">
+    <div class="sec-num">01 &mdash; The Problem</div>
+    <h2 class="h2">Farmers grow the food.<br><em>Middlemen know the price.</em></h2>
+    <div class="section-divider"></div>
+    <p class="lead">In East Africa, commodity price information has always been asymmetric. Buyers know what crops are worth on the global market. Farmers find out only after they have already sold — too late to negotiate, too late to hold, too late to act.</p>
+
+    <div class="problem-grid">
+      <div class="prob-card">
+        <div class="prob-icon">&#128200;</div>
+        <div class="prob-title">Information Asymmetry</div>
+        <div class="prob-body">A coffee buyer in Kirinyaga knows the NCE auction cleared at KES 637/kg. The farmer selling cherry at the gate does not. That gap is profit extracted from the farmer every single harvest.</div>
+        <div class="prob-stat">&#9660; 35%</div>
+        <div style="font-size:11px;color:var(--text4);margin-top:4px;font-family:var(--mono)">avg farmer undervaluation</div>
+      </div>
+      <div class="prob-card">
+        <div class="prob-icon">&#128683;</div>
+        <div class="prob-title">No Exploitation Detection</div>
+        <div class="prob-body">When a farmer is offered 30% below the fair benchmark price, no alarm sounds. No alert fires. No cooperative is notified. The transaction completes and the loss is invisible — and unrecorded.</div>
+        <div class="prob-stat">KES 0</div>
+        <div style="font-size:11px;color:var(--text4);margin-top:4px;font-family:var(--mono)">compensation recovered today</div>
+      </div>
+      <div class="prob-card">
+        <div class="prob-icon">&#128241;</div>
+        <div class="prob-title">No Reach to the Farmer</div>
+        <div class="prob-body">Existing platforms assume smartphones and mobile data. 70% of rural East African farmers have basic phones only — calls and SMS. No platform has built for that reality. Until SokoData.</div>
+        <div class="prob-stat">70%</div>
+        <div style="font-size:11px;color:var(--text4);margin-top:4px;font-family:var(--mono)">farmers unreachable by existing apps</div>
+      </div>
+    </div>
+
+    <div class="quote" style="margin-top:2.5rem">
+      <div class="quote-text">"These people are trusting you with their whole hardwork for only to get accurate decision to live or to provide basic needs."</div>
+      <div class="quote-attr">ABDISHARIF ABDI MOHAMED &mdash; FOUNDER, SOKODATA</div>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 2: BEFORE / AFTER -->
+<section class="section s-solution" id="solution">
+  <div class="section-inner">
+    <div class="sec-num">02 &mdash; The Solution</div>
+    <h2 class="h2">What changes<br><em>when farmers know.</em></h2>
+    <div class="section-divider"></div>
+
+    <p class="lead" style="margin-bottom:2rem">The same transaction. The same farmer. The same buyer. The only difference is one SMS sent at 6am before market day.</p>
+
+    <div style="margin-bottom:1rem;font-family:var(--mono);font-size:9px;color:var(--cherry-l);letter-spacing:0.1em;text-transform:uppercase">BEFORE SOKODATA</div>
+    <div class="flow">
+      <div class="flow-node bad"><div class="fn-label">Farmer</div><div class="fn-val">Maize — 1 tonne</div><div class="fn-sub">No price information</div></div>
+      <div class="flow-arrow bad">&rarr;</div>
+      <div class="flow-node bad"><div class="fn-label">Broker arrives</div><div class="fn-val">Offers KES 55/kg</div><div class="fn-sub">Knows Mandera: KES 94</div></div>
+      <div class="flow-arrow bad">&rarr;</div>
+      <div class="flow-node bad"><div class="fn-label">Farmer accepts</div><div class="fn-val">KES 55,000</div><div class="fn-sub">Fair value: KES 94,000</div></div>
+      <div class="flow-arrow bad">&rarr;</div>
+      <div class="flow-node bad"><div class="fn-label">Loss</div><div class="fn-val" style="color:var(--cherry-l)">KES 39,000</div><div class="fn-sub">Invisible. Unrecorded.</div></div>
+    </div>
+
+    <div style="margin-top:2rem;margin-bottom:1rem;font-family:var(--mono);font-size:9px;color:var(--husk);letter-spacing:0.1em;text-transform:uppercase">WITH SOKODATA</div>
+    <div class="flow">
+      <div class="flow-node good"><div class="fn-label">6:00 AM SMS</div><div class="fn-val">Mandera: KES 94</div><div class="fn-sub">SokoData alert fires</div></div>
+      <div class="flow-arrow good">&rarr;</div>
+      <div class="flow-node good"><div class="fn-label">Farmer knows</div><div class="fn-val">Fair floor: KES 75</div><div class="fn-sub">Will not accept below</div></div>
+      <div class="flow-arrow good">&rarr;</div>
+      <div class="flow-node good"><div class="fn-label">Posts on Soko</div><div class="fn-val">Listing: KES 80/kg</div><div class="fn-sub">3 buyers respond</div></div>
+      <div class="flow-arrow good">&rarr;</div>
+      <div class="flow-node good"><div class="fn-label">Result</div><div class="fn-val" style="color:var(--husk)">KES 80,000</div><div class="fn-sub">+KES 25,000 recovered</div></div>
+    </div>
+
+    <div style="background:rgba(183,162,94,0.06);border:1px solid var(--border2);border-radius:10px;padding:1.5rem;margin-top:2rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem">
+      <div style="font-family:var(--serif);font-size:18px;color:var(--cream)">One SMS. One farmer. One market day.</div>
+      <div style="font-family:var(--mono);font-size:28px;font-weight:500;color:var(--husk)">+KES 25,000 recovered</div>
+      <div style="font-size:13px;color:var(--text3)">On 1 tonne of maize. Repeatable every harvest.</div>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 3: PLATFORM -->
+<section class="section s-platform" id="platform">
+  <div class="section-inner">
+    <div class="sec-num">03 &mdash; The Platform <span class="live-badge">LIVE</span></div>
+    <h2 class="h2">Built. Deployed.<br><em>Running right now.</em></h2>
+    <div class="section-divider"></div>
+    <p class="lead">SokoData is not a mockup or a prototype. It is a production platform serving live data to real users today.</p>
+
+    <div class="feat-grid">
+      <div class="feat">
+        <div class="feat-icon">&#128202;</div>
+        <div><div class="feat-title">Live Price Intelligence</div><div class="feat-body">103 commodities across 19+ markets in Kenya and Somalia. Prices updated every 6 hours automatically from KAMIS, FEWS NET, World Bank, NCE, and ExchangeRate-API. Zero manual input.</div></div>
+      </div>
+      <div class="feat">
+        <div class="feat-icon">&#9888;&#65039;</div>
+        <div><div class="feat-title">Exploitation Detection</div><div class="feat-body">Every local price compared to global benchmark every 6 hours. When price drops below 80% of fair value, SMS alert fires to the cooperative automatically. Timestamped, recorded, actionable.</div></div>
+      </div>
+      <div class="feat">
+        <div class="feat-icon">&#128722;</div>
+        <div><div class="feat-title">Farmer Marketplace</div><div class="feat-body">103 commodities. Every listing shows the live benchmark and exploitation floor. Buyers cannot pretend they do not know the fair price. Trust scores built from every transaction.</div></div>
+      </div>
+      <div class="feat">
+        <div class="feat-icon">&#129302;</div>
+        <div><div class="feat-title">AI Soko Assistant</div><div class="feat-body">24/7 AI assistant trained on live SokoData price data. Answers in English and Kiswahili. Handles price questions, sell/hold decisions, exploitation explanations, and M-Pesa upgrade guidance.</div></div>
+      </div>
+      <div class="feat">
+        <div class="feat-icon">&#128241;</div>
+        <div><div class="feat-title">SMS First Architecture</div><div class="feat-body">Farmers with basic Nokia phones receive daily price alerts via SMS. Post marketplace listings by text: SOKO LIST MAIZE 500 66 NAIROBI. No smartphone required. This is the feature that reaches the 70%.</div></div>
+      </div>
+      <div class="feat">
+        <div class="feat-icon">&#128176;</div>
+        <div><div class="feat-title">Cross-Border Intelligence</div><div class="feat-body">Kenya-Somalia forex rates live. KES/SOS, USD/SOS, cross-border arbitrage corridors. The Mandera-Bulo Hawo and Garissa-Dobley trade corridors mapped and monitored in real time.</div></div>
+      </div>
+    </div>
+
+    <div style="margin-top:2rem;padding:1.5rem;background:var(--tiber-mid);border:1px solid var(--border2);border-radius:10px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem">
+      <div>
+        <div style="font-family:var(--mono);font-size:9px;color:var(--text4);letter-spacing:0.1em;margin-bottom:6px">LIVE PLATFORM</div>
+        <div style="font-family:var(--mono);font-size:14px;color:var(--husk)">firash735.github.io/sokodata</div>
+      </div>
+      <div style="display:flex;gap:2rem">
+        <div style="text-align:center"><div style="font-family:var(--mono);font-size:24px;font-weight:500;color:var(--cream)">103</div><div style="font-family:var(--mono);font-size:9px;color:var(--text4);letter-spacing:0.08em">COMMODITIES</div></div>
+        <div style="text-align:center"><div style="font-family:var(--mono);font-size:24px;font-weight:500;color:var(--cream)">19+</div><div style="font-family:var(--mono);font-size:9px;color:var(--text4);letter-spacing:0.08em">MARKETS</div></div>
+        <div style="text-align:center"><div style="font-family:var(--mono);font-size:24px;font-weight:500;color:var(--cream)">2</div><div style="font-family:var(--mono);font-size:9px;color:var(--text4);letter-spacing:0.08em">COUNTRIES</div></div>
+        <div style="text-align:center"><div style="font-family:var(--mono);font-size:24px;font-weight:500;color:var(--cream)">6h</div><div style="font-family:var(--mono);font-size:9px;color:var(--text4);letter-spacing:0.08em">UPDATE CYCLE</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 4: SPL -->
+<section class="section s-spl" id="spl">
+  <div class="section-inner">
+    <div class="sec-num">04 &mdash; The Next Frontier</div>
+    <h2 class="h2">Somali Pastoral Ledger<br><em>The untouched market.</em></h2>
+    <div class="section-divider"></div>
+    <p class="lead">Somalia's livestock sector is worth $400M annually in Gulf exports. It runs on clan-based paper records. The government SOMLITS plan is centralized and paper-heavy. Nobody has built the distributed, offline-first version. That is SPL.</p>
+
+    <div class="arch">
+      <div class="arch-title">SPL SYSTEM ARCHITECTURE &mdash; DISTRIBUTED, OFFLINE-FIRST</div>
+      <div class="arch-layers">
+        <div class="arch-layer">
+          <div class="arch-label">Gulf Buyers</div>
+          <div class="arch-arrow">&rarr;</div>
+          <div class="arch-nodes">
+            <div class="arch-node an-export">QR Scan &rarr; Full chain</div>
+            <div class="arch-node an-export">Health cert verified</div>
+            <div class="arch-node an-export">Ownership history</div>
+            <div class="arch-node an-export">EVC+ instant payment</div>
+          </div>
+        </div>
+        <div class="arch-layer">
+          <div class="arch-label">Cloud Layer</div>
+          <div class="arch-arrow">&rarr;</div>
+          <div class="arch-nodes">
+            <div class="arch-node an-cloud">Supabase (eventual sync)</div>
+            <div class="arch-node an-cloud">SokoData price feed</div>
+            <div class="arch-node an-cloud">Government SOMLITS bridge</div>
+          </div>
+        </div>
+        <div class="arch-layer">
+          <div class="arch-label">Sync Layer</div>
+          <div class="arch-arrow">&rarr;</div>
+          <div class="arch-nodes">
+            <div class="arch-node an-sync">Bluetooth P2P mesh</div>
+            <div class="arch-node an-sync">SMS gateway</div>
+            <div class="arch-node an-sync">Starlink (emerging)</div>
+            <div class="arch-node an-sync">CRDT reconciliation</div>
+          </div>
+        </div>
+        <div class="arch-layer">
+          <div class="arch-label">Trust Layer</div>
+          <div class="arch-arrow">&rarr;</div>
+          <div class="arch-nodes">
+            <div class="arch-node an-trust">Clan elder signatures</div>
+            <div class="arch-node an-trust">Cooperative validators</div>
+            <div class="arch-node an-trust">Cryptographic transfer proof</div>
+          </div>
+        </div>
+        <div class="arch-layer">
+          <div class="arch-label">Edge Nodes</div>
+          <div class="arch-arrow">&rarr;</div>
+          <div class="arch-nodes">
+            <div class="arch-node an-edge">Herder phone (offline-first)</div>
+            <div class="arch-node an-edge">QR ear tags</div>
+            <div class="arch-node an-edge">Local IndexedDB</div>
+            <div class="arch-node an-edge">Solar-charged devices</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="moat-grid" style="margin-top:1.5rem">
+      <div class="moat-card">
+        <div class="moat-title">Why this has never been built</div>
+        <div class="moat-body">SOMLITS is centralized and requires consistent internet. Every deployed agri-tech platform in Somalia assumes connectivity. SPL assumes none. It works in Somaliland&#39;s highlands, Puntland&#39;s pastoral zones, and the Bay region equally well — because it does not need the cloud to function.</div>
+      </div>
+      <div class="moat-card">
+        <div class="moat-title">The clan network as consensus layer</div>
+        <div class="moat-body">Clans already function as a distributed trust network. Livestock ownership disputes are resolved by elder consensus — the same mechanism SPL formalizes with cryptographic signatures. We are not replacing the social system. We are adding immutable proof on top of it.</div>
+      </div>
+      <div class="moat-card">
+        <div class="moat-title">Gulf exporters will pay for this</div>
+        <div class="moat-body">Saudi Arabia and UAE have rejected East African livestock shipments over disease certification failures. A verified, immutable health and ownership chain solves an active problem that costs Somali exporters millions per year. The buyer is motivated. The price point is established.</div>
+      </div>
+      <div class="moat-card">
+        <div class="moat-title">The SokoData connection</div>
+        <div class="moat-body">Every SPL-registered animal links directly to SokoData&#39;s marketplace. The herder sees the live Gulf export price before negotiating. The buyer sees the full traceability record before paying. One platform. Complete verified transaction from Somali herder to Dubai buyer.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 5: ROADMAP -->
+<section class="section s-traction" id="roadmap">
+  <div class="section-inner">
+    <div class="sec-num">05 &mdash; Roadmap</div>
+    <h2 class="h2">Steps of the tortoise.<br><em>Every one deliberate.</em></h2>
+    <div class="section-divider"></div>
+    <p class="lead">No marathon. No feature race. Every step taken with 100% certainty of the outcome before the next step starts.</p>
+
+    <div class="timeline">
+      <div class="tl-item">
+        <div class="tl-date">NOW</div>
+        <div class="tl-dot"></div>
+        <div class="tl-content">
+          <div class="tl-title">Platform live &mdash; Kenya + Somalia</div>
+          <div class="tl-body">SokoData dashboard, marketplace, AI assistant, exploitation detection all deployed and running. 103 commodities. 19+ markets. GitHub auto-deploy. 6-hour automated price refresh.</div>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-date">Q2 2026</div>
+        <div class="tl-dot"></div>
+        <div class="tl-content">
+          <div class="tl-title">SMS system deployment &mdash; first 10,000 farmers</div>
+          <div class="tl-body">Africa&#39;s Talking SMS infrastructure. Daily 6am price alerts to cooperative WhatsApp groups and direct SMS. Basic phone farmers reached. First real user base established. First exploitation alerts fired and documented.</div>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-date">Q3 2026</div>
+        <div class="tl-dot"></div>
+        <div class="tl-content">
+          <div class="tl-title">Domain + legal entity + first revenue</div>
+          <div class="tl-body">sokodata.com live. Legal entity registered in Kenya. First Pro subscribers converting from free. First marketplace transactions with escrow. 1.5% transaction fee activates.</div>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-date">Q4 2026</div>
+        <div class="tl-dot"></div>
+        <div class="tl-content">
+          <div class="tl-title">SPL browser prototype &mdash; Somaliland pilot</div>
+          <div class="tl-body">Livestock registration, QR generation, offline-first sync, clan elder validation flow. Pilot with 3 cooperatives in Somaliland. First 500 animals registered on the ledger.</div>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-date">Q1 2027</div>
+        <div class="tl-dot"></div>
+        <div class="tl-content">
+          <div class="tl-title">Gulf exporter partnerships &mdash; SPL verification revenue</div>
+          <div class="tl-body">First Gulf buyer using SPL verification chain. Per-animal verification fee model active. SokoData exploitation database has 12 months of records — pitched to Kenya Competition Authority and international NGOs.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 6: THE ASK -->
+<section class="section s-ask" id="ask">
+  <div class="section-inner">
+    <div class="sec-num">06 &mdash; The Ask</div>
+    <h2 class="h2">Specific capital.<br><em>Specific outcomes.</em></h2>
+    <div class="section-divider"></div>
+    <p class="lead">We are not raising to build. We have built. We are raising to reach the farmers who need this most — and to pilot the distributed ledger that will transform Somalia&#39;s livestock export sector.</p>
+
+    <div class="ask-card">
+      <div class="ask-amount">$45,000</div>
+      <div class="ask-label">SEED ROUND &mdash; TARGET CLOSE Q2 2026</div>
+      <div style="font-size:14px;color:var(--text2);max-width:500px;margin:0 auto;line-height:1.75">Three buckets. Every dollar accountable. Monthly reporting to all investors on deployment progress and farmer impact metrics.</div>
+    </div>
+
+    <div class="budget">
+      <div class="budget-item">
+        <div class="bi-amount">$15,000</div>
+        <div class="bi-title">SMS Infrastructure</div>
+        <ul class="bi-items">
+          <li>Africa&#39;s Talking API deployment</li>
+          <li>Daily price alerts to 10,000 farmers</li>
+          <li>12 months of SMS broadcast coverage</li>
+          <li>Kiswahili + English templates</li>
+          <li>Exploitation alert SMS system live</li>
+        </ul>
+      </div>
+      <div class="budget-item featured">
+        <div class="bi-amount">$20,000</div>
+        <div class="bi-title">SPL Pilot &mdash; Somaliland</div>
+        <ul class="bi-items">
+          <li>Browser prototype development</li>
+          <li>3 cooperative onboarding visits</li>
+          <li>QR ear tag procurement (500 animals)</li>
+          <li>Clan elder validation training</li>
+          <li>Gulf exporter pitch preparation</li>
+        </ul>
+      </div>
+      <div class="budget-item">
+        <div class="bi-amount">$10,000</div>
+        <div class="bi-title">Operations</div>
+        <ul class="bi-items">
+          <li>sokodata.com domain + SSL</li>
+          <li>Kenya legal entity registration</li>
+          <li>6 months working capital</li>
+          <li>Commodities API subscription</li>
+          <li>Travel for field validation</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="ask-contact">
+      <a href="mailto:sharifabdi735@gmail.com" class="ask-btn">&#9993; Contact Abdisharif</a>
+      <a href="https://firash735.github.io/sokodata/" target="_blank" class="ask-ghost">View Live Platform &rarr;</a>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 7: TEAM -->
+<section class="section s-team" id="team">
+  <div class="section-inner">
+    <div class="sec-num">07 &mdash; The Founder</div>
+    <h2 class="h2">One person.<br><em>Everything built.</em></h2>
+    <div class="section-divider"></div>
+
+    <div class="team-card">
+      <div class="team-avatar">A</div>
+      <div>
+        <div class="team-name">Abdisharif Abdi Mohamed</div>
+        <div class="team-role">FOUNDER &middot; BUILDER &middot; NAIROBI, KENYA</div>
+        <div class="team-bio">Somali-Kenyan data science student who built SokoData from zero — no funding, no team, no shortcuts. Designed the architecture, wrote every line of code, deployed every feature, and solved every problem independently. Has direct personal understanding of both Kenya&#39;s agricultural markets and Somalia&#39;s pastoral economy from lived experience on both sides of the border.<br><br>The unfair advantage is not technical skill alone — it is the combination of technical capability, cross-border cultural fluency, and personal motivation that no funded competitor can replicate by hiring. You cannot hire someone who understands what it means when a pastoralist in Wajir cannot feed his family because a broker paid 35% below fair price for his goats. Abdisharif does not need to imagine it.</div>
+        <div class="team-credentials">
+          <span class="cred">Data Science Student</span>
+          <span class="cred">Full-Stack Builder</span>
+          <span class="cred">Somali-Kenyan</span>
+          <span class="cred">East Africa Markets</span>
+          <span class="cred">Distributed Systems</span>
+          <span class="cred">Zero External Funding</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="moat-grid" style="margin-top:1.5rem">
+      <div class="moat-card">
+        <div class="moat-title">What has been built without funding</div>
+        <div class="moat-body">Production web platform. Live price dashboard. Farmer marketplace. AI assistant. Exploitation detection engine. Admin panel. Automated 6-hour price pipeline. Security hardening. GitHub CI/CD. 103-commodity catalog. Cross-border forex intelligence. All deployed. All live.</div>
+      </div>
+      <div class="moat-card">
+        <div class="moat-title">What $45,000 unlocks</div>
+        <div class="moat-body">SMS infrastructure reaching 10,000 farmers. SPL pilot with 3 Somaliland cooperatives. Legal entity. Domain. The platform exists — the capital accelerates reach, not development. Every dollar goes to users, not to building what already works.</div>
+      </div>
+    </div>
+
+    <div class="quote" style="margin-top:2rem">
+      <div class="quote-text">"Casually developing and launching tech that no one else has been capable of doing. Building something so otherworldly that it becomes a product class of its own."</div>
+      <div class="quote-attr">SOKODATA FOUNDING VISION</div>
+    </div>
+
+    <div style="text-align:center;margin-top:3rem;padding:2rem;background:var(--tiber-mid);border:1px solid var(--border2);border-radius:12px">
+      <div style="font-family:var(--mono);font-size:9px;color:var(--text4);letter-spacing:0.14em;margin-bottom:12px">READY TO TALK</div>
+      <div style="font-family:var(--serif);font-size:22px;font-weight:600;color:var(--cream);margin-bottom:6px">Abdisharif Abdi Mohamed</div>
+      <div style="font-family:var(--mono);font-size:13px;color:var(--husk);margin-bottom:1.5rem">sharifabdi735@gmail.com</div>
+      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+        <a href="mailto:sharifabdi735@gmail.com" class="ask-btn" style="font-size:11px;padding:10px 22px">Send Email</a>
+        <a href="https://firash735.github.io/sokodata/" target="_blank" class="ask-ghost" style="font-size:11px;padding:10px 22px">View Platform</a>
+        <a href="https://firash735.github.io/sokodata/soko.html" target="_blank" class="ask-ghost" style="font-size:11px;padding:10px 22px">View Marketplace</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+var cur=document.getElementById("cur"),curR=document.getElementById("curR"),prog=document.getElementById("prog")
+var mx=0,my=0,rx=0,ry=0
+document.addEventListener("mousemove",function(e){mx=e.clientX;my=e.clientY;cur.style.left=mx+"px";cur.style.top=my+"px"})
+;(function a(){rx+=(mx-rx)*.13;ry+=(my-ry)*.13;curR.style.left=rx+"px";curR.style.top=ry+"px";requestAnimationFrame(a)})()
+document.querySelectorAll("a,button").forEach(function(el){
+  el.addEventListener("mouseenter",function(){cur.style.transform="translate(-50%,-50%) scale(2.5)";curR.style.transform="translate(-50%,-50%) scale(1.6)"})
+  el.addEventListener("mouseleave",function(){cur.style.transform="translate(-50%,-50%) scale(1)";curR.style.transform="translate(-50%,-50%) scale(1)"})
+})
+
+window.addEventListener("scroll",function(){
+  var pct=(window.scrollY/(document.body.scrollHeight-window.innerHeight))*100
+  prog.style.height=pct+"%"
+  document.querySelectorAll(".nav-sec").forEach(function(a){a.classList.remove("active")})
+  var sections=["cover","problem","solution","platform","spl","roadmap","ask","team"]
+  for(var i=sections.length-1;i>=0;i--){
+    var el=document.getElementById(sections[i])
+    if(el&&window.scrollY>=el.offsetTop-200){
+      var link=document.querySelector(".nav-sec[href='#"+sections[i]+"']")
+      if(link)link.classList.add("active")
+      break
+    }
+  }
+})
+
+var obs=new IntersectionObserver(function(entries){
+  entries.forEach(function(e){
+    if(e.isIntersecting){
+      e.target.style.opacity="1"
+      e.target.style.transform="translateY(0)"
+    }
+  })
+},{threshold:0.08})
+document.querySelectorAll(".prob-card,.feat,.moat-card,.tl-item,.budget-item,.flow-node").forEach(function(el){
+  el.style.opacity="0"
+  el.style.transform="translateY(16px)"
+  el.style.transition="opacity 0.5s ease, transform 0.5s ease"
+  obs.observe(el)
+})
+</script>
+</body>
+</html>
