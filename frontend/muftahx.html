@@ -1124,5 +1124,170 @@ function submitForm(){
 
 renderForm("seller")
 </script>
+
+
+<style>
+.ke-btn{position:fixed;bottom:2rem;right:2rem;z-index:300;width:52px;height:52px;border-radius:50%;background:var(--kgreen);border:2px solid rgba(201,149,42,.4);box-shadow:0 4px 20px rgba(27,67,50,.4);cursor:none;display:flex;align-items:center;justify-content:center;font-size:22px;transition:all .2s;color:var(--white)}
+.ke-btn:hover{background:var(--kgreen-mid);transform:translateY(-2px)}
+.ke-panel{position:fixed;bottom:6rem;right:2rem;z-index:290;width:380px;max-height:72vh;background:var(--white);border:1px solid var(--light2);border-radius:var(--rad-lg);box-shadow:0 20px 60px rgba(0,0,0,.15);display:none;flex-direction:column;overflow:hidden}
+.ke-panel.open{display:flex}
+.ke-header{background:var(--kgreen);padding:1rem 1.25rem;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.ke-htitle{font-family:var(--serif);font-size:16px;font-weight:700;color:var(--white)}
+.ke-hsub{font-family:var(--mono);font-size:9px;color:rgba(255,255,255,.5);letter-spacing:.08em;margin-top:2px}
+.ke-x{background:none;border:none;color:rgba(255,255,255,.6);font-size:20px;cursor:none;line-height:1}
+.ke-x:hover{color:var(--white)}
+.ke-topics{padding:1rem;border-bottom:1px solid var(--light2);display:flex;flex-direction:column;gap:6px;flex-shrink:0;overflow-y:auto}
+.ke-tlbl{font-family:var(--mono);font-size:9px;color:var(--text4);letter-spacing:.1em;text-transform:uppercase;margin-bottom:4px}
+.ke-tbtn{display:flex;align-items:center;gap:10px;padding:9px 12px;background:var(--off);border:1px solid var(--light2);border-radius:var(--rad);cursor:none;text-align:left;transition:all .15s;width:100%}
+.ke-tbtn:hover{background:var(--kgreen-bg);border-color:var(--kgreen-border)}
+.ke-ticon{font-size:16px;flex-shrink:0}
+.ke-ttitle{font-size:12px;font-weight:500;color:var(--text)}
+.ke-tsub{font-size:10px;color:var(--text3);margin-top:1px}
+.ke-ans{padding:1.25rem;overflow-y:auto;flex:1;display:none}
+.ke-ans.open{display:block}
+.ke-atitle{font-family:var(--serif);font-size:17px;font-weight:700;color:var(--text);margin-bottom:.75rem;line-height:1.2}
+.ke-abody{font-size:13px;color:var(--text2);line-height:1.8}
+.ke-abody h4{font-family:var(--mono);font-size:10px;font-weight:600;color:var(--kgreen);letter-spacing:.1em;text-transform:uppercase;margin:1rem 0 .4rem}
+.ke-abody p{margin-bottom:.75rem}
+.ke-abody ul{padding-left:1.25rem;margin-bottom:.75rem;display:flex;flex-direction:column;gap:5px}
+.ke-abody li{font-size:13px;color:var(--text2);line-height:1.65}
+.ke-abody strong{color:var(--text)}
+.ke-warn{background:rgba(201,149,42,.08);border:1px solid rgba(201,149,42,.2);border-radius:6px;padding:10px 12px;font-size:12px;color:var(--text2);margin:.75rem 0}
+.ke-warn strong{color:var(--gold-d)}
+.ke-back{font-family:var(--mono);font-size:10px;font-weight:500;color:var(--kgreen);background:none;border:none;cursor:none;padding:0;letter-spacing:.04em;display:flex;align-items:center;gap:5px;margin-bottom:1rem}
+@media(max-width:480px){.ke-panel{width:calc(100vw - 2rem);right:1rem}}
+</style>
+
+<button class="ke-btn" onclick="toggleKE()" aria-label="Export Knowledge Guide">&#9432;</button>
+
+<div class="ke-panel" id="kePanel">
+  <div class="ke-header">
+    <div><div class="ke-htitle">Export Knowledge Guide</div><div class="ke-hsub">Expert answers &mdash; MuftahX</div></div>
+    <button class="ke-x" onclick="toggleKE()">&#215;</button>
+  </div>
+  <div class="ke-topics" id="keTopics">
+    <div class="ke-tlbl">What do you need to know?</div>
+    <button class="ke-tbtn" onclick="showKE('fatf')"><span class="ke-ticon">&#9888;&#65039;</span><div><div class="ke-ttitle">Kenya FATF grey list &mdash; getting paid internationally</div><div class="ke-tsub">Critical 2025 update every exporter must read</div></div></button>
+    <button class="ke-tbtn" onclick="showKE('payment')"><span class="ke-ticon">&#128176;</span><div><div class="ke-ttitle">How to structure international payments</div><div class="ke-tsub">Bank wire, letter of credit, advance payment</div></div></button>
+    <button class="ke-tbtn" onclick="showKE('dispute')"><span class="ke-ticon">&#9878;&#65039;</span><div><div class="ke-ttitle">When a deal goes wrong</div><div class="ke-tsub">Dispute resolution and protecting yourself</div></div></button>
+    <button class="ke-tbtn" onclick="showKE('seasons')"><span class="ke-ticon">&#128197;</span><div><div class="ke-ttitle">Export seasons and buyer timing</div><div class="ke-tsub">When buyers source, when prices peak</div></div></button>
+    <button class="ke-tbtn" onclick="showKE('firstdeal')"><span class="ke-ticon">&#129309;</span><div><div class="ke-ttitle">Closing your first international deal</div><div class="ke-tsub">Step by step: inquiry to payment received</div></div></button>
+  </div>
+  <div class="ke-ans" id="keAns"></div>
+</div>
+
+<script>
+var KE = {}
+
+KE.fatf = "<button class='ke-back' onclick='keBack()'>&#8592; Back</button>"
+  + "<h4>What happened</h4>"
+  + "<p>In 2024, Kenya was placed on the FATF grey list for deficiencies in controlling money laundering and terrorism financing. This affects every Kenyan business that receives international wire transfers.</p>"
+  + "<div class='ke-warn'><strong>&#9888; What this means for your payments:</strong> Banks in the EU, US, and UK apply extra scrutiny to payments going to Kenya. Your buyer's bank may delay, question, or request additional documentation before releasing funds.</div>"
+  + "<h4>What you must do</h4>"
+  + "<ul>"
+  + "<li><strong>Provide your KRA PIN and business registration number</strong> to every buyer upfront &mdash; their compliance departments will ask</li>"
+  + "<li><strong>Use a Tier 1 Kenyan bank</strong> (Equity, KCB, NCBA, Stanbic, Standard Chartered) &mdash; these have established SWIFT correspondent relationships that reduce payment friction</li>"
+  + "<li><strong>Never use personal M-Pesa for export payments</strong> &mdash; international banks will not wire to mobile money accounts</li>"
+  + "<li><strong>Request payment in USD or EUR</strong>, not KES &mdash; foreign currency accounts at Kenyan banks are fully legal</li>"
+  + "<li><strong>For first-time buyers, request 50% advance</strong> before shipment &mdash; this is globally standard for new relationships</li>"
+  + "</ul>"
+  + "<h4>The silver lining</h4>"
+  + "<p>Kenya is actively implementing FATF reforms. Being listed on MuftahX with verified compliance certificates signals to buyers that you operate transparently &mdash; exactly what international banks need to see.</p>"
+
+KE.payment = "<button class='ke-back' onclick='keBack()'>&#8592; Back</button>"
+  + "<h4>Three payment methods &mdash; when to use each</h4>"
+  + "<p><strong>Cash in advance (T/T prepayment)</strong> &mdash; Best for your first transaction with any buyer. Request 30&ndash;50% before you prepare the shipment, balance before goods leave Kenya. Low risk for you, globally standard for new relationships.</p>"
+  + "<p><strong>Letter of Credit (LC)</strong> &mdash; Best for large orders above $50,000. The buyer's bank guarantees payment once you present shipping documents. Slower but highly secure. KCB Trade Finance and Stanbic Kenya can advise you.</p>"
+  + "<p><strong>Open account (after delivery)</strong> &mdash; Only for buyers you have traded with 3+ times successfully. Never for a first transaction. If a new buyer insists on open account, walk away.</p>"
+  + "<div class='ke-warn'><strong>Market reality:</strong> EU flower buyers (Netherlands) typically pay 7 days after delivery. Gulf buyers pay 30 days after invoice. US buyers under AGOA may take 45&ndash;60 days. Know your market before agreeing terms.</div>"
+  + "<h4>Documents always required for payment</h4>"
+  + "<ul>"
+  + "<li>Commercial invoice (in USD or EUR)</li>"
+  + "<li>Packing list with exact weights and quantities</li>"
+  + "<li>Certificate of Origin (from Kenya National Chamber of Commerce)</li>"
+  + "<li>KEPHIS phytosanitary certificate for the specific consignment</li>"
+  + "<li>Bill of Lading or Airway Bill from your carrier</li>"
+  + "<li>KRA PIN certificate (buyers' banks increasingly require this)</li>"
+  + "</ul>"
+
+KE.dispute = "<button class='ke-back' onclick='keBack()'>&#8592; Back</button>"
+  + "<h4>Most common disputes</h4>"
+  + "<ul>"
+  + "<li>Buyer refuses payment claiming quality failure after delivery</li>"
+  + "<li>Buyer reduces payment unilaterally without prior agreement</li>"
+  + "<li>Shipment rejected at destination for phytosanitary reasons</li>"
+  + "<li>Buyer disappears after receiving goods</li>"
+  + "</ul>"
+  + "<h4>Your first line of defense &mdash; the contract</h4>"
+  + "<p>Before any shipment, agree in writing on: price, quantity, quality specifications (grade, moisture, size), delivery terms (FOB or CIF), payment terms, and what happens if goods are rejected at destination. Email is legally valid in Kenya.</p>"
+  + "<h4>If a buyer disputes payment</h4>"
+  + "<ul>"
+  + "<li><strong>Do not send the next shipment</strong> until the dispute is resolved</li>"
+  + "<li><strong>Escalate by email</strong> &mdash; document everything in writing</li>"
+  + "<li><strong>Contact the Nairobi Centre for International Arbitration (NCIA)</strong> &mdash; faster and far cheaper than European courts</li>"
+  + "<li><strong>For African buyers</strong>, the African Trade Insurance Agency (ATI) covers non-payment risk &mdash; worth considering before large orders</li>"
+  + "</ul>"
+  + "<div class='ke-warn'><strong>The expensive mistake:</strong> Taking a dispute to court in Europe will cost more in legal fees than most first export orders are worth. NCIA arbitration is a fraction of that cost and is internationally enforceable.</div>"
+  + "<h4>Prevention checklist</h4>"
+  + "<p>Always request the buyer's company registration documents and bank details before any transaction. A legitimate buyer will provide these without hesitation.</p>"
+
+KE.seasons = "<button class='ke-back' onclick='keBack()'>&#8592; Back</button>"
+  + "<h4>Cut flowers</h4>"
+  + "<ul>"
+  + "<li><strong>February (Valentine's)</strong> &mdash; Highest global demand. EU buyers finalize orders in November. Not in their system by December means missing February.</li>"
+  + "<li><strong>March (Mother's Day prep)</strong> &mdash; Second peak. Dutch auction prices spike 40&ndash;60% above average.</li>"
+  + "<li><strong>May&ndash;August (off-season)</strong> &mdash; Prices lowest. Best time to build new buyer relationships &mdash; buyers have time to evaluate new suppliers.</li>"
+  + "</ul>"
+  + "<h4>Coffee (AA grade)</h4>"
+  + "<ul>"
+  + "<li><strong>October&ndash;January</strong> &mdash; Main crop. NCE auction volume highest.</li>"
+  + "<li><strong>June&ndash;August</strong> &mdash; Fly crop. Smaller volumes, often higher per-kilo prices for specialty buyers.</li>"
+  + "<li>Specialty EU and US roasters source 6&ndash;8 months ahead of their roasting schedule.</li>"
+  + "</ul>"
+  + "<h4>Hass avocado</h4>"
+  + "<ul>"
+  + "<li><strong>March&ndash;September</strong> &mdash; Kenya's main Hass season. EU demand peaks April&ndash;June.</li>"
+  + "<li>EU supermarkets finalize avocado supplier agreements in January for the coming season.</li>"
+  + "<li>Gulf buyers purchase year-round &mdash; less seasonal pressure but require consistent quality documentation.</li>"
+  + "</ul>"
+  + "<div class='ke-warn'><strong>The key insight:</strong> Global buyers plan 3&ndash;6 months ahead. If a Dutch buyer finds your listing in October, they are buying for February delivery. Your price today determines your shipments months from now.</div>"
+
+KE.firstdeal = "<button class='ke-back' onclick='keBack()'>&#8592; Back</button>"
+  + "<h4>Step 1: Buyer sends inquiry</h4>"
+  + "<p>You receive an email with the buyer's details and commodity of interest. Respond within 24 hours &mdash; international buyers evaluate suppliers partly on response speed.</p>"
+  + "<h4>Step 2: Send a professional quotation</h4>"
+  + "<p>Include: company name and KRA PIN, commodity and specifications (grade, moisture, packaging), quantity available, price stating clearly FOB Mombasa or EXW farm, payment terms (50% advance + 50% before shipment), and quote validity (14 days).</p>"
+  + "<h4>Step 3: Send samples</h4>"
+  + "<p>Serious buyers will request samples before committing. Send 1&ndash;2kg by DHL or FedEx courier. Include your KEPHIS certificate copy. This investment almost always converts to a paid order.</p>"
+  + "<h4>Step 4: Receive advance payment</h4>"
+  + "<p>Invoice 50% advance. Provide your bank account details: account name, bank name, SWIFT code, account number. Your Tier 1 bank's trade desk can provide your SWIFT details.</p>"
+  + "<h4>Step 5: Prepare, certify, and ship</h4>"
+  + "<p>Prepare the goods. Get your KEPHIS export certificate for the specific consignment. Book freight. Send the buyer the Airway Bill or Bill of Lading number so they can track.</p>"
+  + "<h4>Step 6: Final payment and review</h4>"
+  + "<p>Invoice the remaining 50% once goods are shipped. After delivery, ask the buyer to leave a MuftahX review. Their rating builds your trust score for every future buyer.</p>"
+  + "<div class='ke-warn'><strong>Most common mistake:</strong> Promising a delivery date you cannot meet. Add 7&ndash;10 buffer days. One missed delivery destroys a relationship worth years of repeat orders.</div>"
+
+function toggleKE(){
+  var p = document.getElementById("kePanel")
+  p.classList.toggle("open")
+  if(p.classList.contains("open")) keBack()
+}
+function showKE(key){
+  if(!KE[key]) return
+  var ans = document.getElementById("keAns")
+  var topics = document.getElementById("keTopics")
+  ans.innerHTML = "<div class='ke-atitle'></div><div class='ke-abody'>" + KE[key] + "</div>"
+  topics.style.display = "none"
+  ans.classList.add("open")
+}
+function keBack(){
+  var ans = document.getElementById("keAns")
+  var topics = document.getElementById("keTopics")
+  ans.classList.remove("open")
+  ans.innerHTML = ""
+  topics.style.display = "flex"
+}
+</script>
+
 </body>
 </html>
