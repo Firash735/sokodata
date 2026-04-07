@@ -1,0 +1,1128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>MuftahX — The Key to Kenya's Global Exports</title>
+<meta name="description" content="MuftahX connects Kenya's verified exporters with global buyers. Tea, coffee, flowers, fruits, apparel. Every seller KEPHIS-certified. Powered by SokoData intelligence."/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Inter:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+/* ═══════════════════════════════════════════════
+   MUFTAHX DESIGN SYSTEM
+   The key to Kenya's exports.
+   Muftah = Key in Arabic — spoken from Mombasa
+   to Muscat. Deep highland green. Rift valley gold.
+   White sky. Navy professional trade.
+═══════════════════════════════════════════════ */
+:root{
+  --kgreen:#1b4332;--kgreen-mid:#2d6a4f;--kgreen-l:#40916c;
+  --kgreen-xl:#74c69d;--kgreen-bg:#f0faf5;--kgreen-border:#d1f0e0;
+  --gold:#c9952a;--gold-l:#e5b84a;--gold-d:#a37820;--gold-bg:#fdf8ee;
+  --navy:#0f2044;--navy-mid:#1a3461;--navy-l:#2a4a7f;
+  --white:#ffffff;--off:#fafaf9;--light:#f4f4f2;--light2:#e8e8e5;
+  --text:#18181a;--text2:#44443e;--text3:#78786e;--text4:#a8a89a;
+  --serif:"Cormorant Garamond",Georgia,serif;
+  --sans:"Inter",system-ui,sans-serif;
+  --mono:"DM Mono",monospace;
+  --rad:8px;--rad-lg:14px;
+  --shadow-sm:0 1px 3px rgba(0,0,0,.06),0 1px 2px rgba(0,0,0,.04);
+  --shadow:0 4px 16px rgba(0,0,0,.08),0 2px 4px rgba(0,0,0,.04);
+  --shadow-lg:0 20px 48px rgba(0,0,0,.12),0 8px 16px rgba(0,0,0,.06);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{font-family:var(--sans);background:var(--white);color:var(--text);overflow-x:hidden;cursor:none;-webkit-font-smoothing:antialiased;line-height:1.5}
+a{text-decoration:none;color:inherit}
+button{font-family:inherit}
+img{max-width:100%;display:block}
+
+/* ── CUSTOM CURSOR ─────────────────────────── */
+#cur{position:fixed;width:9px;height:9px;background:var(--gold);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:transform .12s,background .2s,opacity .2s}
+#curR{position:fixed;width:32px;height:32px;border:1.5px solid rgba(201,149,42,.38);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:all .18s ease}
+body:hover #cur{opacity:1}
+
+/* ── PROGRESS BAR ──────────────────────────── */
+#progress{position:fixed;top:0;left:0;width:0%;height:2px;background:linear-gradient(90deg,var(--kgreen),var(--gold));z-index:1000;transition:width .1s}
+
+/* ── MAASAI-INSPIRED PATTERN ───────────────── */
+.maasai-bg{background-image:
+  repeating-linear-gradient(60deg,transparent 0,transparent 20px,rgba(27,67,50,.018) 20px,rgba(27,67,50,.018) 21px),
+  repeating-linear-gradient(-60deg,transparent 0,transparent 20px,rgba(27,67,50,.018) 20px,rgba(27,67,50,.018) 21px)}
+
+/* ── NAV ───────────────────────────────────── */
+.nav{position:fixed;inset:0 0 auto;z-index:500;height:66px;padding:0 2.5rem;display:flex;align-items:center;justify-content:space-between;background:var(--kgreen);border-bottom:1px solid rgba(201,149,42,.2);transition:box-shadow .25s}
+.nav.scrolled{box-shadow:0 2px 24px rgba(0,0,0,.28)}
+.brand{display:flex;align-items:center;gap:12px}
+.brand-mark{width:38px;height:38px;flex-shrink:0}
+.brand-name{font-family:var(--serif);font-size:22px;font-weight:700;color:var(--white);letter-spacing:-.015em;line-height:1}
+.brand-name em{color:var(--gold);font-style:normal}
+.brand-tagline{font-family:var(--mono);font-size:8px;color:rgba(255,255,255,.45);letter-spacing:.1em;text-transform:uppercase;margin-top:2px}
+.nav-links{display:flex;gap:2rem}
+.nav-link{font-size:13px;color:rgba(255,255,255,.72);transition:color .15s;cursor:none;letter-spacing:.01em}
+.nav-link:hover{color:var(--gold)}
+.nav-actions{display:flex;gap:10px}
+.btn-outline-white{font-family:var(--mono);font-size:11px;font-weight:500;padding:9px 20px;background:transparent;color:var(--white);border:1px solid rgba(255,255,255,.3);border-radius:var(--rad);cursor:none;letter-spacing:.04em;transition:all .15s}
+.btn-outline-white:hover{border-color:var(--gold);color:var(--gold)}
+.btn-gold{font-family:var(--mono);font-size:11px;font-weight:700;padding:9px 22px;background:var(--gold);color:var(--kgreen);border:none;border-radius:var(--rad);cursor:none;letter-spacing:.04em;transition:all .18s;box-shadow:0 2px 8px rgba(201,149,42,.3)}
+.btn-gold:hover{background:var(--gold-l);box-shadow:0 4px 14px rgba(201,149,42,.4);transform:translateY(-1px)}
+.btn-gold:active{transform:translateY(0)}
+
+/* ── HERO ──────────────────────────────────── */
+.hero{min-height:100vh;display:flex;align-items:center;padding:80px 2.5rem 60px;position:relative;overflow:hidden}
+.hero-bg{position:absolute;inset:0;background:
+  linear-gradient(155deg,rgba(27,67,50,.97) 0%,rgba(27,67,50,.9) 45%,rgba(15,32,68,.92) 100%),
+  radial-gradient(ellipse at 80% 30%,rgba(201,149,42,.06) 0%,transparent 50%);z-index:0}
+/* Savanna horizon silhouette */
+.hero-horizon{position:absolute;bottom:0;left:0;right:0;height:220px;z-index:1;
+  background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 220'%3E%3Cpath d='M0 180 C120 155 240 185 380 168 C480 155 560 178 680 162 C800 146 900 172 1020 158 C1140 144 1300 170 1440 162 L1440 220 L0 220Z' fill='rgba(27,67,50,.35)'/%3E%3Cpath d='M0 200 C160 188 320 205 480 196 C640 187 800 204 960 197 C1100 190 1280 203 1440 198 L1440 220 L0 220Z' fill='rgba(27,67,50,.6)'/%3E%3C/svg%3E") bottom/cover no-repeat}
+/* Acacia tree silhouettes */
+.hero-acacia{position:absolute;bottom:0;right:8%;width:180px;height:180px;z-index:1;opacity:.18;
+  background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'%3E%3Cellipse cx='90' cy='60' rx='70' ry='40' fill='%231b4332'/%3E%3Cellipse cx='90' cy='55' rx='60' ry='35' fill='%231b4332'/%3E%3Crect x='85' y='90' width='10' height='90' fill='%231b4332'/%3E%3C/svg%3E") bottom/contain no-repeat}
+.hero-inner{position:relative;z-index:2;max-width:1180px;margin:0 auto;width:100%;display:grid;grid-template-columns:1fr 440px;gap:3.5rem;align-items:center}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);font-size:10px;font-weight:500;color:var(--gold);background:rgba(201,149,42,.1);border:1px solid rgba(201,149,42,.22);padding:5px 14px;border-radius:20px;margin-bottom:1.75rem;letter-spacing:.12em}
+.pulse{width:6px;height:6px;border-radius:50%;background:var(--gold);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(201,149,42,.5)}50%{box-shadow:0 0 0 8px rgba(201,149,42,0)}}
+.hero-title{font-family:var(--serif);font-size:clamp(42px,5.8vw,80px);font-weight:700;letter-spacing:-.025em;line-height:1.04;color:var(--white);margin-bottom:1.5rem}
+.hero-title em{display:block;color:var(--gold);font-style:italic;font-weight:400}
+.hero-sub{font-size:17px;color:rgba(255,255,255,.72);line-height:1.8;max-width:510px;font-weight:300;margin-bottom:2.5rem}
+.hero-btns{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:3rem}
+.btn-hero-green{font-family:var(--mono);font-size:13px;font-weight:700;padding:15px 32px;background:var(--kgreen-l);color:var(--white);border:none;border-radius:var(--rad);cursor:none;letter-spacing:.04em;transition:all .2s;display:inline-flex;align-items:center;gap:8px}
+.btn-hero-green:hover{background:var(--kgreen-mid);transform:translateY(-2px);box-shadow:0 8px 24px rgba(27,67,50,.4)}
+.btn-hero-gold{font-family:var(--mono);font-size:13px;font-weight:700;padding:15px 32px;background:var(--gold);color:var(--kgreen);border:none;border-radius:var(--rad);cursor:none;letter-spacing:.04em;transition:all .2s;display:inline-flex;align-items:center;gap:8px}
+.btn-hero-gold:hover{background:var(--gold-l);transform:translateY(-2px);box-shadow:0 8px 28px rgba(201,149,42,.38)}
+.btn-hero-ghost{font-family:var(--mono);font-size:13px;font-weight:500;padding:15px 32px;background:transparent;color:rgba(255,255,255,.85);border:1px solid rgba(255,255,255,.3);border-radius:var(--rad);cursor:none;letter-spacing:.04em;transition:all .2s;display:inline-flex;align-items:center;gap:8px}
+.btn-hero-ghost:hover{border-color:var(--gold);color:var(--gold)}
+.hero-trust{display:flex;gap:1.75rem;flex-wrap:wrap}
+.ht{display:flex;align-items:center;gap:6px;font-family:var(--mono);font-size:10px;color:rgba(255,255,255,.5);letter-spacing:.06em}
+.ht-dot{width:4px;height:4px;border-radius:50%;background:var(--kgreen-xl)}
+
+/* HERO LIVE CARD */
+.hero-live{background:rgba(255,255,255,.07);backdrop-filter:blur(20px);border:1px solid rgba(201,149,42,.22);border-radius:var(--rad-lg);overflow:hidden}
+.hl-bar{background:rgba(27,67,50,.7);padding:12px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(201,149,42,.15)}
+.hl-bar-title{font-family:var(--mono);font-size:9px;color:rgba(255,255,255,.6);letter-spacing:.1em;text-transform:uppercase}
+.live-pill{display:flex;align-items:center;gap:5px;font-family:var(--mono);font-size:9px;color:var(--gold);letter-spacing:.08em}
+.live-dot-sm{width:5px;height:5px;border-radius:50%;background:var(--gold);animation:pulse 1.8s infinite}
+.hl-listings{padding:10px;display:flex;flex-direction:column;gap:7px}
+.hl-item{background:var(--white);border:1px solid var(--kgreen-border);border-radius:6px;padding:10px 12px;display:flex;align-items:flex-start;justify-content:space-between;gap:8px;transition:border-color .15s}
+.hl-item:hover{border-color:var(--kgreen-xl)}
+.hli-name{font-size:11px;font-weight:600;color:var(--text);margin-bottom:2px}
+.hli-detail{font-family:var(--mono);font-size:9px;color:var(--text3)}
+.hli-badges{display:flex;gap:3px;margin-top:4px;flex-wrap:wrap}
+.hli-price{text-align:right;flex-shrink:0}
+.hli-val{font-family:var(--mono);font-size:13px;font-weight:500;color:var(--kgreen)}
+.hli-unit{font-family:var(--mono);font-size:8px;color:var(--text4);margin-top:1px}
+/* GOLD SHIELD BADGE — core brand element */
+.shield-badge{display:inline-flex;align-items:center;gap:3px;font-family:var(--mono);font-size:7px;font-weight:700;padding:2px 6px;border-radius:3px;letter-spacing:.07em;background:linear-gradient(135deg,rgba(201,149,42,.14),rgba(201,149,42,.07));border:1px solid rgba(201,149,42,.28);color:var(--gold-d)}
+.cert-pill{display:inline-flex;align-items:center;gap:3px;font-family:var(--mono);font-size:8px;font-weight:600;padding:2px 6px;border-radius:3px;letter-spacing:.05em}
+.cp-k{background:rgba(27,67,50,.09);color:var(--kgreen);border:1px solid rgba(27,67,50,.15)}
+.cp-g{background:rgba(201,149,42,.09);color:var(--gold-d);border:1px solid rgba(201,149,42,.16)}
+.cp-f{background:rgba(15,32,68,.07);color:var(--navy-l);border:1px solid rgba(15,32,68,.12)}
+.cp-a{background:rgba(64,145,108,.09);color:var(--kgreen-l);border:1px solid rgba(64,145,108,.16)}
+.hl-footer{padding:10px 14px;border-top:1px solid rgba(201,149,42,.1);display:flex;align-items:center;justify-content:space-between}
+.hl-footer-label{font-family:var(--mono);font-size:8px;color:rgba(255,255,255,.4);letter-spacing:.08em}
+.hl-flags{display:flex;gap:5px;font-size:14px}
+
+/* ── STAT BAR ──────────────────────────────── */
+.stat-bar{background:var(--kgreen)}
+.stat-bar-inner{max-width:1180px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr)}
+.stat-item{padding:1.75rem 2rem;border-right:1px solid rgba(255,255,255,.1);text-align:center}
+.stat-item:last-child{border-right:none}
+.stat-val{font-family:var(--mono);font-size:clamp(20px,2.8vw,36px);font-weight:500;color:var(--gold);line-height:1;margin-bottom:5px}
+.stat-lbl{font-size:12px;color:rgba(255,255,255,.55);font-weight:300;line-height:1.4}
+
+/* ── SOKODATA INTELLIGENCE STRIP ───────────── */
+.intel-strip{background:var(--navy);border-top:1px solid rgba(201,149,42,.15);border-bottom:1px solid rgba(201,149,42,.15);padding:.75rem 2.5rem}
+.intel-inner{max-width:1180px;margin:0 auto;display:flex;align-items:center;gap:1.5rem;overflow:hidden}
+.intel-label{font-family:var(--mono);font-size:9px;font-weight:600;color:var(--gold);letter-spacing:.12em;text-transform:uppercase;white-space:nowrap;display:flex;align-items:center;gap:8px;flex-shrink:0}
+.intel-label::after{content:"";width:1px;height:14px;background:rgba(201,149,42,.25)}
+.intel-ticker{display:flex;gap:1.5rem;overflow:hidden;flex:1}
+.intel-item{display:flex;align-items:center;gap:8px;white-space:nowrap;flex-shrink:0}
+.intel-commodity{font-family:var(--mono);font-size:10px;color:rgba(255,255,255,.6);letter-spacing:.04em}
+.intel-price{font-family:var(--mono);font-size:11px;font-weight:500;color:var(--white)}
+.intel-change{font-family:var(--mono);font-size:9px}
+.intel-up{color:#74c69d}
+.intel-dn{color:#f87171}
+.intel-sep{color:rgba(255,255,255,.15);font-size:10px}
+.intel-source{font-family:var(--mono);font-size:8px;color:rgba(255,255,255,.25);letter-spacing:.06em;white-space:nowrap;flex-shrink:0}
+
+/* ── SECTIONS ──────────────────────────────── */
+.sec{padding:6rem 2.5rem}
+.sec-inner{max-width:1180px;margin:0 auto}
+.sec-tag{font-family:var(--mono);font-size:10px;font-weight:500;color:var(--kgreen);letter-spacing:.16em;text-transform:uppercase;margin-bottom:.75rem;display:flex;align-items:center;gap:10px}
+.sec-tag::before{content:"";width:20px;height:2px;background:var(--gold)}
+.sec-h{font-family:var(--serif);font-size:clamp(28px,4vw,54px);font-weight:700;letter-spacing:-.022em;line-height:1.08;margin-bottom:1.25rem;color:var(--text)}
+.sec-h em{color:var(--kgreen);font-style:italic;font-weight:400}
+.divider{width:44px;height:3px;background:var(--gold);border-radius:2px;margin:1.25rem 0 2rem}
+.sec-body{font-size:16px;color:var(--text2);line-height:1.85;max-width:560px;font-weight:300}
+
+/* ── HOW IT WORKS ──────────────────────────── */
+.hiw{background:var(--off);border-top:1px solid var(--light2);border-bottom:1px solid var(--light2)}
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--light2);border:1px solid var(--light2);border-radius:var(--rad-lg);overflow:hidden;margin-top:3rem}
+.step{background:var(--white);padding:2.25rem 1.75rem;position:relative;transition:background .2s}
+.step:hover{background:var(--kgreen-bg)}
+.step::before{content:"";position:absolute;top:0;left:0;right:0;height:3px;background:var(--kgreen-border);transition:background .2s}
+.step:hover::before{background:var(--kgreen)}
+.step-num{font-family:var(--mono);font-size:10px;font-weight:500;color:var(--gold);letter-spacing:.14em;margin-bottom:.75rem}
+.step-icon{width:46px;height:46px;border-radius:10px;background:var(--kgreen-bg);border:1px solid var(--kgreen-border);display:flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:1.1rem;transition:all .2s}
+.step:hover .step-icon{background:var(--kgreen);border-color:var(--kgreen)}
+.step-h{font-family:var(--serif);font-size:18px;font-weight:600;color:var(--text);margin-bottom:8px}
+.step-body{font-size:12px;color:var(--text2);line-height:1.72}
+
+/* ── LISTINGS ──────────────────────────────── */
+.listings-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:3rem}
+.listing-card{background:var(--white);border:1.5px solid var(--kgreen-border);border-radius:var(--rad-lg);overflow:hidden;transition:all .22s;cursor:none;position:relative;box-shadow:var(--shadow-sm)}
+.listing-card:hover{border-color:var(--kgreen-l);box-shadow:var(--shadow-lg);transform:translateY(-4px)}
+.lc-top-bar{height:3px;background:var(--kgreen-border);transition:background .2s}
+.listing-card:hover .lc-top-bar{background:var(--kgreen)}
+.lc-body{padding:1.5rem}
+.lc-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:.75rem}
+.lc-name{font-family:var(--serif);font-size:17px;font-weight:700;color:var(--text);line-height:1.2;margin-bottom:3px}
+.lc-co{font-size:11px;color:var(--text3)}
+.lc-price-wrap{text-align:right;flex-shrink:0}
+.lc-price{font-family:var(--mono);font-size:20px;font-weight:500;color:var(--kgreen);line-height:1}
+.lc-unit{font-family:var(--mono);font-size:9px;color:var(--text4);margin-top:2px}
+.lc-meta{display:flex;gap:12px;font-size:11px;color:var(--text3);margin-bottom:.75rem;flex-wrap:wrap}
+.lc-badges{display:flex;gap:6px;flex-wrap:wrap;padding-bottom:.75rem;border-bottom:1px solid var(--light2)}
+.lc-footer{display:flex;align-items:center;justify-content:space-between;padding-top:.75rem}
+.lc-seller{display:flex;align-items:center;gap:8px}
+.lc-av{width:28px;height:28px;border-radius:50%;background:var(--kgreen);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:11px;font-weight:700;color:var(--white);flex-shrink:0}
+.lc-sname{font-size:11px;font-weight:500;color:var(--text2)}
+.btn-connect{font-family:var(--mono);font-size:10px;font-weight:700;padding:7px 16px;background:var(--gold);color:var(--kgreen);border:none;border-radius:var(--rad);cursor:none;letter-spacing:.05em;transition:all .15s}
+.btn-connect:hover{background:var(--gold-l);transform:translateY(-1px)}
+
+/* ── CATEGORIES ────────────────────────────── */
+.cat-sec{background:var(--kgreen)}
+.cat-inner{max-width:1180px;margin:0 auto;padding:6rem 2.5rem}
+.cat-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-top:3rem}
+.cat-card{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);border-radius:var(--rad-lg);padding:1.5rem 1.25rem;text-align:center;cursor:none;transition:all .2s}
+.cat-card:hover{background:rgba(255,255,255,.13);border-color:rgba(201,149,42,.4);transform:translateY(-4px);box-shadow:0 8px 24px rgba(0,0,0,.2)}
+.cat-icon{font-size:28px;margin-bottom:10px}
+.cat-name{font-size:13px;font-weight:500;color:var(--white);margin-bottom:4px}
+.cat-val{font-family:var(--mono);font-size:11px;color:var(--gold)}
+.cat-growth{font-family:var(--mono);font-size:10px;margin-top:3px}
+.g-up{color:#74c69d}.g-dn{color:#f87171}
+
+/* ── COMPLIANCE ────────────────────────────── */
+.comp-grid{display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:start;margin-top:3rem}
+.badge-stack{display:flex;flex-direction:column;gap:12px}
+.badge-row{display:flex;align-items:flex-start;gap:14px;background:var(--off);border:1px solid var(--light2);border-radius:var(--rad-lg);padding:1.25rem;transition:all .2s}
+.badge-row:hover{border-color:var(--kgreen-border);background:var(--kgreen-bg);box-shadow:var(--shadow-sm)}
+.badge-ico{width:44px;height:44px;border-radius:var(--rad);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.bi-green{background:var(--kgreen-bg);border:1px solid var(--kgreen-border)}
+.bi-gold{background:var(--gold-bg);border:1px solid rgba(201,149,42,.2)}
+.bi-navy{background:rgba(15,32,68,.05);border:1px solid rgba(15,32,68,.1)}
+.badge-row-name{font-size:14px;font-weight:600;color:var(--text);margin-bottom:4px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.badge-row-desc{font-size:12px;color:var(--text2);line-height:1.65}
+.req-tag{font-family:var(--mono);font-size:8px;font-weight:700;padding:2px 7px;border-radius:2px;letter-spacing:.08em}
+.rt-g{background:rgba(27,67,50,.1);color:var(--kgreen);border:1px solid rgba(27,67,50,.15)}
+.rt-go{background:rgba(201,149,42,.1);color:var(--gold-d);border:1px solid rgba(201,149,42,.15)}
+.rt-n{background:rgba(15,32,68,.08);color:var(--navy-l);border:1px solid rgba(15,32,68,.12)}
+.comp-steps{display:flex;flex-direction:column;gap:1.5rem}
+.cs{display:flex;align-items:flex-start;gap:1rem}
+.cs-num{width:32px;height:32px;border-radius:50%;background:var(--kgreen);color:var(--white);font-family:var(--mono);font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 2px 8px rgba(27,67,50,.2)}
+.cs-h{font-size:14px;font-weight:600;color:var(--text);margin-bottom:4px}
+.cs-body{font-size:12px;color:var(--text2);line-height:1.65}
+.comp-note{background:var(--kgreen-bg);border:1px solid var(--kgreen-border);border-radius:var(--rad);padding:1.25rem;margin-top:1.5rem;font-size:13px;color:var(--text2);line-height:1.7}
+.comp-note strong{color:var(--kgreen)}
+
+/* ── SOKODATA INTEGRATION PANEL ────────────── */
+.sokodata-sec{background:var(--navy)}
+.sokodata-inner{max-width:1180px;margin:0 auto;padding:6rem 2.5rem}
+.soko-panel{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:var(--rad-lg);overflow:hidden;margin-top:3rem;display:grid;grid-template-columns:200px 1fr}
+.soko-sidebar{background:rgba(255,255,255,.05);border-right:1px solid rgba(255,255,255,.07);padding:1.5rem 0}
+.soko-sidebar-logo{padding:0 1.25rem 1.25rem;border-bottom:1px solid rgba(255,255,255,.07);margin-bottom:1rem}
+.ssl-name{font-family:var(--serif);font-size:15px;font-weight:700;color:var(--white)}
+.ssl-name em{color:var(--gold);font-style:normal}
+.ssl-tag{font-family:var(--mono);font-size:8px;color:rgba(255,255,255,.35);letter-spacing:.1em;margin-top:2px}
+.soko-nav-item{display:flex;align-items:center;gap:9px;padding:9px 1.25rem;font-size:12px;color:rgba(255,255,255,.55);cursor:none;transition:all .15s}
+.soko-nav-item:hover,.soko-nav-item.active{background:rgba(255,255,255,.06);color:var(--white)}
+.soko-nav-item.active{border-left:2px solid var(--gold);color:var(--gold)}
+.soko-main{padding:1.5rem}
+.soko-main-h{font-family:var(--serif);font-size:20px;font-weight:700;color:var(--white);margin-bottom:1.25rem}
+.soko-kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:1.25rem}
+.soko-kpi{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.07);border-radius:var(--rad);padding:1rem;transition:background .2s}
+.soko-kpi:hover{background:rgba(255,255,255,.08)}
+.kpi-val{font-family:var(--mono);font-size:22px;font-weight:500;color:var(--gold);line-height:1;margin-bottom:4px}
+.kpi-lbl{font-family:var(--mono);font-size:9px;color:rgba(255,255,255,.38);letter-spacing:.1em;text-transform:uppercase}
+.soko-table{width:100%;border-collapse:collapse}
+.soko-table th{font-family:var(--mono);font-size:9px;color:rgba(255,255,255,.35);text-transform:uppercase;letter-spacing:.1em;padding:8px 10px;text-align:left;border-bottom:1px solid rgba(255,255,255,.06)}
+.soko-table td{font-family:var(--mono);font-size:11px;padding:9px 10px;border-bottom:1px solid rgba(255,255,255,.04);color:rgba(255,255,255,.65);vertical-align:middle}
+.soko-table td:first-child{color:var(--white);font-weight:500}
+.soko-table tr:last-child td{border-bottom:none}
+.soko-table tr:hover td{background:rgba(255,255,255,.03)}
+.s-badge{font-family:var(--mono);font-size:8px;font-weight:700;padding:2px 7px;border-radius:2px;letter-spacing:.06em}
+.sb-active{background:rgba(116,198,157,.14);color:#74c69d;border:1px solid rgba(116,198,157,.2)}
+.sb-pending{background:rgba(201,149,42,.14);color:var(--gold);border:1px solid rgba(201,149,42,.2)}
+.soko-caption{font-family:var(--mono);font-size:10px;color:rgba(255,255,255,.28);letter-spacing:.06em;margin-top:1rem;text-align:center}
+
+/* ── BUYER DESTINATIONS ────────────────────── */
+.dest-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:3rem}
+.dest-card{background:var(--white);border:1px solid var(--light2);border-radius:var(--rad-lg);padding:1.5rem;transition:all .2s;box-shadow:var(--shadow-sm)}
+.dest-card:hover{border-color:var(--kgreen-border);box-shadow:var(--shadow)}
+.dest-flag{font-size:28px;margin-bottom:10px}
+.dest-name{font-family:var(--serif);font-size:18px;font-weight:700;color:var(--text);margin-bottom:4px}
+.dest-vol{font-family:var(--mono);font-size:12px;color:var(--kgreen);margin-bottom:8px}
+.dest-wants{font-size:12px;color:var(--text2);line-height:1.65}
+
+/* ── PRICING ────────────────────────────────── */
+.pricing-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--light2);border:1px solid var(--light2);border-radius:var(--rad-lg);overflow:hidden;margin-top:2.5rem}
+.pc{background:var(--white);padding:2rem 1.75rem;position:relative;transition:background .2s}
+.pc:hover{background:var(--off)}
+.pc.featured{background:var(--kgreen)}
+.pc.featured:hover{background:var(--kgreen-mid)}
+.pc-badge{position:absolute;top:0;left:50%;transform:translateX(-50%);font-family:var(--mono);font-size:8px;font-weight:700;color:var(--kgreen);background:var(--gold);padding:3px 14px;border-radius:0 0 6px 6px;letter-spacing:.1em}
+.pc-tier{font-family:var(--mono);font-size:9px;font-weight:500;color:var(--text4);letter-spacing:.14em;text-transform:uppercase;margin-bottom:10px}
+.pc-tier.inv{color:rgba(255,255,255,.45)}
+.pc-amount{font-family:var(--mono);font-size:34px;font-weight:500;color:var(--text);line-height:1;margin-bottom:4px}
+.pc-amount.inv{color:var(--white)}
+.pc-amount span{font-size:13px;color:var(--text4);font-weight:400}
+.pc-amount.inv span{color:rgba(255,255,255,.45)}
+.pc-period{font-size:12px;color:var(--text3);margin-bottom:1.5rem}
+.pc-period.inv{color:rgba(255,255,255,.5)}
+.pc-feats{list-style:none;margin-bottom:1.5rem;display:flex;flex-direction:column;gap:9px}
+.pc-feats li{font-size:12px;color:var(--text2);display:flex;align-items:flex-start;gap:8px;line-height:1.5}
+.pc-feats li::before{content:"";width:5px;height:5px;border-radius:50%;background:var(--kgreen-l);flex-shrink:0;margin-top:5px}
+.pc-feats.inv li{color:rgba(255,255,255,.8)}
+.pc-feats.inv li::before{background:var(--gold)}
+.pc-feats li.no{color:var(--text4)}
+.pc-feats li.no::before{background:var(--light2)}
+.pc-btn{width:100%;padding:12px;font-family:var(--mono);font-size:11px;font-weight:700;border-radius:var(--rad);cursor:none;border:none;transition:all .15s;letter-spacing:.04em}
+.pc-btn-outline{background:transparent;color:var(--text3);border:1.5px solid var(--light2)}
+.pc-btn-outline:hover{border-color:var(--kgreen);color:var(--kgreen)}
+.pc-btn-gold{background:var(--gold);color:var(--kgreen)}
+.pc-btn-gold:hover{background:var(--gold-l)}
+.pc-btn-ghost{background:transparent;color:rgba(255,255,255,.65);border:1.5px solid rgba(255,255,255,.22)}
+.pc-btn-ghost:hover{border-color:var(--gold);color:var(--gold)}
+.founding-band{background:var(--kgreen-bg);border:1.5px solid var(--kgreen-border);border-radius:var(--rad-lg);padding:1.75rem 2rem;margin-bottom:2rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem}
+.fb-tag{font-family:var(--mono);font-size:9px;font-weight:700;color:var(--kgreen);letter-spacing:.14em;text-transform:uppercase;margin-bottom:5px}
+.fb-title{font-family:var(--serif);font-size:20px;font-weight:700;color:var(--text)}
+.fb-sub{font-size:13px;color:var(--text2);margin-top:4px;font-weight:300}
+
+/* ── CTA BAND ───────────────────────────────── */
+.cta-band{background:var(--gold);padding:5rem 2.5rem}
+.cta-inner{max-width:880px;margin:0 auto;text-align:center}
+.cta-h{font-family:var(--serif);font-size:clamp(28px,4vw,54px);font-weight:700;color:var(--kgreen);letter-spacing:-.022em;line-height:1.08;margin-bottom:1rem}
+.cta-h em{font-style:italic;font-weight:400}
+.cta-sub{font-size:16px;color:rgba(27,67,50,.72);margin-bottom:2.5rem;font-weight:300;line-height:1.75}
+.cta-row{display:flex;gap:10px;max-width:460px;margin:0 auto 1rem}
+.cta-input{flex:1;background:var(--white);border:2px solid rgba(27,67,50,.18);color:var(--text);font-family:var(--mono);font-size:12px;padding:13px 14px;border-radius:var(--rad);outline:none;transition:border-color .15s;cursor:auto}
+.cta-input:focus{border-color:var(--kgreen)}
+.cta-input::placeholder{color:var(--text4)}
+.btn-cta{font-family:var(--mono);font-size:12px;font-weight:700;padding:13px 22px;background:var(--kgreen);color:var(--white);border:none;border-radius:var(--rad);cursor:none;letter-spacing:.04em;transition:all .15s;white-space:nowrap}
+.btn-cta:hover{background:var(--kgreen-mid)}
+.cta-note{font-size:12px;color:rgba(27,67,50,.55);font-family:var(--mono)}
+
+/* ── FOOTER ─────────────────────────────────── */
+footer{background:var(--kgreen);padding:4rem 2.5rem 2rem}
+.footer-inner{max-width:1180px;margin:0 auto}
+.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:3rem;margin-bottom:3rem}
+.footer-brand{font-family:var(--serif);font-size:22px;font-weight:700;color:var(--white);margin-bottom:12px}
+.footer-brand em{color:var(--gold);font-style:normal}
+.footer-desc{font-size:13px;color:rgba(255,255,255,.5);line-height:1.8;font-weight:300;margin-bottom:12px}
+.footer-contact{font-size:12px;color:rgba(255,255,255,.35)}
+.footer-h{font-family:var(--mono);font-size:9px;font-weight:500;color:rgba(255,255,255,.3);letter-spacing:.14em;text-transform:uppercase;margin-bottom:14px}
+.footer-links{display:flex;flex-direction:column;gap:9px}
+.footer-link{font-size:13px;color:rgba(255,255,255,.5);cursor:none;transition:color .15s}
+.footer-link:hover{color:var(--gold)}
+.footer-bottom{border-top:1px solid rgba(255,255,255,.1);padding-top:1.5rem;display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px}
+.footer-copy{font-family:var(--mono);font-size:10px;color:rgba(255,255,255,.28)}
+
+/* ── MODAL ──────────────────────────────────── */
+.modal-overlay{position:fixed;inset:0;background:rgba(10,22,40,.88);backdrop-filter:blur(10px);z-index:800;display:none;align-items:center;justify-content:center;padding:1rem}
+.modal-overlay.open{display:flex}
+.modal{background:var(--white);border-radius:var(--rad-lg);padding:2.5rem;width:480px;max-width:100%;max-height:90vh;overflow-y:auto;position:relative;box-shadow:var(--shadow-lg);animation:slideUp .25s ease}
+@keyframes slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.modal-close{position:absolute;top:16px;right:16px;background:none;border:none;font-size:22px;color:var(--text4);cursor:none;line-height:1;transition:color .15s}
+.modal-close:hover{color:var(--text)}
+.modal-h{font-family:var(--serif);font-size:24px;font-weight:700;color:var(--text);margin-bottom:5px}
+.modal-sub{font-size:13px;color:var(--text3);margin-bottom:1.5rem;line-height:1.6}
+.modal-tabs{display:flex;border-bottom:2px solid var(--light2);margin-bottom:1.25rem}
+.modal-tab{font-family:var(--mono);font-size:11px;font-weight:500;color:var(--text3);padding:8px 18px;background:none;border:none;border-bottom:2px solid transparent;cursor:none;margin-bottom:-2px;transition:all .15s;letter-spacing:.04em}
+.modal-tab.active{color:var(--kgreen);border-bottom-color:var(--kgreen)}
+.field{margin-bottom:14px}
+.field label{display:block;font-family:var(--mono);font-size:9px;font-weight:500;color:var(--text3);letter-spacing:.1em;text-transform:uppercase;margin-bottom:5px}
+.field input,.field select,.field textarea{width:100%;background:var(--off);border:1.5px solid var(--light2);color:var(--text);font-family:var(--mono);font-size:12px;padding:10px 12px;border-radius:var(--rad);outline:none;transition:border-color .15s,background .15s;cursor:auto}
+.field input:focus,.field select:focus{border-color:var(--kgreen);background:var(--white)}
+.field textarea{font-family:var(--sans);font-size:13px;resize:vertical;min-height:70px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.form-err{font-family:var(--mono);font-size:10px;color:#dc2626;min-height:14px;margin-bottom:8px}
+.submit-btn{width:100%;padding:13px;background:var(--kgreen);color:var(--white);font-family:var(--mono);font-size:12px;font-weight:700;border:none;border-radius:var(--rad);cursor:none;transition:all .15s;letter-spacing:.05em}
+.submit-btn:hover{background:var(--kgreen-mid)}
+.submit-btn:active{transform:scale(.99)}
+
+/* ── REVEAL ANIMATIONS ──────────────────────── */
+.reveal{opacity:0;transform:translateY(18px);transition:opacity .55s ease,transform .55s ease}
+.reveal.visible{opacity:1;transform:translateY(0)}
+.reveal-left{opacity:0;transform:translateX(-18px);transition:opacity .55s ease,transform .55s ease}
+.reveal-left.visible{opacity:1;transform:translateX(0)}
+
+/* ── SCROLLBAR ──────────────────────────────── */
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:var(--off)}::-webkit-scrollbar-thumb{background:var(--kgreen-border);border-radius:2px}
+
+/* ── RESPONSIVE ─────────────────────────────── */
+@media(max-width:1024px){
+  .hero-inner{grid-template-columns:1fr}.hero-live{display:none}
+  .listings-grid{grid-template-columns:repeat(2,1fr)}.cat-grid{grid-template-columns:repeat(3,1fr)}
+  .comp-grid{grid-template-columns:1fr}.soko-panel{grid-template-columns:1fr}.soko-sidebar{display:none}
+  .footer-grid{grid-template-columns:1fr 1fr}.pricing-grid{grid-template-columns:1fr}
+  .dest-grid{grid-template-columns:1fr 1fr}.steps{grid-template-columns:repeat(2,1fr)}
+  .stat-bar-inner{grid-template-columns:repeat(2,1fr)}.soko-kpis{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:640px){
+  .nav-links{display:none}.listings-grid{grid-template-columns:1fr}
+  .cat-grid{grid-template-columns:repeat(2,1fr)}.dest-grid{grid-template-columns:1fr}
+  .cta-row{flex-direction:column}.steps{grid-template-columns:1fr}
+  .footer-grid{grid-template-columns:1fr}.intel-ticker{display:none}
+}
+</style>
+</head>
+<body>
+<div id="cur"></div>
+<div id="curR"></div>
+<div id="progress"></div>
+
+<!-- NAV -->
+<nav class="nav" id="nav">
+  <a href="#" class="brand">
+    <svg class="brand-mark" viewBox="0 0 38 38" fill="none" aria-hidden="true">
+      <rect width="38" height="38" rx="9" fill="rgba(201,149,42,.14)"/>
+      <path d="M19 5L33 19L19 33L5 19Z" stroke="#c9952a" stroke-width="1.6" fill="none"/>
+      <path d="M19 12L26 19L19 26L12 19Z" fill="rgba(201,149,42,.22)" stroke="#c9952a" stroke-width="1"/>
+      <circle cx="19" cy="19" r="3.5" fill="#c9952a"/>
+      <line x1="19" y1="5" x2="19" y2="12" stroke="#c9952a" stroke-width="1.6" stroke-linecap="round"/>
+      <line x1="33" y1="19" x2="26" y2="19" stroke="#c9952a" stroke-width="1.6" stroke-linecap="round"/>
+      <line x1="19" y1="33" x2="19" y2="26" stroke="#c9952a" stroke-width="1.6" stroke-linecap="round"/>
+      <line x1="5" y1="19" x2="12" y2="19" stroke="#c9952a" stroke-width="1.6" stroke-linecap="round"/>
+    </svg>
+    <div>
+      <div class="brand-name">Muftah<em>X</em></div>
+      <div class="brand-tagline">The Key to Kenya's Exports</div>
+    </div>
+  </a>
+  <nav class="nav-links" aria-label="Main navigation">
+    <a href="#how" class="nav-link">How it works</a>
+    <a href="#listings" class="nav-link">Listings</a>
+    <a href="#categories" class="nav-link">Categories</a>
+    <a href="#buyers" class="nav-link">For buyers</a>
+    <a href="#pricing" class="nav-link">Pricing</a>
+  </nav>
+  <div class="nav-actions">
+    <a href="#" class="btn-outline-white" onclick="openModal(event,'buyer')">Find suppliers</a>
+    <a href="#" class="btn-gold" onclick="openModal(event,'seller')">Start Exporting &rarr;</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero maasai-bg" aria-label="Hero">
+  <div class="hero-bg" aria-hidden="true"></div>
+  <div class="hero-horizon" aria-hidden="true"></div>
+  <div class="hero-acacia" aria-hidden="true"></div>
+  <div class="hero-inner">
+    <div>
+      <div class="hero-eyebrow"><div class="pulse" aria-hidden="true"></div>KENYA B2B EXPORT MARKETPLACE</div>
+      <h1 class="hero-title">
+        Kenya&rsquo;s finest exports.<br>
+        <em>The world&rsquo;s buyers.</em>
+      </h1>
+      <p class="hero-sub">MuftahX connects compliance-verified Kenyan exporters and cooperatives directly with global buyers. Every seller KEPHIS-certified. Every listing audit-ready. Powered by SokoData market intelligence.</p>
+      <div class="hero-btns">
+        <a href="#" class="btn-hero-gold" onclick="openModal(event,'seller')">Start Exporting &rarr;</a>
+        <a href="#" class="btn-hero-ghost" onclick="openModal(event,'buyer')">Find Verified Suppliers</a>
+      </div>
+      <div class="hero-trust">
+        <div class="ht"><div class="ht-dot" aria-hidden="true"></div>KEPHIS Verified</div>
+        <div class="ht"><div class="ht-dot" aria-hidden="true"></div>GlobalGAP Certified</div>
+        <div class="ht"><div class="ht-dot" aria-hidden="true"></div>FDA Registered</div>
+        <div class="ht"><div class="ht-dot" aria-hidden="true"></div>3 Months Free</div>
+      </div>
+    </div>
+    <div class="hero-live" aria-label="Live listings preview">
+      <div class="hl-bar">
+        <span class="hl-bar-title">Verified Listings &mdash; Live</span>
+        <span class="live-pill"><span class="live-dot-sm" aria-hidden="true"></span>LIVE</span>
+      </div>
+      <div class="hl-listings">
+        <div class="hl-item">
+          <div>
+            <div class="hli-name">AA Coffee &mdash; Kirinyaga</div>
+            <div class="hli-detail">20 MT &middot; Sagana Cooperative</div>
+            <div class="hli-badges">
+              <span class="shield-badge">&#128737; VERIFIED</span>
+              <span class="cert-pill cp-k">KEPHIS</span>
+              <span class="cert-pill cp-g">GlobalGAP</span>
+            </div>
+          </div>
+          <div class="hli-price"><div class="hli-val">$5.20/kg</div><div class="hli-unit">FOB Mombasa</div></div>
+        </div>
+        <div class="hl-item">
+          <div>
+            <div class="hli-name">Premium Roses &mdash; Naivasha</div>
+            <div class="hli-detail">500K stems/wk &middot; Oserian</div>
+            <div class="hli-badges">
+              <span class="shield-badge">&#128737; VERIFIED</span>
+              <span class="cert-pill cp-k">KEPHIS</span>
+              <span class="cert-pill cp-a">AFA</span>
+            </div>
+          </div>
+          <div class="hli-price"><div class="hli-val">$0.18/stem</div><div class="hli-unit">EXW Naivasha</div></div>
+        </div>
+        <div class="hl-item">
+          <div>
+            <div class="hli-name">Hass Avocado &mdash; Grade A</div>
+            <div class="hli-detail">200 MT/season &middot; Murang&rsquo;a</div>
+            <div class="hli-badges">
+              <span class="shield-badge">&#128737; VERIFIED</span>
+              <span class="cert-pill cp-g">GlobalGAP</span>
+              <span class="cert-pill cp-k">KEPHIS</span>
+            </div>
+          </div>
+          <div class="hli-price"><div class="hli-val">$1.40/kg</div><div class="hli-unit">FOB Mombasa</div></div>
+        </div>
+      </div>
+      <div class="hl-footer">
+        <span class="hl-footer-label">BUYERS ONLINE NOW</span>
+        <div class="hl-flags" aria-label="Active buyer countries">
+          <span title="Netherlands">&#127475;&#127473;</span>
+          <span title="UAE">&#127462;&#127466;</span>
+          <span title="Pakistan">&#127477;&#127472;</span>
+          <span title="United States">&#127482;&#127480;</span>
+          <span title="Germany">&#127465;&#127466;</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STAT BAR -->
+<div class="stat-bar">
+  <div class="stat-bar-inner">
+    <div class="stat-item reveal"><div class="stat-val">$16.4B</div><div class="stat-lbl">Kenya total exports 2024&ndash;25</div></div>
+    <div class="stat-item reveal"><div class="stat-val">+767%</div><div class="stat-lbl">Live animal export growth</div></div>
+    <div class="stat-item reveal"><div class="stat-val">+52%</div><div class="stat-lbl">Fats &amp; oils export growth</div></div>
+    <div class="stat-item reveal"><div class="stat-val">3 mo.</div><div class="stat-lbl">Free for founding sellers</div></div>
+  </div>
+</div>
+
+<!-- SOKODATA INTELLIGENCE TICKER -->
+<div class="intel-strip" aria-label="Live price intelligence from SokoData">
+  <div class="intel-inner">
+    <span class="intel-label">&#9679; SokoData Live</span>
+    <div class="intel-ticker" id="ticker">
+      <span class="intel-item"><span class="intel-commodity">Coffee AA</span><span class="intel-price">KES 637/kg</span><span class="intel-change intel-up">&#9650; +2.1%</span></span>
+      <span class="intel-sep">&middot;</span>
+      <span class="intel-item"><span class="intel-commodity">Tea Leaf</span><span class="intel-price">KES 28/kg</span><span class="intel-change intel-up">&#9650; +0.8%</span></span>
+      <span class="intel-sep">&middot;</span>
+      <span class="intel-item"><span class="intel-commodity">Avocado</span><span class="intel-price">KES 40/kg</span><span class="intel-change intel-dn">&#9660; -1.2%</span></span>
+      <span class="intel-sep">&middot;</span>
+      <span class="intel-item"><span class="intel-commodity">Roses</span><span class="intel-price">KES 24/stem</span><span class="intel-change intel-up">&#9650; +3.4%</span></span>
+      <span class="intel-sep">&middot;</span>
+      <span class="intel-item"><span class="intel-commodity">USD/KES</span><span class="intel-price">129.4</span><span class="intel-change intel-dn">&#9660; -0.3%</span></span>
+      <span class="intel-sep">&middot;</span>
+      <span class="intel-item"><span class="intel-commodity">Macadamia</span><span class="intel-price">KES 1,200/kg</span><span class="intel-change intel-up">&#9650; +5.2%</span></span>
+    </div>
+    <span class="intel-source">SOKODATA &middot; 6H REFRESH</span>
+  </div>
+</div>
+
+<!-- HOW IT WORKS -->
+<section class="sec hiw" id="how">
+  <div class="sec-inner">
+    <div class="sec-tag">How it works</div>
+    <h2 class="sec-h">Four steps to <em>your first global sale.</em></h2>
+    <div class="divider"></div>
+    <p class="sec-body">From certificate upload to buyer connection. Every step is transparent. Every seller is verified before any buyer sees them.</p>
+    <div class="steps" role="list">
+      <div class="step reveal" role="listitem">
+        <div class="step-num">01</div>
+        <div class="step-icon" aria-hidden="true">&#128196;</div>
+        <div class="step-h">Upload your certificates</div>
+        <div class="step-body">KEPHIS certificate, export license, GlobalGAP, AFA registration. Upload once. Verified within 48 hours. No valid documents means no active listing &mdash; this is non-negotiable and protects every buyer on the platform.</div>
+      </div>
+      <div class="step reveal" role="listitem">
+        <div class="step-num">02</div>
+        <div class="step-icon" aria-hidden="true">&#128230;</div>
+        <div class="step-h">List your products</div>
+        <div class="step-body">Add commodities, quantities, quality specifications, and pricing terms (FOB or EXW). SokoData price benchmarks display automatically on every listing so buyers see exactly how your price compares to the market.</div>
+      </div>
+      <div class="step reveal" role="listitem">
+        <div class="step-num">03</div>
+        <div class="step-icon" aria-hidden="true">&#127758;</div>
+        <div class="step-h">Buyers discover you</div>
+        <div class="step-body">Importers from the Netherlands, US, UAE, Pakistan and China search by commodity, certification, volume, and destination market compliance. Your verified gold shield badge is your competitive advantage.</div>
+      </div>
+      <div class="step reveal" role="listitem">
+        <div class="step-num">04</div>
+        <div class="step-icon" aria-hidden="true">&#129309;</div>
+        <div class="step-h">Connect and close</div>
+        <div class="step-body">Buyer sends an inquiry directly through MuftahX. You negotiate directly. Payment via bank wire, letter of credit, or trade finance. MuftahX facilitates the connection &mdash; you own the relationship and every future order.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- LISTINGS -->
+<section class="sec" id="listings" style="background:var(--off)">
+  <div class="sec-inner">
+    <div class="sec-tag">Verified listings</div>
+    <h2 class="sec-h">Every seller verified.<br><em>Every listing audit-ready.</em></h2>
+    <div class="divider"></div>
+    <div class="listings-grid">
+
+      <article class="listing-card reveal">
+        <div class="lc-top-bar" aria-hidden="true"></div>
+        <div class="lc-body">
+          <div class="lc-head">
+            <div><div class="lc-name">AA Coffee &mdash; Single Origin Kirinyaga</div><div class="lc-co">Sagana Farmers Cooperative Society</div></div>
+            <div class="lc-price-wrap"><div class="lc-price">$5.20</div><div class="lc-unit">per kg / FOB</div></div>
+          </div>
+          <div class="lc-meta">
+            <span>&#128205; Kirinyaga</span>
+            <span>&#128230; 20 MT available</span>
+            <span>&#128197; Oct&ndash;Jan</span>
+          </div>
+          <div class="lc-badges">
+            <span class="shield-badge">&#128737; VERIFIED EXPORTER</span>
+            <span class="cert-pill cp-k">&#10003; KEPHIS</span>
+            <span class="cert-pill cp-g">&#10003; GlobalGAP</span>
+          </div>
+          <div class="lc-footer">
+            <div class="lc-seller"><div class="lc-av" aria-hidden="true">S</div><div class="lc-sname">Sagana Cooperative</div></div>
+            <button class="btn-connect" onclick="openModal(event,'buyer')">Connect Now &rarr;</button>
+          </div>
+        </div>
+      </article>
+
+      <article class="listing-card reveal">
+        <div class="lc-top-bar" aria-hidden="true"></div>
+        <div class="lc-body">
+          <div class="lc-head">
+            <div><div class="lc-name">Premium Cut Roses &mdash; Red &amp; White</div><div class="lc-co">Naivasha Flower Growers Ltd</div></div>
+            <div class="lc-price-wrap"><div class="lc-price">$0.18</div><div class="lc-unit">per stem / EXW</div></div>
+          </div>
+          <div class="lc-meta">
+            <span>&#128205; Naivasha</span>
+            <span>&#128230; 500K stems/wk</span>
+            <span>&#128197; Year-round</span>
+          </div>
+          <div class="lc-badges">
+            <span class="shield-badge">&#128737; VERIFIED EXPORTER</span>
+            <span class="cert-pill cp-k">&#10003; KEPHIS</span>
+            <span class="cert-pill cp-a">&#10003; AFA/HCD</span>
+          </div>
+          <div class="lc-footer">
+            <div class="lc-seller"><div class="lc-av" aria-hidden="true">N</div><div class="lc-sname">Naivasha Flowers</div></div>
+            <button class="btn-connect" onclick="openModal(event,'buyer')">Connect Now &rarr;</button>
+          </div>
+        </div>
+      </article>
+
+      <article class="listing-card reveal">
+        <div class="lc-top-bar" aria-hidden="true"></div>
+        <div class="lc-body">
+          <div class="lc-head">
+            <div><div class="lc-name">Hass Avocado &mdash; Export Grade A</div><div class="lc-co">Murang&rsquo;a Growers Cooperative</div></div>
+            <div class="lc-price-wrap"><div class="lc-price">$1.40</div><div class="lc-unit">per kg / FOB</div></div>
+          </div>
+          <div class="lc-meta">
+            <span>&#128205; Murang&rsquo;a</span>
+            <span>&#128230; 200 MT/season</span>
+            <span>&#128197; Mar&ndash;Sep</span>
+          </div>
+          <div class="lc-badges">
+            <span class="shield-badge">&#128737; VERIFIED EXPORTER</span>
+            <span class="cert-pill cp-g">&#10003; GlobalGAP</span>
+            <span class="cert-pill cp-k">&#10003; KEPHIS</span>
+          </div>
+          <div class="lc-footer">
+            <div class="lc-seller"><div class="lc-av" aria-hidden="true">M</div><div class="lc-sname">Murang&rsquo;a Coop</div></div>
+            <button class="btn-connect" onclick="openModal(event,'buyer')">Connect Now &rarr;</button>
+          </div>
+        </div>
+      </article>
+
+      <article class="listing-card reveal">
+        <div class="lc-top-bar" aria-hidden="true"></div>
+        <div class="lc-body">
+          <div class="lc-head">
+            <div><div class="lc-name">Orthodox Black Tea &mdash; Single Estate</div><div class="lc-co">Kericho Highland Tea Ltd</div></div>
+            <div class="lc-price-wrap"><div class="lc-price">$3.80</div><div class="lc-unit">per kg / FOB</div></div>
+          </div>
+          <div class="lc-meta">
+            <span>&#128205; Kericho</span>
+            <span>&#128230; 50 MT/month</span>
+            <span>&#128197; Year-round</span>
+          </div>
+          <div class="lc-badges">
+            <span class="shield-badge">&#128737; VERIFIED EXPORTER</span>
+            <span class="cert-pill cp-k">&#10003; KEPHIS</span>
+            <span class="cert-pill cp-f">&#10003; FDA Reg.</span>
+            <span class="cert-pill cp-g">&#10003; HACCP</span>
+          </div>
+          <div class="lc-footer">
+            <div class="lc-seller"><div class="lc-av" aria-hidden="true">K</div><div class="lc-sname">Kericho Highland</div></div>
+            <button class="btn-connect" onclick="openModal(event,'buyer')">Connect Now &rarr;</button>
+          </div>
+        </div>
+      </article>
+
+      <article class="listing-card reveal">
+        <div class="lc-top-bar" aria-hidden="true"></div>
+        <div class="lc-body">
+          <div class="lc-head">
+            <div><div class="lc-name">French Beans &mdash; Fine &amp; Extra Fine</div><div class="lc-co">Homabay Horticulture Growers</div></div>
+            <div class="lc-price-wrap"><div class="lc-price">$1.90</div><div class="lc-unit">per kg / EXW</div></div>
+          </div>
+          <div class="lc-meta">
+            <span>&#128205; Homabay</span>
+            <span>&#128230; 30 MT/week</span>
+            <span>&#128197; Year-round</span>
+          </div>
+          <div class="lc-badges">
+            <span class="shield-badge">&#128737; VERIFIED EXPORTER</span>
+            <span class="cert-pill cp-k">&#10003; KEPHIS</span>
+            <span class="cert-pill cp-g">&#10003; GlobalGAP</span>
+          </div>
+          <div class="lc-footer">
+            <div class="lc-seller"><div class="lc-av" aria-hidden="true">H</div><div class="lc-sname">Homabay Horticulture</div></div>
+            <button class="btn-connect" onclick="openModal(event,'buyer')">Connect Now &rarr;</button>
+          </div>
+        </div>
+      </article>
+
+      <article class="listing-card reveal">
+        <div class="lc-top-bar" aria-hidden="true"></div>
+        <div class="lc-body">
+          <div class="lc-head">
+            <div><div class="lc-name">Macadamia Nuts &mdash; Style 1 &amp; Style 4</div><div class="lc-co">Mount Kenya Macadamia Co.</div></div>
+            <div class="lc-price-wrap"><div class="lc-price">$8.50</div><div class="lc-unit">per kg / FOB</div></div>
+          </div>
+          <div class="lc-meta">
+            <span>&#128205; Meru</span>
+            <span>&#128230; 80 MT/season</span>
+            <span>&#128197; Mar&ndash;Jul</span>
+          </div>
+          <div class="lc-badges">
+            <span class="shield-badge">&#128737; VERIFIED EXPORTER</span>
+            <span class="cert-pill cp-f">&#10003; FDA Reg.</span>
+            <span class="cert-pill cp-k">&#10003; KEPHIS</span>
+          </div>
+          <div class="lc-footer">
+            <div class="lc-seller"><div class="lc-av" aria-hidden="true">M</div><div class="lc-sname">Mt Kenya Macadamia</div></div>
+            <button class="btn-connect" onclick="openModal(event,'buyer')">Connect Now &rarr;</button>
+          </div>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- CATEGORIES -->
+<div class="cat-sec" id="categories">
+  <div class="cat-inner">
+    <div class="sec-tag" style="color:var(--gold)">Export categories</div>
+    <h2 class="sec-h" style="color:var(--white)">Ten categories.<br><em style="color:var(--gold)">Kenya&rsquo;s strongest exports.</em></h2>
+    <div class="divider"></div>
+    <p class="sec-body" style="color:rgba(255,255,255,.62)">Selected from Kenya&rsquo;s 2024&ndash;25 export data. All values in USD, from Kenya National Bureau of Statistics.</p>
+    <div class="cat-grid">
+      <div class="cat-card reveal"><div class="cat-icon">&#127861;</div><div class="cat-name">Cut Flowers</div><div class="cat-val">$1.75B/yr</div><div class="cat-growth g-up">&#9650; +12%</div></div>
+      <div class="cat-card reveal"><div class="cat-icon">&#9749;</div><div class="cat-name">Tea &amp; Coffee</div><div class="cat-val">$3.5B/yr</div><div class="cat-growth g-up">&#9650; +8%</div></div>
+      <div class="cat-card reveal"><div class="cat-icon">&#129361;</div><div class="cat-name">Tropical Fruits</div><div class="cat-val">$605M/yr</div><div class="cat-growth g-up">&#9650; +11%</div></div>
+      <div class="cat-card reveal"><div class="cat-icon">&#129382;</div><div class="cat-name">Vegetables</div><div class="cat-val">$437M/yr</div><div class="cat-growth g-up">&#9650; +34%</div></div>
+      <div class="cat-card reveal"><div class="cat-icon">&#128085;</div><div class="cat-name">Apparel</div><div class="cat-val">$946M/yr</div><div class="cat-growth g-up">&#9650; +27%</div></div>
+      <div class="cat-card reveal"><div class="cat-icon">&#129372;</div><div class="cat-name">Fats &amp; Oils</div><div class="cat-val">$600M/yr</div><div class="cat-growth g-up">&#9650; +52%</div></div>
+      <div class="cat-card reveal"><div class="cat-icon">&#129308;</div><div class="cat-name">Macadamia &amp; Nuts</div><div class="cat-val">$320M/yr</div><div class="cat-growth g-up">&#9650; +11%</div></div>
+      <div class="cat-card reveal"><div class="cat-icon">&#129428;</div><div class="cat-name">Live Animals</div><div class="cat-val">$228M/yr</div><div class="cat-growth g-up">&#9650; +767%</div></div>
+      <div class="cat-card reveal"><div class="cat-icon">&#127807;</div><div class="cat-name">Spices &amp; Extracts</div><div class="cat-val">$24M/yr</div><div class="cat-growth g-up">&#9650; +40%</div></div>
+      <div class="cat-card reveal"><div class="cat-icon">&#128098;</div><div class="cat-name">Leather Goods</div><div class="cat-val">$42M/yr</div><div class="cat-growth g-up">&#9650; +15%</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- COMPLIANCE -->
+<section class="sec" id="compliance">
+  <div class="sec-inner">
+    <div class="sec-tag">Compliance first</div>
+    <h2 class="sec-h">No documents.<br><em>No listing. Full stop.</em></h2>
+    <div class="divider"></div>
+    <p class="sec-body">MuftahX is built on one non-negotiable principle: every seller is verified before any buyer sees them. This protects buyers, protects compliant exporters, and protects Kenya&rsquo;s export reputation globally.</p>
+    <div class="comp-grid">
+      <div class="badge-stack">
+        <div class="badge-row reveal">
+          <div class="badge-ico bi-green">&#127807;</div>
+          <div><div class="badge-row-name">KEPHIS Certificate <span class="req-tag rt-g">REQUIRED</span></div><div class="badge-row-desc">Kenya Plant Health Inspectorate Service. Mandatory for all plant products. Covers phytosanitary standards for EU, US, and Gulf markets.</div></div>
+        </div>
+        <div class="badge-row reveal">
+          <div class="badge-ico bi-gold">&#9989;</div>
+          <div><div class="badge-row-name">GlobalGAP <span class="req-tag rt-go">EU REQUIRED</span></div><div class="badge-row-desc">Good Agricultural Practices demanded by EU supermarkets. Covers food safety, traceability, and environmental practices on-farm.</div></div>
+        </div>
+        <div class="badge-row reveal">
+          <div class="badge-ico bi-navy">&#127482;&#127480;</div>
+          <div><div class="badge-row-name">FDA Registration <span class="req-tag rt-n">US REQUIRED</span></div><div class="badge-row-desc">Required for all food and agricultural exports to the United States under the Food Safety Modernization Act (FSMA).</div></div>
+        </div>
+        <div class="badge-row reveal">
+          <div class="badge-ico bi-green">&#127959;</div>
+          <div><div class="badge-row-name">AFA / HCD License <span class="req-tag rt-g">KE REQUIRED</span></div><div class="badge-row-desc">Agriculture and Food Authority, Horticultural Crops Directorate. Required for all horticultural exporters operating in Kenya.</div></div>
+        </div>
+      </div>
+      <div>
+        <div class="comp-steps">
+          <div class="cs reveal"><div class="cs-num">1</div><div><div class="cs-h">Create your profile</div><div class="cs-body">Register your company, describe your products and export capacity. Build your presence immediately &mdash; no documents required at this stage. Buyers cannot see you yet.</div></div></div>
+          <div class="cs reveal"><div class="cs-num">2</div><div><div class="cs-h">Upload your certificates</div><div class="cs-body">Upload KEPHIS, GlobalGAP, FDA, AFA, or applicable certifications as PDF. Our team reviews and approves within 48 hours. You receive notification by email.</div></div></div>
+          <div class="cs reveal"><div class="cs-num">3</div><div><div class="cs-h">Go live with gold shield</div><div class="cs-body">Your listings appear with the gold shield verified badge. Buyers filter by certification standard. Your compliance is displayed prominently on every listing card.</div></div></div>
+        </div>
+        <div class="comp-note reveal">
+          <strong>Not yet certified?</strong> MuftahX shows you exactly which certificates you need for each destination market, with direct links to KEPHIS, AFA, and GlobalGAP application portals. We guide you to the starting line.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SOKODATA INTELLIGENCE -->
+<div class="sokodata-sec" id="intelligence">
+  <div class="sokodata-inner">
+    <div class="sec-tag" style="color:var(--gold)">Powered by SokoData</div>
+    <h2 class="sec-h" style="color:var(--white)">Every listing backed<br><em style="color:var(--gold)">by live market intelligence.</em></h2>
+    <div class="divider"></div>
+    <p class="sec-body" style="color:rgba(255,255,255,.6)">MuftahX is the export marketplace. SokoData is the data center behind it &mdash; real-time commodity prices, forex rates, exploitation detection, and market benchmarks. Every listing automatically shows buyers and sellers where the price stands against the live market.</p>
+    <div class="soko-panel reveal">
+      <div class="soko-sidebar">
+        <div class="soko-sidebar-logo">
+          <div class="ssl-name">Soko<em>Data</em></div>
+          <div class="ssl-tag">MARKET INTELLIGENCE</div>
+        </div>
+        <div class="soko-nav-item active"><span>&#128202;</span>Overview</div>
+        <div class="soko-nav-item"><span>&#128200;</span>Price Benchmarks</div>
+        <div class="soko-nav-item"><span>&#128178;</span>Forex Rates</div>
+        <div class="soko-nav-item"><span>&#9888;</span>Exploitation Alerts</div>
+        <div class="soko-nav-item"><span>&#127758;</span>MuftahX Activity</div>
+        <div class="soko-nav-item"><span>&#128241;</span>SMS Alerts</div>
+      </div>
+      <div class="soko-main">
+        <div class="soko-main-h">MuftahX Intelligence Dashboard</div>
+        <div class="soko-kpis">
+          <div class="soko-kpi"><div class="kpi-val">103</div><div class="kpi-lbl">Commodities Tracked</div></div>
+          <div class="soko-kpi"><div class="kpi-val">19+</div><div class="kpi-lbl">Markets Monitored</div></div>
+          <div class="soko-kpi"><div class="kpi-val">6h</div><div class="kpi-lbl">Price Update Cycle</div></div>
+          <div class="soko-kpi"><div class="kpi-val">0</div><div class="kpi-lbl">Exploitations Missed</div></div>
+        </div>
+        <table class="soko-table">
+          <thead><tr><th>Commodity</th><th>Benchmark (KES/kg)</th><th>Floor</th><th>MuftahX Listings</th><th>Status</th></tr></thead>
+          <tbody>
+            <tr><td>Coffee AA</td><td style="color:var(--gold)">637</td><td style="color:rgba(255,255,255,.4)">510</td><td style="color:rgba(255,255,255,.55)">4 active</td><td><span class="s-badge sb-active">FAIR</span></td></tr>
+            <tr><td>Tea (green leaf)</td><td style="color:var(--gold)">28</td><td style="color:rgba(255,255,255,.4)">20</td><td style="color:rgba(255,255,255,.55)">2 active</td><td><span class="s-badge sb-active">FAIR</span></td></tr>
+            <tr><td>Avocado (Hass)</td><td style="color:var(--gold)">40</td><td style="color:rgba(255,255,255,.4)">32</td><td style="color:rgba(255,255,255,.55)">3 active</td><td><span class="s-badge sb-active">FAIR</span></td></tr>
+            <tr><td>French beans</td><td style="color:var(--gold)">90</td><td style="color:rgba(255,255,255,.4)">72</td><td style="color:rgba(255,255,255,.55)">1 active</td><td><span class="s-badge sb-pending">MONITOR</span></td></tr>
+          </tbody>
+        </table>
+        <div class="soko-caption">Live data from KAMIS, FEWS NET, NCE, World Bank &middot; Updated every 6 hours automatically</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- BUYERS -->
+<section class="sec" id="buyers" style="background:var(--off)">
+  <div class="sec-inner">
+    <div class="sec-tag">For buyers</div>
+    <h2 class="sec-h">Where Kenya&rsquo;s<br><em>verified exports go.</em></h2>
+    <div class="divider"></div>
+    <p class="sec-body">MuftahX filters automatically by destination market &mdash; EU buyers see GlobalGAP-certified sellers. US buyers see FDA-registered ones. Every compliance requirement matched at source.</p>
+    <div class="dest-grid">
+      <div class="dest-card reveal"><div class="dest-flag">&#127466;&#127482;</div><div class="dest-name">European Union</div><div class="dest-vol">$1.2B+ annually from Kenya</div><div class="dest-wants">Flowers via Netherlands, avocado and vegetables via UK and Germany. Requires GlobalGAP, KEPHIS, and MPS certification for entry.</div></div>
+      <div class="dest-card reveal"><div class="dest-flag">&#127482;&#127480;</div><div class="dest-name">United States</div><div class="dest-vol">$791M from Kenya (2024)</div><div class="dest-wants">Apparel under AGOA, macadamia nuts, specialty coffee. Requires FDA registration, AGOA compliance, and phytosanitary certificates.</div></div>
+      <div class="dest-card reveal"><div class="dest-flag">&#127462;&#127466;</div><div class="dest-name">UAE &amp; Gulf</div><div class="dest-vol">$754M from Kenya (2024)</div><div class="dest-wants">Premium tea, fresh flowers, vegetables, and livestock. Fastest-growing corridor. Halal certification for meat. Arabic-speaking buyer network.</div></div>
+      <div class="dest-card reveal"><div class="dest-flag">&#127477;&#127472;</div><div class="dest-name">Pakistan</div><div class="dest-vol">$569M from Kenya (2024)</div><div class="dest-wants">Kenya&rsquo;s largest single tea buyer. Black CTC tea primarily. Also taking increased volumes of edible oils and processed foods.</div></div>
+      <div class="dest-card reveal"><div class="dest-flag">&#127482;&#127468;</div><div class="dest-name">Uganda &amp; Africa</div><div class="dest-vol">$951M &mdash; largest destination</div><div class="dest-wants">Processed foods, horticulture, manufactured goods. DRC and Egypt growing fastest. Best entry market for new exporters.</div></div>
+      <div class="dest-card reveal"><div class="dest-flag">&#127464;&#127475;</div><div class="dest-name">China &amp; Asia</div><div class="dest-vol">High potential &mdash; growing 15%/yr</div><div class="dest-wants">Specialty tea, macadamia, sesame, leather goods. Chinese premium market for African products expanding rapidly.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="sec" id="pricing">
+  <div class="sec-inner">
+    <div class="sec-tag">Pricing</div>
+    <h2 class="sec-h">3 months free.<br><em>Buyers always free.</em></h2>
+    <div class="divider"></div>
+
+    <div class="founding-band reveal">
+      <div>
+        <div class="fb-tag">&#9733; Limited &mdash; Founding Sellers</div>
+        <div class="fb-title">First 3 months completely free.</div>
+        <div class="fb-sub">No credit card. No commitment. List, connect, and close your first international deal at zero cost.</div>
+      </div>
+      <a href="#" class="btn-hero-gold" onclick="openModal(event,'seller')" style="white-space:nowrap;font-size:12px;padding:13px 26px">Claim your spot &rarr;</a>
+    </div>
+
+    <div class="pricing-grid">
+      <div class="pc featured">
+        <div class="pc-badge">FOR SELLERS</div>
+        <div class="pc-tier inv">Founding Seller</div>
+        <div class="pc-amount inv">$0<span>/month</span></div>
+        <div class="pc-period inv">Free 3 months &mdash; then $49/mo</div>
+        <ul class="pc-feats inv">
+          <li>All 10 export categories</li>
+          <li>Unlimited active listings</li>
+          <li>Gold shield verification badge</li>
+          <li>Buyer inquiry notifications</li>
+          <li>SokoData price benchmarks</li>
+          <li>Priority in buyer searches</li>
+        </ul>
+        <button class="pc-btn pc-btn-gold" onclick="openModal(event,'seller')">Start Free &mdash; 3 Months &rarr;</button>
+      </div>
+      <div class="pc">
+        <div class="pc-tier">For Buyers</div>
+        <div class="pc-amount">$0</div>
+        <div class="pc-period">Free forever &mdash; no exceptions</div>
+        <ul class="pc-feats">
+          <li>Browse all verified listings</li>
+          <li>Filter by certification standard</li>
+          <li>Filter by destination compliance</li>
+          <li>Direct seller contact</li>
+          <li>Save and track suppliers</li>
+          <li>New listing alerts by email</li>
+        </ul>
+        <button class="pc-btn pc-btn-outline" onclick="openModal(event,'buyer')">Find Suppliers Free</button>
+      </div>
+      <div class="pc">
+        <div class="pc-tier">Enterprise</div>
+        <div class="pc-amount">Custom</div>
+        <div class="pc-period">For cooperatives &amp; large exporters</div>
+        <ul class="pc-feats">
+          <li>Dedicated account manager</li>
+          <li>Direct buyer introductions</li>
+          <li>Trade finance connections</li>
+          <li>Multi-member cooperative accounts</li>
+          <li>Compliance advisory sessions</li>
+        </ul>
+        <button class="pc-btn pc-btn-outline" onclick="window.location.href='mailto:trade@muftahx.com'">Contact Us</button>
+      </div>
+    </div>
+    <p style="text-align:center;margin-top:1.5rem;font-family:var(--mono);font-size:11px;color:var(--text3)">No transaction commissions &middot; No hidden fees &middot; Buyers always free &middot; You own your buyer relationships</p>
+  </div>
+</section>
+
+<!-- CTA -->
+<div class="cta-band">
+  <div class="cta-inner">
+    <h2 class="cta-h">Your harvest.<br><em>The world&rsquo;s table.</em></h2>
+    <p class="cta-sub">Join Kenya&rsquo;s verified B2B export platform. Compliance-verified sellers. Serious global buyers. No shortcuts, no compromises, no uncertified listings.</p>
+    <div class="cta-row">
+      <input type="email" class="cta-input" id="ctaEmail" placeholder="company@email.co.ke" aria-label="Your business email"/>
+      <button class="btn-cta" onclick="openWithEmail(event)">Start Exporting &rarr;</button>
+    </div>
+    <p class="cta-note">Free for 3 months &middot; Compliance verification included &middot; No credit card</p>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-brand">Muftah<em>X</em></div>
+        <p class="footer-desc">Kenya&rsquo;s verified B2B export marketplace. Connecting compliance-certified Kenyan exporters and cooperatives with global buyers across the EU, US, UAE, and Asia. Market intelligence powered by SokoData.</p>
+        <div class="footer-contact">Nairobi, Kenya &middot; trade@muftahx.com</div>
+      </div>
+      <div>
+        <div class="footer-h">Platform</div>
+        <div class="footer-links">
+          <a href="#how" class="footer-link">How it works</a>
+          <a href="#listings" class="footer-link">Browse Listings</a>
+          <a href="#categories" class="footer-link">Categories</a>
+          <a href="#pricing" class="footer-link">Pricing</a>
+        </div>
+      </div>
+      <div>
+        <div class="footer-h">Compliance</div>
+        <div class="footer-links">
+          <span class="footer-link">KEPHIS Kenya</span>
+          <span class="footer-link">GlobalGAP</span>
+          <span class="footer-link">AFA / HCD</span>
+          <span class="footer-link">FDA Registration</span>
+          <span class="footer-link">HACCP</span>
+        </div>
+      </div>
+      <div>
+        <div class="footer-h">Contact</div>
+        <div class="footer-links">
+          <a href="#" class="footer-link" onclick="openModal(event,'seller')">List your products</a>
+          <a href="#" class="footer-link" onclick="openModal(event,'buyer')">Find suppliers</a>
+          <span class="footer-link">trade@muftahx.com</span>
+          <a href="https://firash735.github.io/sokodata/" class="footer-link" target="_blank">SokoData &rarr;</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="footer-copy">&copy; 2026 MuftahX &middot; All rights reserved &middot; Nairobi, Kenya</div>
+      <div class="footer-copy">Built for Kenya. Open to the world.</div>
+    </div>
+  </div>
+</footer>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal" role="dialog" aria-modal="true" aria-labelledby="mTitle">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()" aria-label="Close modal">&#215;</button>
+    <div class="modal-h" id="mTitle">Join MuftahX</div>
+    <div class="modal-sub" id="mSub">Create your account to connect with verified exporters or buyers.</div>
+    <div class="modal-tabs" role="tablist">
+      <button class="modal-tab active" id="tabS" onclick="switchTab(event,'seller')" role="tab" aria-selected="true">I am a Seller</button>
+      <button class="modal-tab" id="tabB" onclick="switchTab(event,'buyer')" role="tab" aria-selected="false">I am a Buyer</button>
+    </div>
+    <div id="mForm"></div>
+  </div>
+</div>
+
+<script>
+// ── Cursor ───────────────────────────────────────────
+var cur=document.getElementById("cur"),curR=document.getElementById("curR")
+var mx=0,my=0,rx=0,ry=0
+document.addEventListener("mousemove",function(e){
+  mx=e.clientX;my=e.clientY
+  cur.style.left=mx+"px";cur.style.top=my+"px"
+})
+;(function loop(){
+  rx+=(mx-rx)*.13;ry+=(my-ry)*.13
+  curR.style.left=rx+"px";curR.style.top=ry+"px"
+  requestAnimationFrame(loop)
+})()
+document.querySelectorAll("a,button,.listing-card,.cat-card,.dest-card,.badge-row,.step").forEach(function(el){
+  el.addEventListener("mouseenter",function(){
+    cur.style.transform="translate(-50%,-50%) scale(2.2)"
+    cur.style.background="var(--kgreen)"
+    curR.style.transform="translate(-50%,-50%) scale(1.6)"
+    curR.style.borderColor="rgba(27,67,50,.4)"
+  })
+  el.addEventListener("mouseleave",function(){
+    cur.style.transform="translate(-50%,-50%) scale(1)"
+    cur.style.background="var(--gold)"
+    curR.style.transform="translate(-50%,-50%) scale(1)"
+    curR.style.borderColor="rgba(201,149,42,.38)"
+  })
+})
+
+// ── Scroll effects ───────────────────────────────────
+var nav=document.getElementById("nav"),prog=document.getElementById("progress")
+window.addEventListener("scroll",function(){
+  nav.classList.toggle("scrolled",window.scrollY>60)
+  var pct=(window.scrollY/(document.body.scrollHeight-window.innerHeight))*100
+  prog.style.width=Math.min(pct,100)+"%"
+},{ passive: true })
+
+// ── Reveal animations ────────────────────────────────
+var obs=new IntersectionObserver(function(entries){
+  entries.forEach(function(e){
+    if(e.isIntersecting){
+      e.target.classList.add("visible")
+      obs.unobserve(e.target)
+    }
+  })
+},{threshold:0.07})
+document.querySelectorAll(".reveal,.reveal-left").forEach(function(el){obs.observe(el)})
+
+// ── Modal ────────────────────────────────────────────
+var _tab="seller"
+function openModal(e,type){
+  if(e)e.preventDefault()
+  _tab=type||"seller"
+  var overlay=document.getElementById("modal")
+  overlay.classList.add("open")
+  overlay.setAttribute("aria-hidden","false")
+  document.getElementById("tabS").classList.toggle("active",_tab==="seller")
+  document.getElementById("tabS").setAttribute("aria-selected",_tab==="seller")
+  document.getElementById("tabB").classList.toggle("active",_tab==="buyer")
+  document.getElementById("tabB").setAttribute("aria-selected",_tab==="buyer")
+  renderForm(_tab)
+  // Focus first input
+  setTimeout(function(){
+    var first=document.querySelector("#mForm input,#mForm select")
+    if(first)first.focus()
+  },100)
+}
+function openWithEmail(e){
+  if(e)e.preventDefault()
+  var email=document.getElementById("ctaEmail").value.trim()
+  openModal(null,"seller")
+  setTimeout(function(){
+    var el=document.getElementById("mEmail")
+    if(el&&email)el.value=email
+  },120)
+}
+function closeModal(){
+  var overlay=document.getElementById("modal")
+  overlay.classList.remove("open")
+  overlay.setAttribute("aria-hidden","true")
+}
+document.getElementById("modal").addEventListener("click",function(e){
+  if(e.target===document.getElementById("modal"))closeModal()
+})
+document.addEventListener("keydown",function(e){
+  if(e.key==="Escape")closeModal()
+})
+
+function switchTab(e,type){
+  if(e)e.preventDefault()
+  _tab=type
+  document.getElementById("tabS").classList.toggle("active",type==="seller")
+  document.getElementById("tabS").setAttribute("aria-selected",type==="seller")
+  document.getElementById("tabB").classList.toggle("active",type==="buyer")
+  document.getElementById("tabB").setAttribute("aria-selected",type==="buyer")
+  renderForm(type)
+}
+
+function renderForm(type){
+  var f=document.getElementById("mForm")
+  if(type==="seller"){
+    f.innerHTML=
+      "<div class='g2'>"+
+        "<div class='field'><label for='mCo'>Company Name</label><input id='mCo' type='text' placeholder='Your Export Company Ltd' autocomplete='organization'/></div>"+
+        "<div class='field'><label for='mName'>Your Name</label><input id='mName' type='text' placeholder='James Kamau' autocomplete='name'/></div>"+
+      "</div>"+
+      "<div class='field'><label for='mEmail'>Business Email</label><input id='mEmail' type='email' placeholder='export@company.co.ke' autocomplete='email'/></div>"+
+      "<div class='field'><label for='mCat'>Primary Export Category</label><select id='mCat'><option value=''>Select category...</option><option>Cut Flowers</option><option>Tea &amp; Coffee</option><option>Tropical Fruits</option><option>Vegetables</option><option>Apparel &amp; Textiles</option><option>Fats &amp; Oils</option><option>Macadamia &amp; Nuts</option><option>Live Animals</option><option>Spices &amp; Extracts</option><option>Leather Goods</option></select></div>"+
+      "<div class='field'><label for='mVol'>Annual Export Volume (USD)</label><select id='mVol'><option>Under $100K (getting started)</option><option>$100K &ndash; $500K</option><option>$500K &ndash; $2M</option><option>$2M &ndash; $10M</option><option>Over $10M</option></select></div>"+
+      "<div class='field'><label for='mCerts'>Compliance Documents</label><select id='mCerts'><option>KEPHIS only</option><option>KEPHIS + GlobalGAP</option><option>KEPHIS + GlobalGAP + FDA</option><option>KEPHIS + AFA/HCD</option><option>Still getting certified</option></select></div>"+
+      "<div class='form-err' id='fErr' role='alert'></div>"+
+      "<button class='submit-btn' onclick='submitForm()'>Create Seller Account &rarr;</button>"+
+      "<p style='text-align:center;margin-top:12px;font-size:11px;color:var(--text4);font-family:var(--mono)'>Free 3 months &middot; No credit card required</p>"
+  } else {
+    f.innerHTML=
+      "<div class='g2'>"+
+        "<div class='field'><label for='mBCo'>Company Name</label><input id='mBCo' type='text' placeholder='Import Co. Ltd' autocomplete='organization'/></div>"+
+        "<div class='field'><label for='mCountry'>Country</label><select id='mCountry'><option>Netherlands</option><option>United Kingdom</option><option>Germany</option><option>United States</option><option>UAE</option><option>Saudi Arabia</option><option>Pakistan</option><option>China</option><option>Other</option></select></div>"+
+      "</div>"+
+      "<div class='field'><label for='mEmail'>Business Email</label><input id='mEmail' type='email' placeholder='import@company.com' autocomplete='email'/></div>"+
+      "<div class='field'><label for='mSource'>What are you sourcing?</label><select id='mSource'><option value=''>Select category...</option><option>Cut Flowers</option><option>Tea &amp; Coffee</option><option>Tropical Fruits</option><option>Vegetables</option><option>Apparel</option><option>Fats &amp; Oils</option><option>Macadamia &amp; Nuts</option><option>Live Animals</option><option>Multiple categories</option></select></div>"+
+      "<div class='field'><label for='mBudget'>Annual Import Budget (USD)</label><select id='mBudget'><option>Under $100K</option><option>$100K &ndash; $500K</option><option>$500K &ndash; $2M</option><option>Over $2M</option></select></div>"+
+      "<div class='form-err' id='fErr' role='alert'></div>"+
+      "<button class='submit-btn' onclick='submitForm()'>Find Verified Suppliers &rarr;</button>"+
+      "<p style='text-align:center;margin-top:12px;font-size:11px;color:var(--text4);font-family:var(--mono)'>Free buyer access &middot; Verified sellers only</p>"
+  }
+}
+
+function submitForm(){
+  var email=document.getElementById("mEmail")?.value.trim()
+  var err=document.getElementById("fErr")
+  if(!email){
+    if(err)err.textContent="Please enter your business email address."
+    document.getElementById("mEmail")?.focus()
+    return
+  }
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){
+    if(err)err.textContent="Please enter a valid email address."
+    return
+  }
+  if(err)err.textContent=""
+  closeModal()
+  setTimeout(function(){
+    alert("Welcome to MuftahX.\n\nWe will contact you within 24 hours at:\n"+email+"\n\nTo complete your verification and get your first listing live.")
+  },200)
+}
+
+renderForm("seller")
+</script>
+</body>
+</html>
