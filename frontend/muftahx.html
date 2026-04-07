@@ -1127,9 +1127,9 @@ renderForm("seller")
 
 
 <style>
-.ke-btn{position:fixed;bottom:2rem;right:2rem;z-index:300;width:52px;height:52px;border-radius:50%;background:var(--kgreen);border:2px solid rgba(201,149,42,.4);box-shadow:0 4px 20px rgba(27,67,50,.4);cursor:none;display:flex;align-items:center;justify-content:center;font-size:22px;transition:all .2s;color:var(--white)}
+.ke-btn{position:fixed;bottom:2rem;right:2rem;z-index:600;width:52px;height:52px;border-radius:50%;background:var(--kgreen);border:2px solid rgba(201,149,42,.4);box-shadow:0 4px 20px rgba(27,67,50,.4);cursor:none;display:flex;align-items:center;justify-content:center;font-size:22px;transition:all .2s;color:var(--white)}
 .ke-btn:hover{background:var(--kgreen-mid);transform:translateY(-2px)}
-.ke-panel{position:fixed;bottom:6rem;right:2rem;z-index:290;width:380px;max-height:72vh;background:var(--white);border:1px solid var(--light2);border-radius:var(--rad-lg);box-shadow:0 20px 60px rgba(0,0,0,.15);display:none;flex-direction:column;overflow:hidden}
+.ke-panel{position:fixed;bottom:6rem;right:2rem;z-index:590;width:380px;max-height:72vh;background:var(--white);border:1px solid var(--light2);border-radius:var(--rad-lg);box-shadow:0 20px 60px rgba(0,0,0,.15);display:none;flex-direction:column;overflow:hidden}
 .ke-panel.open{display:flex}
 .ke-header{background:var(--kgreen);padding:1rem 1.25rem;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
 .ke-htitle{font-family:var(--serif);font-size:16px;font-weight:700;color:var(--white)}
@@ -1158,7 +1158,11 @@ renderForm("seller")
 @media(max-width:480px){.ke-panel{width:calc(100vw - 2rem);right:1rem}}
 </style>
 
-<button class="ke-btn" onclick="toggleKE()" aria-label="Export Knowledge Guide">&#9432;</button>
+<button class="ke-btn" onclick="toggleKE()" aria-label="Export Knowledge Guide" title="Export Knowledge Guide — click for expert answers">
+  &#9432;
+  <span style="position:absolute;top:-4px;right:-4px;width:12px;height:12px;border-radius:50%;background:var(--gold);border:2px solid var(--white);animation:pulse 2s infinite;display:block"></span>
+</button>
+<div style="position:fixed;bottom:2rem;right:5.5rem;z-index:600;font-family:var(--mono);font-size:10px;font-weight:500;color:var(--white);background:var(--kgreen);border:1px solid rgba(201,149,42,.4);padding:6px 12px;border-radius:10px;white-space:nowrap;box-shadow:0 2px 12px rgba(0,0,0,.2);pointer-events:none" id="keHint">Expert Guide</div>
 
 <div class="ke-panel" id="kePanel">
   <div class="ke-header">
@@ -1266,6 +1270,14 @@ KE.firstdeal = "<button class='ke-back' onclick='keBack()'>&#8592; Back</button>
   + "<h4>Step 6: Final payment and review</h4>"
   + "<p>Invoice the remaining 50% once goods are shipped. After delivery, ask the buyer to leave a MuftahX review. Their rating builds your trust score for every future buyer.</p>"
   + "<div class='ke-warn'><strong>Most common mistake:</strong> Promising a delivery date you cannot meet. Add 7&ndash;10 buffer days. One missed delivery destroys a relationship worth years of repeat orders.</div>"
+
+
+document.addEventListener("DOMContentLoaded", function(){
+  var hint = document.getElementById("keHint")
+  if(hint){
+    setTimeout(function(){ hint.style.opacity = "0"; hint.style.transition = "opacity 1s"; setTimeout(function(){ hint.style.display="none" }, 1000) }, 4000)
+  }
+})
 
 function toggleKE(){
   var p = document.getElementById("kePanel")
