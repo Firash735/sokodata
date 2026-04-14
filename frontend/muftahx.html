@@ -971,7 +971,7 @@ footer{background:var(--kgreen);padding:4rem 2.5rem 2rem}
       <div>
         <div class="footer-brand">Muftah<em>X</em></div>
         <p class="footer-desc">Kenya&rsquo;s verified B2B export marketplace. Connecting compliance-certified Kenyan exporters and cooperatives with global buyers across the EU, US, UAE, and Asia. Market intelligence powered by SokoData.</p>
-        <div class="footer-contact">Nairobi, Kenya &middot; <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="9befe9fafffedbf6eefdeffaf3e3b5f8f4f6">[email&#160;protected]</a></div>
+        <div class="footer-contact">Nairobi, Kenya &middot; trade@muftahx.com</div>
       </div>
       <div>
         <div class="footer-h">Platform</div>
@@ -997,7 +997,7 @@ footer{background:var(--kgreen);padding:4rem 2.5rem 2rem}
         <div class="footer-links">
           <a href="#" class="footer-link" onclick="openModal(event,'seller')">List your products</a>
           <a href="#" class="footer-link" onclick="openModal(event,'buyer')">Find suppliers</a>
-          <span class="footer-link"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="760204171213361b031002171e0e5815191b">[email&#160;protected]</a></span>
+          <span class="footer-link">trade@muftahx.com</span>
           <a href="https://firash735.github.io/sokodata/" class="footer-link" target="_blank">SokoData &rarr;</a>
         </div>
       </div>
@@ -1023,7 +1023,7 @@ footer{background:var(--kgreen);padding:4rem 2.5rem 2rem}
   </div>
 </div>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+<script>
 // ── Cursor ───────────────────────────────────────────
 var cur=document.getElementById("cur"),curR=document.getElementById("curR")
 var mx=0,my=0,rx=0,ry=0
@@ -1189,4 +1189,12 @@ function keShow2(key){
   var a=document.getElementById("ke-ans2")
   a.innerHTML="<button onclick='keBack2()' style='font-family:DM Mono,monospace;font-size:10px;font-weight:600;color:#1b4332;background:none;border:none;cursor:none;padding:0;display:flex;align-items:center;gap:5px;margin-bottom:1rem'>&#8592; Back</button>"
     +"<div style='font-family:Playfair Display,serif;font-size:16px;font-weight:700;color:#16160e;margin-bottom:.75rem'>"+KD3[key].t+"</div>"
-    +"<div style='font-size:13p
+    +"<div style='font-size:13px;color:#42423a;line-height:1.82'>"+KD3[key].b+"</div>"
+  a.style.display="block"
+}
+function keBack2(){document.getElementById("ke-tops2").style.display="flex";var a=document.getElementById("ke-ans2");a.style.display="none";a.innerHTML=""}
+document.addEventListener("keydown",function(e){if(e.key==="Escape")keClose2()})
+</script>
+
+</body>
+</html>
