@@ -505,14 +505,14 @@ footer{background:var(--g);padding:4rem 2.5rem 2rem}
     </div>
   </div>
   <div class="nav-links">
-    <button class="nav-a" onclick="scrollTo('#products')">Products</button>
-    <button class="nav-a" onclick="scrollTo('#compliance')">Compliance</button>
-    <button class="nav-a" onclick="scrollTo('#intelligence')">Intelligence</button>
-    <button class="nav-a" onclick="scrollTo('#pricing')">Pricing</button>
+    <button class="nav-a" onclick="goSection('#products')">Products</button>
+    <button class="nav-a" onclick="goSection('#compliance')">Compliance</button>
+    <button class="nav-a" onclick="goSection('#intelligence')">Intelligence</button>
+    <button class="nav-a" onclick="goSection('#pricing')">Pricing</button>
   </div>
   <div class="nav-btns">
-    <button class="btn-nv" onclick="openModal('buyer')">Find Suppliers</button>
-    <button class="btn-ng" onclick="openModal('seller')">Start Exporting &rarr;</button>
+    <button class="btn-nv" onclick="openModal('buyer')">I'm a Buyer</button>
+    <button class="btn-ng" onclick="openModal('seller')">I'm a Seller &rarr;</button>
   </div>
 </nav>
 
@@ -524,10 +524,10 @@ footer{background:var(--g);padding:4rem 2.5rem 2rem}
   <div class="hero-left">
     <div class="eyebrow"><div class="pulse"></div>KENYA B2B EXPORT MARKETPLACE</div>
     <h1 class="hero-h">Kenya's finest<br>exports.<em>The world's buyers.</em></h1>
-    <p class="hero-sub">MuftahX connects compliance-verified Kenyan exporters and cooperatives directly with global buyers. Every seller KEPHIS-certified. Every listing shows live market prices.</p>
+    <p class="hero-sub">MuftahX connects compliance-verified Kenyan exporters directly with buyers in 40+ countries. Not Kenya-first. Not Africa-first. <strong style="color:var(--gold)">Global first.</strong> Every seller KEPHIS-certified. Every listing shows live market prices.</p>
     <div class="hero-actions">
       <button class="btn-hg" onclick="openModal('seller')">Start Exporting &rarr;</button>
-      <button class="btn-hgh" onclick="scrollTo('#products')">Browse Products &#8595;</button>
+      <button class="btn-hgh" onclick="goSection('#products')">Browse Products &#8595;</button>
     </div>
     <div class="hero-trust">
       <div class="ht"><div class="ht-dot"></div>KEPHIS Verified</div>
@@ -1036,7 +1036,7 @@ footer{background:var(--g);padding:4rem 2.5rem 2rem}
         <p class="fb-desc">Kenya's verified B2B export marketplace. Connecting compliance-certified Kenyan exporters with global buyers. Market intelligence by SokoData.</p>
         <div style="font-size:12px;color:rgba(255,255,255,.3)">Nairobi, Kenya &middot; trade@muftahx.com</div>
       </div>
-      <div><div class="fh">Platform</div><div class="fl-links"><button class="fl-a" onclick="scrollTo('#products')">Browse Products</button><button class="fl-a" onclick="scrollTo('#compliance')">Compliance</button><button class="fl-a" onclick="scrollTo('#intelligence')">Intelligence</button><button class="fl-a" onclick="scrollTo('#pricing')">Pricing</button></div></div>
+      <div><div class="fh">Platform</div><div class="fl-links"><button class="fl-a" onclick="goSection('#products')">Browse Products</button><button class="fl-a" onclick="goSection('#compliance')">Compliance</button><button class="fl-a" onclick="goSection('#intelligence')">Intelligence</button><button class="fl-a" onclick="goSection('#pricing')">Pricing</button></div></div>
       <div><div class="fh">Compliance</div><div class="fl-links"><button class="fl-a">KEPHIS Kenya</button><button class="fl-a">GlobalGAP</button><button class="fl-a">AFA / HCD</button><button class="fl-a">FDA Registration</button></div></div>
       <div><div class="fh">Connect</div><div class="fl-links"><button class="fl-a" onclick="openModal('seller')">List Your Products</button><button class="fl-a" onclick="openModal('buyer')">Find Suppliers</button><button class="fl-a">trade@muftahx.com</button></div></div>
     </div>
@@ -1511,7 +1511,7 @@ window.addEventListener('scroll', function() {
   prog.style.width = Math.min((window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100, 100) + '%';
 }, {passive: true});
 
-function scrollTo(id) {
+function goSection(id) {
   var el = document.querySelector(id);
   if (el) el.scrollIntoView({behavior: 'smooth'});
 }
