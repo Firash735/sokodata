@@ -1512,8 +1512,16 @@ window.addEventListener('scroll', function() {
 }, {passive: true});
 
 function goSection(id) {
-  var el = document.querySelector(id);
-  if (el) el.scrollIntoView({behavior: 'smooth'});
+  if (document.getElementById('page-product').style.display !== 'none') {
+    goHome();
+    setTimeout(function() {
+      var el = document.querySelector(id);
+      if (el) el.scrollIntoView({behavior:'smooth'});
+    }, 300);
+  } else {
+    var el = document.querySelector(id);
+    if (el) el.scrollIntoView({behavior:'smooth'});
+  }
 }
 
 // ── REVEAL ───────────────────────────────────────────
